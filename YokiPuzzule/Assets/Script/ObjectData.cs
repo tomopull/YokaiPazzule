@@ -7,10 +7,8 @@ public class ObjectData : MonoBehaviour {
 	[SerializeField]
 	private int _point;
 
-
 	//カテゴリーヌル
 	public static int NullCategory = 99;
-
 
 	//取得ポイント
 	public int Point

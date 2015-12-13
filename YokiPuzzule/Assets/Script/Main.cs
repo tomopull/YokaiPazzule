@@ -4,10 +4,12 @@ using System.Collections.Generic;
 using System;
 using LitJson;
 
-//線の描画ロジックの再考
-//新規のオブジェクトの追加を破綻せないようにする
-//なぞったオブジェクトを消す。
-//オブジェクトから離れたらラインを消す
+//5,線の描画ロジックの再考
+//2,新規のオブジェクトの追加を破綻せないようにする
+//3,なぞったオブジェクトを消す。
+//4,オブジェクトから離れたらラインを消す
+//1,選択されたオブジェクトが光るかして、選択しているのがわかる
+
 
 public class Main : MonoBehaviour {
 
@@ -88,30 +90,37 @@ public class Main : MonoBehaviour {
 				obj_data.Category = (int)data ["object_data"][j]["category"];
 				obj_data.Obj = obj;
 
-
 				_game_model.ObjectDataList.Add (obj_data);
 
-				//カラーチェンジ
-				switch (obj_data.Category) {
+				SetColor(obj_data.Category,obj);
 
-				case 1:
-					obj.GetComponent<Renderer> ().material.color = Color.blue;
-					break;
-				case 2:
-					obj.GetComponent<Renderer> ().material.color = Color.red;
-					break;
-				case 3:
-					obj.GetComponent<Renderer> ().material.color = Color.yellow;
-					break;
-				case 4:
-					obj.GetComponent<Renderer> ().material.color = Color.green;
-					break;
-				case 5:
-					obj.GetComponent<Renderer> ().material.color = Color.cyan;
-					break;
-				}
 			}
 		}
+	}
+
+	//カラーチェンジ
+	private void SetColor(int _category_id,GameObject obj){
+
+		//カラーチェンジ
+		switch (_category_id) {
+
+		case 1:
+			obj.GetComponent<Renderer> ().material.color = Color.blue;
+			break;
+		case 2:
+			obj.GetComponent<Renderer> ().material.color = Color.red;
+			break;
+		case 3:
+			obj.GetComponent<Renderer> ().material.color = Color.yellow;
+			break;
+		case 4:
+			obj.GetComponent<Renderer> ().material.color = Color.green;
+			break;
+		case 5:
+			obj.GetComponent<Renderer> ().material.color = Color.cyan;
+			break;
+		}
+
 	}
 
 	//スワイプかタッチか判別
@@ -180,12 +189,18 @@ public class Main : MonoBehaviour {
 			}
 		}
 
+		//ボタンをダウンしていたら、していなかったら
 		if (_game_model.IsButtonDown) {
 			SetLineObjetsData ();
 			DrawLine (_game_model.SelectedObjectDataList);
+			HighLightSelectedData (_game_model.SelectedObjectDataList);
 		} else {
+			if(_game_model.SelectedObjectDataList != null){
+				ResetHighLightSelectedData (_game_model.SelectedObjectDataList);
+			}
 			ResetLineObjectData ();
 			DrawLine (_game_model.SelectedObjectDataList);
+
 		}
 						
 	}
@@ -211,11 +226,6 @@ public class Main : MonoBehaviour {
 				//マウスと十分近いかどうか
 				//既に選択済みのオブジェクトがある場合は最後に選択済みのオブジェクトと十分近いかどうか
 				if (now_distance <= _game_model.TouchDistance && now_distance_from_last_selected <= _game_model.TouchDistance) {
-					
-					//一番最初に選択したオブジェクトの種類がnullなら現在のオブジェクトの種類を代入
-					if (_game_model.FirstObjectSelectedCategory == ObjectData.NullCategory) {
-						_game_model.FirstObjectSelectedCategory = _game_model.ObjectDataList [i].Category;
-					}
 
 					//一番最初に選択したオブジェクトと同じ種類かどうか
 					//おなじなら選択済み配列に追加
@@ -254,7 +264,6 @@ public class Main : MonoBehaviour {
 
 	}
 
-
 	//既に選択済みかそうでないか
 	//選択済み true, 未選択 false
 	private bool checkAlreadySetObjectsData(ObjectData object_data){
@@ -272,6 +281,7 @@ public class Main : MonoBehaviour {
 		return false;
 	}
 
+	//ライン描画のリセット
 	private void ResetLineObjectData(){
 		_game_model.SelectedObjectDataList = new List<ObjectData>();
 		_game_model.FirstObjectSelectedCategory = ObjectData.NullCategory;
@@ -280,8 +290,23 @@ public class Main : MonoBehaviour {
 		//print ("reset");
 	}
 
+	//選択中のオブジェクトをハイライトする
+	private void HighLightSelectedData(List<ObjectData> _object_data_list){
+		for (int i = 0; i < _object_data_list.Count; i++) {
+			GameObject obj = (GameObject)_object_data_list [i].Obj;
+			obj.GetComponent<Renderer> ().material.color = Color.white;
+		}
+	}
 
+	//選択中のオブジェクトをハイライトリセット元の色に戻す
+	private void ResetHighLightSelectedData(List<ObjectData> _object_data_list){
+		for (int i = 0; i < _object_data_list.Count; i++) {
+			GameObject obj = (GameObject)_object_data_list [i].Obj;
+			SetColor (_object_data_list [i].Category, obj);
+		}
+	}
 
+		
 	//マウスをドラッグ中なら近くのオブジェクト同時をつなぐ線の描画処理を継続
 	private void DrawLine(List<ObjectData> _object_data_list){
 	
