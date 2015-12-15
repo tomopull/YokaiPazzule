@@ -2,7 +2,7 @@
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
   <MonoDevelop.Ide.Workbench ActiveDocument="Assets/Script/Main.cs">
     <Files>
-      <File FileName="Assets/Script/Main.cs" Line="302" Column="51" />
+      <File FileName="Assets/Script/Main.cs" Line="306" Column="11" />
       <File FileName="Assets/Script/ObjectData.cs" Line="1" Column="1" />
       <File FileName="Assets/Script/GameModel.cs" Line="1" Column="1" />
       <File FileName="Assets/Script/ObjectGenerator.cs" Line="1" Column="1" />

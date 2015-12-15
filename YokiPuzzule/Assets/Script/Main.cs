@@ -98,6 +98,11 @@ public class Main : MonoBehaviour {
 		}
 	}
 
+	//オブジェクトを消した際に新規でオブジェクトを追加
+	private void AddRandomObjectData(){
+		print ("ランダムでオブジェクトを追加");
+	}
+
 	//カラーチェンジ
 	private void SetColor(int _category_id,GameObject obj){
 
@@ -150,17 +155,23 @@ public class Main : MonoBehaviour {
 					ActiveTouch.StartTime = System.DateTime.Now;
 					ActiveTouch.Phase = TouchPhase.Began;
 					_game_model.IsButtonDown = true;
-
-			
 				} else {
 					ActiveTouch.CurrentTouchLocation = Input.mousePosition;
 				}
 			} else {
 				if (ActiveTouch.Phase == TouchPhase.Began) {
+
 					CaluculateTouchInput (ActiveTouch);
 					ActiveTouch.Phase = TouchPhase.Canceled;
 					_game_model.IsButtonDown = false;
 
+					//二つ以上選択していたら消す
+					//ポイントとか追加
+					//ランダムで新規のオブジェクト追加
+					if(CheckLineObjectData ()){
+						RemoveSelectedLineObjectData ();
+						AddRandomObjectData ();
+					}
 				} 
 			}
 
@@ -200,11 +211,9 @@ public class Main : MonoBehaviour {
 			}
 			ResetLineObjectData ();
 			DrawLine (_game_model.SelectedObjectDataList);
-
 		}
 						
-
-
+	
 	}
 
 	private void SetLineObjetsData(){
@@ -254,6 +263,8 @@ public class Main : MonoBehaviour {
 					if (_game_model.FirstObjectSelectedCategory == _game_model.ObjectDataList [i].Category && !checkAlreadySetObjectsData (_game_model.ObjectDataList [i])) {
 						_game_model.SelectedObjectDataList.Add (_game_model.ObjectDataList [i]);
 						print ("最初に選択したオブジェクト");
+						//最初に選択されたオブジェクトに代入
+
 						//最後に選択されたオブジェクトに代入
 						_game_model.LastObjectSelected = _game_model.ObjectDataList [i];
 					}
@@ -262,6 +273,39 @@ public class Main : MonoBehaviour {
 					
 			}
 				
+		}
+
+	}
+
+
+	//選択したリストのチェック
+	//二つ以上選択しているかどうか 二つ以上選択していたらtrue
+	private bool CheckLineObjectData(){
+	
+		if (_game_model.SelectedObjectDataList != null) {
+			print (_game_model.SelectedObjectDataList.Count);
+			if (_game_model.SelectedObjectDataList.Count >= 2) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	//選択されたオブジェクトの削除の実行
+	private void RemoveSelectedLineObjectData(){
+		//二つ以上選択しているので消す。
+		for (int i = 0; i < _game_model.SelectedObjectDataList.Count; i++) {
+		
+			GameObject obj = (GameObject)_game_model.SelectedObjectDataList [i].Obj;
+			ObjectData data = (ObjectData)_game_model.SelectedObjectDataList [i]; 
+
+			//ゲームオブジェクトの非表示
+			Destroy(obj);
+
+			//配列から削除
+			_game_model.SelectedObjectDataList.Remove (data);
+			_game_model.ObjectDataList.Remove (data);
 		}
 
 	}
@@ -307,7 +351,6 @@ public class Main : MonoBehaviour {
 			SetColor (_object_data_list [i].Category, obj);
 		}
 	}
-
 		
 	//マウスをドラッグ中なら近くのオブジェクト同時をつなぐ線の描画処理を継続
 	private void DrawLine(List<ObjectData> _object_data_list){
