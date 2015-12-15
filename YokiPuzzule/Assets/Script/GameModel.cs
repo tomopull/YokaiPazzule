@@ -15,7 +15,7 @@ public class GameModel : MonoBehaviour {
 	private int columnCount = 0;
 
 	//ゲームオブジェクトデータ
-	private List<ObjectData> object_data_list;
+	private Dictionary<string,ObjectData> object_data_dict;
 
 	//今インタラクティブかどうか
 	private bool isInteractive = false;
@@ -49,7 +49,7 @@ public class GameModel : MonoBehaviour {
 	private float touch_distance = 0.7f;
 
 	//線でつなげたマウスの位置から最も近い位置にあるオブジェクトのリスト
-	private List<ObjectData> selected_object_data_list;
+	private Dictionary<string,ObjectData> selected_object_data_dict;
 
 	//シンプルタッチストラクト
 	public struct SimpleTouch{
@@ -99,10 +99,10 @@ public class GameModel : MonoBehaviour {
 	}
 
 	[SerializeField]
-	public List<ObjectData> ObjectDataList
+	public Dictionary<string,ObjectData> ObjectDataDict
 	{
-		get { return this.object_data_list;} 
-		set { this.object_data_list = value;}
+		get { return this.object_data_dict;} 
+		set { this.object_data_dict = value;}
 	}
 
 	[SerializeField]
@@ -177,10 +177,10 @@ public class GameModel : MonoBehaviour {
 	}
 
 	[SerializeField]
-	public List<ObjectData> SelectedObjectDataList
+	public Dictionary<string,ObjectData>SelectedObjectDataDict
 	{
-		get { return this.selected_object_data_list; } 
-		set { this.selected_object_data_list = value; }
+		get { return this.selected_object_data_dict; } 
+		set { this.selected_object_data_dict = value; }
 	}
 		
 }
