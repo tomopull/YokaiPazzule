@@ -92,7 +92,10 @@ public class Main : MonoBehaviour {
 				obj_data.Category = (int)data ["object_data"][j]["category"];
 				obj_data.Obj = obj;
 
-				_game_model.ObjectDataDict.Add (i + "_" + j, obj_data);
+				_game_model.ObjectDataDict.Add (i + "_" + j + "_" + GameModel.GetUniqueIndex(), obj_data);
+
+				//print (i + "_" + j + "_" + GameModel.GetUniqueIndex ());
+
 
 				SetColor(obj_data.Category,obj);
 
@@ -102,7 +105,7 @@ public class Main : MonoBehaviour {
 
 	//オブジェクトを消した際に新規でオブジェクトを追加
 	private void AddRandomObjectData(){
-		print ("ランダムでオブジェクトを追加");
+		//print ("ランダムでオブジェクトを追加");
 	}
 
 	//カラーチェンジ
@@ -198,29 +201,87 @@ public class Main : MonoBehaviour {
 
 		//ボタンをダウンしていたら、していなかったら
 		if (_game_model.IsButtonDown) {
-			//SetLineObjetsData ();
+			SetLineObjetsData ();
 			//DrawLine (_game_model.SelectedObjectDataDict);
 			//HighLightSelectedData (_game_model.SelectedObjectDataDict);
 		} else {
 			if(_game_model.SelectedObjectDataDict != null){
 				//ResetHighLightSelectedData (_game_model.SelectedObjectDataDict);
 			}
-			//ResetLineObjectData ();
+			ResetLineObjectData ();
 			//DrawLine (_game_model.SelectedObjectDataDict);
 		}
 						
 	
 	}
 
-//	private void SetLineObjetsData(){
-//			//近くのオブジェクト同士を線でつなぐ
-//			//マウスの位置を常に取得しマウスとオブジェクトが十分近ければライン描画用お配列に追加
-//			//同じオブジェクトを配列に追加しない。
-//			//マウスダウンされた位置のスクリーン座標をゲームのワールド座標で取得
-//			Vector2 world_mouse_pos = Camera.main.ScreenToWorldPoint (Input.mousePosition);
-//			//マウスとオブジェクトとの距離を判定
-//			//マウスから一番近いオブジェクトの取得
-//			//一番近いオブジェクトでなおかつ種類の同じものをなぞっていくと線がつながる
+	private void SetLineObjetsData(){
+			//近くのオブジェクト同士を線でつなぐ
+			//マウスの位置を常に取得しマウスとオブジェクトが十分近ければライン描画用お配列に追加
+			//同じオブジェクトを配列に追加しない。
+			//マウスダウンされた位置のスクリーン座標をゲームのワールド座標で取得
+			Vector2 world_mouse_pos = Camera.main.ScreenToWorldPoint (Input.mousePosition);
+			//マウスとオブジェクトとの距離を判定
+			//マウスから一番近いオブジェクトの取得
+			//一番近いオブジェクトでなおかつ種類の同じものをなぞっていくと線がつながる
+
+		foreach (KeyValuePair<string,ObjectData> pair in _game_model.ObjectDataDict) {
+
+			ObjectData now_data = (ObjectData)pair.Value;
+			string now_key = pair.Key;
+
+			float now_distance = Vector3.Distance (world_mouse_pos, now_data.Obj.transform.position);
+
+			//最後に選択されたオブジェクトがある場合はそれとの距離とともに判定
+			if (_game_model.LastObjectSelected != null) {
+			
+				float now_distance_from_last_selected = Vector3.Distance (world_mouse_pos, _game_model.LastObjectSelected.Obj.transform.position);
+
+				//マウスと十分近いかどうか
+				//既に選択済みのオブジェクトがある場合は最後に選択済みのオブジェクトと十分近いかどうか
+				if (now_distance <= _game_model.TouchDistance && now_distance_from_last_selected <= _game_model.TouchDistance) {
+
+					//一番最初に選択したオブジェクトと同じ種類かどうか
+					//おなじなら選択済み配列に追加
+					if (_game_model.FirstObjectSelectedCategory == _game_model.ObjectDataDict[now_key].Category && !checkAlreadySetObjectsData (_game_model.ObjectDataDict[now_key])) {
+						_game_model.SelectedObjectDataDict.Add (now_key,now_data);
+
+						//最後に選択されたオブジェクトに代入
+						_game_model.LastObjectSelected = now_data;
+					}
+
+				}
+					
+			}else {
+				//最初に選択したオブジェクトの場合
+				//マウスと十分近いかどうか
+				if (now_distance <= _game_model.TouchDistance) {
+
+					//一番最初に選択したオブジェクトの種類がnullなら現在のオブジェクトの種類を代入
+					if (_game_model.FirstObjectSelectedCategory == ObjectData.NullCategory) {
+						_game_model.FirstObjectSelectedCategory = _game_model.ObjectDataDict[now_key].Category;
+					}
+
+					//一番最初に選択したオブジェクトと同じ種類かどうか
+					//おなじなら選択済み配列に追加
+					if (_game_model.FirstObjectSelectedCategory == _game_model.ObjectDataDict[now_key].Category && !checkAlreadySetObjectsData (_game_model.ObjectDataDict [now_key])) {
+					
+						_game_model.SelectedObjectDataDict.Add (now_key,now_data);
+						//最後に選択されたオブジェクトに代入
+
+						_game_model.LastObjectSelected = now_data;
+
+					}
+
+				}
+					
+			}
+				
+		}
+
+
+		}
+
 //		for (int i = 0; i < _game_model.ObjectDataList.Count; i++) {
 //			GameObject obj = (GameObject)_game_model.ObjectDataList [i].Obj;
 //			//オブジェクトのワールド座標とマウスのワールド座標を比較
@@ -270,8 +331,8 @@ public class Main : MonoBehaviour {
 //			}
 //				
 //		}
-//
-//	}
+
+	//}
 //
 //
 //	//選択したリストのチェック
@@ -309,8 +370,22 @@ public class Main : MonoBehaviour {
 //
 //	//既に選択済みかそうでないか
 //	//選択済み true, 未選択 false
-//	private bool checkAlreadySetObjectsData(ObjectData object_data){
-//
+	private bool checkAlreadySetObjectsData(ObjectData check_obj){
+	
+		foreach (KeyValuePair<string,ObjectData> pair in _game_model.SelectedObjectDataDict) {
+			GameObject other_obj = (GameObject)pair.Value.Obj;
+
+			if (other_obj.Equals(check_obj.Obj)) {
+				print ("既に選択済み");
+				return true;
+			}
+				
+		}
+
+		print ("既に選択済みでない");
+		return false;
+
+	}
 //		for (int i = 0; i < _game_model.SelectedObjectDataList.Count; i++) {
 //			GameObject obj = (GameObject)_game_model.SelectedObjectDataList[i].Obj;
 //
@@ -325,13 +400,13 @@ public class Main : MonoBehaviour {
 //	}
 //
 //	//ライン描画のリセット
-//	private void ResetLineObjectData(){
-//		_game_model.SelectedObjectDataDict = new Dictionary<string,ObjectData>();
-//		_game_model.FirstObjectSelectedCategory = ObjectData.NullCategory;
-//		_game_model.LastObjectSelected = null;
-//
-//		//print ("reset");
-//	}
+	private void ResetLineObjectData(){
+		_game_model.SelectedObjectDataDict = new Dictionary<string,ObjectData>();
+		_game_model.FirstObjectSelectedCategory = ObjectData.NullCategory;
+		_game_model.LastObjectSelected = null;
+
+		//print ("reset");
+	}
 //
 //	//選択中のオブジェクトをハイライトする
 //	private void HighLightSelectedData(List<ObjectData> _object_data_list){

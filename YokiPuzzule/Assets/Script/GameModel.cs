@@ -8,6 +8,15 @@ public class GameModel : MonoBehaviour {
 
 	private static GameModel instance = null;
 
+	private static ulong _uniqe_index = 0;
+
+	//ユニークな整数の取得
+	public static ulong GetUniqueIndex(){
+		_uniqe_index += 1;
+		//print (_uniqe_index);
+		return _uniqe_index;
+	}
+
 	//行数
 	private int rowCount = 0;
 
@@ -182,6 +191,8 @@ public class GameModel : MonoBehaviour {
 		get { return this.selected_object_data_dict; } 
 		set { this.selected_object_data_dict = value; }
 	}
+
+
 		
 }
 	
