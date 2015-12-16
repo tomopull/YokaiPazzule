@@ -95,8 +95,6 @@ public class Main : MonoBehaviour {
 				_game_model.ObjectDataDict.Add (i + "_" + j + "_" + GameModel.GetUniqueIndex(), obj_data);
 
 				//print (i + "_" + j + "_" + GameModel.GetUniqueIndex ());
-
-
 				SetColor(obj_data.Category,obj);
 
 			}
@@ -202,14 +200,20 @@ public class Main : MonoBehaviour {
 		//ボタンをダウンしていたら、していなかったら
 		if (_game_model.IsButtonDown) {
 			SetLineObjetsData ();
-			//DrawLine (_game_model.SelectedObjectDataDict);
-			//HighLightSelectedData (_game_model.SelectedObjectDataDict);
+			DrawLine (_game_model.SelectedObjectDataDict);
+
+			HighLightSelectedData (_game_model.SelectedObjectDataDict);
+
 		} else {
 			if(_game_model.SelectedObjectDataDict != null){
-				//ResetHighLightSelectedData (_game_model.SelectedObjectDataDict);
+
+				ResetHighLightSelectedData (_game_model.SelectedObjectDataDict);
+
 			}
+
 			ResetLineObjectData ();
-			//DrawLine (_game_model.SelectedObjectDataDict);
+			DrawLine (_game_model.SelectedObjectDataDict);
+
 		}
 						
 	
@@ -244,10 +248,12 @@ public class Main : MonoBehaviour {
 					//一番最初に選択したオブジェクトと同じ種類かどうか
 					//おなじなら選択済み配列に追加
 					if (_game_model.FirstObjectSelectedCategory == _game_model.ObjectDataDict[now_key].Category && !checkAlreadySetObjectsData (_game_model.ObjectDataDict[now_key])) {
+
 						_game_model.SelectedObjectDataDict.Add (now_key,now_data);
 
 						//最後に選択されたオブジェクトに代入
 						_game_model.LastObjectSelected = now_data;
+
 					}
 
 				}
@@ -268,7 +274,6 @@ public class Main : MonoBehaviour {
 					
 						_game_model.SelectedObjectDataDict.Add (now_key,now_data);
 						//最後に選択されたオブジェクトに代入
-
 						_game_model.LastObjectSelected = now_data;
 
 					}
@@ -279,8 +284,121 @@ public class Main : MonoBehaviour {
 				
 		}
 
+	}
 
+
+//
+//	//選択したリストのチェック
+//	//二つ以上選択しているかどうか 二つ以上選択していたらtrue
+//	private bool CheckLineObjectData(){
+//	
+//		if (_game_model.SelectedObjectDataList != null) {
+//			print (_game_model.SelectedObjectDataList.Count + "削除実行数確認");
+//			if (_game_model.SelectedObjectDataList.Count >= 2) {
+//				return true;
+//			}
+//		}
+//
+//		return false;
+//	}
+//
+//	//選択されたオブジェクトの削除の実行
+//	private void RemoveSelectedLineObjectData(){
+//		//二つ以上選択しているので消す。
+//		print (_game_model.SelectedObjectDataList.Count + "削除実行数");
+//		for (int i = 0; i < _game_model.SelectedObjectDataList.Count; i++) {
+//		
+//			GameObject obj = (GameObject)_game_model.SelectedObjectDataList [i].Obj;
+//			ObjectData data = (ObjectData)_game_model.SelectedObjectDataList [i]; 
+//
+//			//ゲームオブジェクトの非表示
+//			obj.SetActive (false);
+//
+//			//配列から削除
+//			_game_model.SelectedObjectDataList.RemoveAt(i);
+//			_game_model.ObjectDataList.RemoveAt(i);
+//		}
+//
+//	}
+//
+	//既に選択済みかそうでないか
+	//選択済み true, 未選択 false
+	private bool checkAlreadySetObjectsData(ObjectData check_obj){
+	
+		foreach (KeyValuePair<string,ObjectData> pair in _game_model.SelectedObjectDataDict) {
+			GameObject other_obj = (GameObject)pair.Value.Obj;
+
+			if (other_obj.Equals(check_obj.Obj)) {
+				print ("既に選択済み");
+				return true;
+			}
+				
 		}
+
+		print ("既に選択済みでない");
+		return false;
+
+	}
+	//ライン描画のリセット
+	private void ResetLineObjectData(){
+		_game_model.SelectedObjectDataDict = new Dictionary<string,ObjectData>();
+		_game_model.FirstObjectSelectedCategory = ObjectData.NullCategory;
+		_game_model.LastObjectSelected = null;
+		//print ("reset");
+	}
+
+	//選択中のオブジェクトをハイライトする
+	private void HighLightSelectedData(Dictionary<string,ObjectData> _selected_dict){
+
+		int i = 0;
+
+		foreach (ObjectData value in _selected_dict.Values) {
+			GameObject obj = (GameObject)value.Obj;
+			obj.GetComponent<Renderer> ().material.color = Color.white;
+			i += 1;
+		}
+			
+	}
+
+	//選択中のオブジェクトをハイライトリセット元の色に戻す
+	private void ResetHighLightSelectedData(Dictionary<string, ObjectData> _selected_dict){
+
+		int i = 0;
+
+		foreach (ObjectData value in _selected_dict.Values) {
+			GameObject obj = (GameObject)value.Obj;
+			SetColor (value.Category, obj);
+			i += 1;
+		}
+			
+	}
+		
+	//マウスをドラッグ中なら近くのオブジェクト同時をつなぐ線の描画処理を継続
+	private void DrawLine(Dictionary<string,ObjectData> _selected_dict){
+	
+		LineRenderer line = GameObject.Find ("LineContainer").GetComponent<LineRenderer>();
+		line.sortingOrder = 10;
+		line.SetWidth (0.1f, 0.1f);
+		line.SetVertexCount (_selected_dict.Count);
+
+		//ラインの頂点数のカウント
+		int i = 0;
+
+		foreach (ObjectData value  in _selected_dict.Values) {
+			line.SetPosition (i,value.Obj.transform.position);
+			i += 1;
+		}
+	
+	}
+		
+}
+
+
+
+
+
+
+
 
 //		for (int i = 0; i < _game_model.ObjectDataList.Count; i++) {
 //			GameObject obj = (GameObject)_game_model.ObjectDataList [i].Obj;
@@ -332,111 +450,4 @@ public class Main : MonoBehaviour {
 //				
 //		}
 
-	//}
-//
-//
-//	//選択したリストのチェック
-//	//二つ以上選択しているかどうか 二つ以上選択していたらtrue
-//	private bool CheckLineObjectData(){
-//	
-//		if (_game_model.SelectedObjectDataList != null) {
-//			print (_game_model.SelectedObjectDataList.Count + "削除実行数確認");
-//			if (_game_model.SelectedObjectDataList.Count >= 2) {
-//				return true;
-//			}
-//		}
-//
-//		return false;
-//	}
-//
-//	//選択されたオブジェクトの削除の実行
-//	private void RemoveSelectedLineObjectData(){
-//		//二つ以上選択しているので消す。
-//		print (_game_model.SelectedObjectDataList.Count + "削除実行数");
-//		for (int i = 0; i < _game_model.SelectedObjectDataList.Count; i++) {
-//		
-//			GameObject obj = (GameObject)_game_model.SelectedObjectDataList [i].Obj;
-//			ObjectData data = (ObjectData)_game_model.SelectedObjectDataList [i]; 
-//
-//			//ゲームオブジェクトの非表示
-//			obj.SetActive (false);
-//
-//			//配列から削除
-//			_game_model.SelectedObjectDataList.RemoveAt(i);
-//			_game_model.ObjectDataList.RemoveAt(i);
-//		}
-//
-//	}
-//
-//	//既に選択済みかそうでないか
-//	//選択済み true, 未選択 false
-	private bool checkAlreadySetObjectsData(ObjectData check_obj){
-	
-		foreach (KeyValuePair<string,ObjectData> pair in _game_model.SelectedObjectDataDict) {
-			GameObject other_obj = (GameObject)pair.Value.Obj;
-
-			if (other_obj.Equals(check_obj.Obj)) {
-				print ("既に選択済み");
-				return true;
-			}
-				
-		}
-
-		print ("既に選択済みでない");
-		return false;
-
-	}
-//		for (int i = 0; i < _game_model.SelectedObjectDataList.Count; i++) {
-//			GameObject obj = (GameObject)_game_model.SelectedObjectDataList[i].Obj;
-//
-//			if(obj.Equals(object_data.Obj)){
-//				//print ("既に選択済み");
-//				return true;
-//			}
-//
-//		}
-//		//print("既に選択済みでない");
-//		return false;
-//	}
-//
-//	//ライン描画のリセット
-	private void ResetLineObjectData(){
-		_game_model.SelectedObjectDataDict = new Dictionary<string,ObjectData>();
-		_game_model.FirstObjectSelectedCategory = ObjectData.NullCategory;
-		_game_model.LastObjectSelected = null;
-
-		//print ("reset");
-	}
-//
-//	//選択中のオブジェクトをハイライトする
-//	private void HighLightSelectedData(List<ObjectData> _object_data_list){
-//		for (int i = 0; i < _object_data_list.Count; i++) {
-//			GameObject obj = (GameObject)_object_data_list [i].Obj;
-//			obj.GetComponent<Renderer> ().material.color = Color.white;
-//		}
-//	}
-//
-//	//選択中のオブジェクトをハイライトリセット元の色に戻す
-//	private void ResetHighLightSelectedData(List<ObjectData> _object_data_list){
-//		for (int i = 0; i < _object_data_list.Count; i++) {
-//			GameObject obj = (GameObject)_object_data_list [i].Obj;
-//			SetColor (_object_data_list [i].Category, obj);
-//		}
-//	}
-//		
-//	//マウスをドラッグ中なら近くのオブジェクト同時をつなぐ線の描画処理を継続
-//	private void DrawLine(List<ObjectData> _object_data_list){
-//	
-//		LineRenderer line = GameObject.Find ("LineContainer").GetComponent<LineRenderer>();
-//		line.sortingOrder = 10;
-//		line.SetWidth (0.1f, 0.1f);
-//		line.SetVertexCount (_object_data_list.Count);
-//
-//		for (int i = 0; i < _object_data_list.Count; i++) {
-//			line.SetPosition (i, _object_data_list [i].Obj.transform.position);
-//			//_object_data_list [i].gameObject.GetComponent<Renderer> ().material.color = Color.gray;
-//		}
-//	
-//	}
-		
-}
+//}
