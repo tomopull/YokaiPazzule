@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System;
+using LitJson;
 
 public class GameModel : MonoBehaviour {
 
@@ -16,6 +17,10 @@ public class GameModel : MonoBehaviour {
 		//print (_uniqe_index);
 		return _uniqe_index;
 	}
+
+
+	//オリジナルjson data
+	private JsonData original_json_data;
 
 	//行数
 	private int rowCount = 0;
@@ -57,6 +62,9 @@ public class GameModel : MonoBehaviour {
 	//オブジェクトをタッチできる距離
 	private float touch_distance = 0.7f;
 
+	//追加のオブジェクトが足される数
+	private int minimum_number_of_object_data = 40;
+
 	//線でつなげたマウスの位置から最も近い位置にあるオブジェクトのリスト
 	private Dictionary<string,ObjectData> selected_object_data_dict;
 
@@ -91,6 +99,13 @@ public class GameModel : MonoBehaviour {
 
 		}
 
+	}
+
+	[SerializeField]
+	public JsonData OriginalJsonData
+	{
+		get { return this.original_json_data; } 
+		set { this.original_json_data = value; }
 	}
 		
 	[SerializeField]
@@ -192,7 +207,13 @@ public class GameModel : MonoBehaviour {
 		set { this.selected_object_data_dict = value; }
 	}
 
+	[SerializeField]
+	public int MinimumNumberOfObjectData
+	{
+		get { return this.minimum_number_of_object_data; } 
+		set { this.minimum_number_of_object_data = value; }
+	}
 
-		
+
 }
 	

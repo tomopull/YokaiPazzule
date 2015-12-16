@@ -21,5 +21,5 @@ public class Util : MonoBehaviour {
 			data["object_data"][randomIndex] = temp;
 		}
 	}
-
+		
 }

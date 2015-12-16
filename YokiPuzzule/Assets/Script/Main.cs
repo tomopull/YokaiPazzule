@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System;
 using LitJson;
 
+//一回引いた線を元に戻すロジック
+
 //5,線の描画ロジックの再考
 //2,新規のオブジェクトの追加を破綻せないようにする
 //3,なぞったオブジェクトを消す。
@@ -49,6 +51,9 @@ public class Main : MonoBehaviour {
 
 		JsonData data = LitJson.JsonMapper.ToObject (file.text);
 
+		//ローカルにオリジナルjsonデータ保存
+		_game_model.OriginalJsonData = data;
+
 		InitObjects(data);
 	}
 		
@@ -82,6 +87,7 @@ public class Main : MonoBehaviour {
 			for (int j = 0; j < column_count; j++) {
 				GameObject obj = (GameObject)Instantiate(Resources.Load("Prefabs/Object"),new Vector3(1.2f * i,1.2f * j,0),Quaternion.identity);
 				obj.transform.Translate (new Vector3 (-2f, 0, 0));//位置微調整後で消したい。
+				obj.transform.Translate (offset);
 
 				//親のゲームオブジェクトの指定
 				obj.transform.parent = game_object_container.transform;
@@ -101,9 +107,22 @@ public class Main : MonoBehaviour {
 		}
 	}
 
+
+	//現在のオブジェクトの数がいくつかカウント一定数以下になっていたらオブジェクトの追加
+	private bool CheckObjectsDataCount(){
+
+		print (_game_model.ObjectDataDict.Count + "現在のオブジェクトの数");
+
+		if (_game_model.ObjectDataDict.Count <= _game_model.MinimumNumberOfObjectData) {
+			return true;
+		}
+
+		return false;
+	}
+
 	//オブジェクトを消した際に新規でオブジェクトを追加
 	private void AddRandomObjectData(){
-		//print ("ランダムでオブジェクトを追加");
+		AddObjectsData (_game_model.OriginalJsonData, 8, 3,new Vector3(0,7,0));
 	}
 
 	//カラーチェンジ
@@ -164,10 +183,12 @@ public class Main : MonoBehaviour {
 
 					//二つ以上選択していたら消す
 					//ポイントとか追加
-					//ランダムで新規のオブジェクト追加
 					if(CheckLineObjectData ()){
 						RemoveSelectedLineObjectData ();
-						AddRandomObjectData ();
+						//オブジェクトの数が一定数以下になっていたらランダムで新規のオブジェクト追加
+						if (CheckObjectsDataCount()) {
+							AddRandomObjectData ();
+						}
 					}
 				} 
 			}
@@ -312,8 +333,7 @@ public class Main : MonoBehaviour {
 			ObjectData tmp_data = pair.Value;
 
 			if(_game_model.SelectedObjectDataDict.ContainsKey(tmp_key)){
-
-
+			
 				//ゲームオブジェクトの削除
 				Destroy (tmp_data.Obj);
 
@@ -321,8 +341,6 @@ public class Main : MonoBehaviour {
 				_game_model.ObjectDataDict.Remove (tmp_key);
 
 				//print (tmp_key + "キーの存在");
-
-
 			}
 
 		}
