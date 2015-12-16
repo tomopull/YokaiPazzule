@@ -165,10 +165,10 @@ public class Main : MonoBehaviour {
 					//二つ以上選択していたら消す
 					//ポイントとか追加
 					//ランダムで新規のオブジェクト追加
-//					if(CheckLineObjectData ()){
-//						RemoveSelectedLineObjectData ();
-//						AddRandomObjectData ();
-//					}
+					if(CheckLineObjectData ()){
+						RemoveSelectedLineObjectData ();
+						AddRandomObjectData ();
+					}
 				} 
 			}
 
@@ -285,42 +285,50 @@ public class Main : MonoBehaviour {
 		}
 
 	}
+		
+	//選択したリストのチェック
+	//二つ以上選択しているかどうか 二つ以上選択していたらtrue
+	private bool CheckLineObjectData(){
+	
+		if (_game_model.SelectedObjectDataDict != null) {
+
+			if (_game_model.SelectedObjectDataDict.Count >= 2) {
+				return true;
+			}
+
+		}
+
+		return false;
+	}
+
+	//選択されたオブジェクトの削除の実行
+	private void RemoveSelectedLineObjectData(){
+		//二つ以上選択しているので消す。
+		//print (_game_model.SelectedObjectDataDict.Count + "削除実行数");
+
+		foreach (KeyValuePair<string,ObjectData> pair in _game_model.SelectedObjectDataDict) {
+
+			string tmp_key = pair.Key;
+			ObjectData tmp_data = pair.Value;
+
+			if(_game_model.SelectedObjectDataDict.ContainsKey(tmp_key)){
 
 
-//
-//	//選択したリストのチェック
-//	//二つ以上選択しているかどうか 二つ以上選択していたらtrue
-//	private bool CheckLineObjectData(){
-//	
-//		if (_game_model.SelectedObjectDataList != null) {
-//			print (_game_model.SelectedObjectDataList.Count + "削除実行数確認");
-//			if (_game_model.SelectedObjectDataList.Count >= 2) {
-//				return true;
-//			}
-//		}
-//
-//		return false;
-//	}
-//
-//	//選択されたオブジェクトの削除の実行
-//	private void RemoveSelectedLineObjectData(){
-//		//二つ以上選択しているので消す。
-//		print (_game_model.SelectedObjectDataList.Count + "削除実行数");
-//		for (int i = 0; i < _game_model.SelectedObjectDataList.Count; i++) {
-//		
-//			GameObject obj = (GameObject)_game_model.SelectedObjectDataList [i].Obj;
-//			ObjectData data = (ObjectData)_game_model.SelectedObjectDataList [i]; 
-//
-//			//ゲームオブジェクトの非表示
-//			obj.SetActive (false);
-//
-//			//配列から削除
-//			_game_model.SelectedObjectDataList.RemoveAt(i);
-//			_game_model.ObjectDataList.RemoveAt(i);
-//		}
-//
-//	}
-//
+				//ゲームオブジェクトの削除
+				Destroy (tmp_data.Obj);
+
+				//元となる配列から参照の削除
+				_game_model.ObjectDataDict.Remove (tmp_key);
+
+				//print (tmp_key + "キーの存在");
+
+
+			}
+
+		}
+
+	}
+
 	//既に選択済みかそうでないか
 	//選択済み true, 未選択 false
 	private bool checkAlreadySetObjectsData(ObjectData check_obj){
@@ -392,62 +400,4 @@ public class Main : MonoBehaviour {
 	}
 		
 }
-
-
-
-
-
-
-
-
-//		for (int i = 0; i < _game_model.ObjectDataList.Count; i++) {
-//			GameObject obj = (GameObject)_game_model.ObjectDataList [i].Obj;
-//			//オブジェクトのワールド座標とマウスのワールド座標を比較
-//			float now_distance = Vector3.Distance (world_mouse_pos, obj.transform.position);
-//
-//			//最後に選択されたオブジェクトがある場合はそれとの距離とともに判定
-//			if (_game_model.LastObjectSelected != null) {
-//				float now_distance_from_last_selected = Vector3.Distance (world_mouse_pos, _game_model.LastObjectSelected.Obj.transform.position);
-//
-//				//マウスと十分近いかどうか
-//				//既に選択済みのオブジェクトがある場合は最後に選択済みのオブジェクトと十分近いかどうか
-//				if (now_distance <= _game_model.TouchDistance && now_distance_from_last_selected <= _game_model.TouchDistance) {
-//
-//					//一番最初に選択したオブジェクトと同じ種類かどうか
-//					//おなじなら選択済み配列に追加
-//					if (_game_model.FirstObjectSelectedCategory == _game_model.ObjectDataList [i].Category && !checkAlreadySetObjectsData (_game_model.ObjectDataList [i])) {
-//						_game_model.SelectedObjectDataList.Add (_game_model.ObjectDataList [i]);
-//						print ("二つ目移行に選択");
-//						//最後に選択されたオブジェクトに代入
-//						_game_model.LastObjectSelected = _game_model.ObjectDataList [i];
-//					}
-//
-//				}
-//					
-//			} else {
-//				//最初に選択したオブジェクトの場合
-//				//マウスと十分近いかどうか
-//				if (now_distance <= _game_model.TouchDistance) {
-//				
-//					//一番最初に選択したオブジェクトの種類がnullなら現在のオブジェクトの種類を代入
-//					if (_game_model.FirstObjectSelectedCategory == ObjectData.NullCategory) {
-//						_game_model.FirstObjectSelectedCategory = _game_model.ObjectDataList [i].Category;
-//					}
-//					//一番最初に選択したオブジェクトと同じ種類かどうか
-//					//おなじなら選択済み配列に追加
-//					if (_game_model.FirstObjectSelectedCategory == _game_model.ObjectDataList [i].Category && !checkAlreadySetObjectsData (_game_model.ObjectDataList [i])) {
-//						_game_model.SelectedObjectDataList.Add (_game_model.ObjectDataList [i]);
-//						print ("最初に選択したオブジェクト");
-//						//最初に選択されたオブジェクトに代入
-//
-//						//最後に選択されたオブジェクトに代入
-//						_game_model.LastObjectSelected = _game_model.ObjectDataList [i];
-//					}
-//
-//				}
-//					
-//			}
-//				
-//		}
-
-//}
+	
