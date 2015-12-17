@@ -22,6 +22,9 @@ public class GameModel : MonoBehaviour {
 	//オリジナルjson data
 	private JsonData original_json_data;
 
+	//トータル得点
+	private int total_point = 0;
+
 	//行数
 	private int rowCount = 0;
 
@@ -85,6 +88,13 @@ public class GameModel : MonoBehaviour {
 			}
 	}
 		
+
+	//初期化
+	public void Init(){
+		total_point = rowCount = columnCount = 0;
+		_uniqe_index = 0;
+	}
+
 	void Awake()
 	{
 		if( instance == null)
@@ -99,6 +109,13 @@ public class GameModel : MonoBehaviour {
 
 		}
 
+	}
+
+	[SerializeField]
+	public int TotalPoint
+	{
+		get { return this.total_point; } 
+		set { this.total_point = value; }
 	}
 
 	[SerializeField]
@@ -213,6 +230,8 @@ public class GameModel : MonoBehaviour {
 		get { return this.minimum_number_of_object_data; } 
 		set { this.minimum_number_of_object_data = value; }
 	}
+
+
 
 
 }

@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.UI;
 using System;
 using LitJson;
 
@@ -14,6 +15,8 @@ using LitJson;
 
 //key, value の連想配列でオブジェクト管理しないとだめかも
 
+//※タイマー機能
+//※選択したオブジェクトを戻す機能
 
 public class Main : MonoBehaviour {
 
@@ -59,7 +62,8 @@ public class Main : MonoBehaviour {
 		
 	//マネージャー初期化
 	private void InitManager(){
-		_game_model = GameModel.Instance;            
+		_game_model = GameModel.Instance;
+		_game_model.Init ();
 	}
 
 	//ゲームオブジェクトのデータの初期化
@@ -324,27 +328,40 @@ public class Main : MonoBehaviour {
 
 	//選択されたオブジェクトの削除の実行
 	private void RemoveSelectedLineObjectData(){
-		//二つ以上選択しているので消す。
-		//print (_game_model.SelectedObjectDataDict.Count + "削除実行数");
 
 		foreach (KeyValuePair<string,ObjectData> pair in _game_model.SelectedObjectDataDict) {
 
 			string tmp_key = pair.Key;
 			ObjectData tmp_data = pair.Value;
 
+
+
 			if(_game_model.SelectedObjectDataDict.ContainsKey(tmp_key)){
 			
 				//ゲームオブジェクトの削除
 				Destroy (tmp_data.Obj);
 
+				//獲得ポイント追加
+				_game_model.TotalPoint += tmp_data.Point;
+
 				//元となる配列から参照の削除
 				_game_model.ObjectDataDict.Remove (tmp_key);
 
-				//print (tmp_key + "キーの存在");
 			}
 
 		}
 
+		AddRemovedObjectsPoint ();
+
+
+	}
+
+	//消されたオブジェクトの得点の追加
+	private void AddRemovedObjectsPoint(){
+	
+		Text point_text = GameObject.Find ("/GameInfo/Canvas/Point_Text").GetComponent<Text> ();
+		print (_game_model.TotalPoint);
+		point_text.text = _game_model.TotalPoint.ToString ();
 	}
 
 	//既に選択済みかそうでないか
