@@ -50,7 +50,6 @@
      <Compile Include="Assets\Script\Main.cs" />
      <Compile Include="Assets\Script\ObjectData.cs" />
      <Compile Include="Assets\Script\ObjectGenerator.cs" />
-     <Compile Include="Assets\Script\Util.cs" />
      <Compile Include="Assets\lib\JsonObject\JSONObject.cs" />
      <Compile Include="Assets\lib\JsonObject\JSONTemplates.cs" />
      <Compile Include="Assets\lib\JsonObject\VectorTemplates.cs" />
@@ -62,6 +61,8 @@
      <Compile Include="Assets\lib\LitJson\JsonWriter.cs" />
      <Compile Include="Assets\lib\LitJson\Lexer.cs" />
      <Compile Include="Assets\lib\LitJson\ParserToken.cs" />
+     <Compile Include="Assets\lib\Timer\Delegate.cs" />
+     <Compile Include="Assets\lib\Util\Util.cs" />
      <None Include="Assets\lib\JsonObject\readme.txt" />
  <Reference Include="UnityEngine.UI">
  <HintPath>/Applications/Unity5.2.1f1/UnityUnity5.2.1f1.app/Contents/UnityExtensions/Unity/GUISystem/UnityEngine.UI.dll</HintPath>

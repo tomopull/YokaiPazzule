@@ -6,10 +6,173 @@ using LitJson;
 
 public class GameModel : MonoBehaviour {
 
-
-	private static GameModel instance = null;
-
 	private static ulong _uniqe_index = 0;
+
+	//トータルのオブジェクトのカウント
+	[SerializeField]
+	private int total_object_count = 0;
+	public int TotalObjectCount
+	{
+		get { return this.total_object_count; } 
+		set { this.total_object_count = value; }
+	}
+
+	//トータル得点
+	[SerializeField]
+	private int total_point = 0;
+	public int TotalPoint
+	{
+		get { return this.total_point; } 
+		set { this.total_point = value; }
+	}
+
+	//オリジナルjson data
+	[SerializeField]
+	private JsonData original_json_data;
+	public JsonData OriginalJsonData
+	{
+		get { return this.original_json_data; } 
+		set { this.original_json_data = value; }
+	}
+
+	//行数
+	[SerializeField]
+	private int rowCount = 0;
+	public int RowCount
+	{
+		get { return this.rowCount; } 
+		set { this.rowCount = value; }
+	}
+
+	//列数
+	[SerializeField]
+	private int columnCount = 0;
+	public int ColumnCount
+	{
+		get { return this.columnCount; } 
+		set { this.columnCount = value; }
+	}
+
+	//ゲームオブジェクトデータ
+	[SerializeField]
+	private Dictionary<string,ObjectData> object_data_dict;
+	public Dictionary<string,ObjectData> ObjectDataDict
+	{
+		get { return this.object_data_dict;} 
+		set { this.object_data_dict = value;}
+	}
+
+	//今インタラクティブかどうか
+	[SerializeField]
+	private bool isInteractive = false;
+	public bool IsInteractive
+	{
+		get { return this.isInteractive; } 
+		set { this.isInteractive = value; }
+	}
+
+	//ネイティブデバイスタッチ
+	[SerializeField]
+	private Touch deviceTouch;
+	public Touch DeviceTouch
+	{
+		get { return this.deviceTouch; } 
+		set { this.deviceTouch = value; }
+	}
+
+	//スワイプの距離
+	[SerializeField]
+	private float swipeTime;
+	public float SwipeTime
+	{
+		get { return this.swipeTime; } 
+		set { this.swipeTime = value; }
+	}
+
+	//スワイプ時間
+	[SerializeField]
+	private float swipeDistance;
+	public float SwipeDistance
+	{
+		get { return this.swipeDistance; } 
+		set { this.swipeDistance = value; }
+	}
+
+	//今ボタンが押された状態かどうか
+	[SerializeField]
+	private bool isButtonDown = false;
+	public bool IsButtonDown
+	{
+		get { return this.isButtonDown; } 
+		set { this.isButtonDown = value; }
+	}
+
+	//一番最初にタップしたオブジェクトの種類
+	//以後この種類のオブジェクトだったら線がつながる
+	[SerializeField]
+	private int first_object_selected_category;
+	public int FirstObjectSelectedCategory
+	{
+		get { return this.first_object_selected_category; } 
+		set { this.first_object_selected_category = value; }
+	}
+
+
+	//オブジェクトをタッチできる距離
+	[SerializeField]
+	private float touch_distance = 0.7f;
+	public float TouchDistance
+	{
+		get { return this.touch_distance; } 
+		set { this.touch_distance = value; }
+	}
+
+
+	//最後に選択されたオブジェクト
+	[SerializeField]
+	private ObjectData last_object_selected;
+	public ObjectData LastObjectSelected
+	{
+		get { return this.last_object_selected; } 
+		set { this.last_object_selected = value; }
+	}
+
+	//一番ポインターから近いデータ
+	[SerializeField]
+	private ObjectData nearest_obj;
+	public ObjectData NearestObj
+	{
+		get { return this.nearest_obj; } 
+		set { this.nearest_obj = value; }
+	}
+
+	//一番近いポインターとの距離
+	[SerializeField]
+	private float nearest_dist;
+	public float NearestDist
+	{
+		get { return this.NearestDist; } 
+		set { this.NearestDist = value; }
+	}
+
+	//線でつなげたマウスの位置から最も近い位置にあるオブジェクトのリスト
+	[SerializeField]
+	private Dictionary<string,ObjectData> selected_object_data_dict;
+	public Dictionary<string,ObjectData>SelectedObjectDataDict
+	{
+		get { return this.selected_object_data_dict; } 
+		set { this.selected_object_data_dict = value; }
+	}
+
+	//追加のオブジェクトが足される数
+	[SerializeField]
+	private int minimum_number_of_object_data = 40;
+	public int MinimumNumberOfObjectData
+	{
+		get { return this.minimum_number_of_object_data; } 
+		set { this.minimum_number_of_object_data = value; }
+	}
+
 
 	//ユニークな整数の取得
 	public static ulong GetUniqueIndex(){
@@ -17,60 +180,7 @@ public class GameModel : MonoBehaviour {
 		//print (_uniqe_index);
 		return _uniqe_index;
 	}
-
-
-	//オリジナルjson data
-	private JsonData original_json_data;
-
-	//トータル得点
-	private int total_point = 0;
-
-	//行数
-	private int rowCount = 0;
-
-	//列数
-	private int columnCount = 0;
-
-	//ゲームオブジェクトデータ
-	private Dictionary<string,ObjectData> object_data_dict;
-
-	//今インタラクティブかどうか
-	private bool isInteractive = false;
-
-	//今ボタンが押された状態かどうか
-	private bool isButtonDown = false;
-
-	//ネイティブデバイスタッチ
-	private Touch deviceTouch;
-
-	//スワイプの距離
-	private float swipeTime;
-
-	//スワイプ時間
-	private float swipeDistance;
-
-	//一番最初にタップしたオブジェクトの種類
-	//以後この種類のオブジェクトだったら線がつながる
-	private int first_object_selected_category;
-
-	//最後に選択されたオブジェクト
-	private ObjectData last_object_selected;
-
-	//一番ポインターから近いデータ
-	private ObjectData nearest_obj;
-
-	//一番近いポインターとの距離
-	private float nearest_dist;
-
-	//オブジェクトをタッチできる距離
-	private float touch_distance = 0.7f;
-
-	//追加のオブジェクトが足される数
-	private int minimum_number_of_object_data = 40;
-
-	//線でつなげたマウスの位置から最も近い位置にあるオブジェクトのリスト
-	private Dictionary<string,ObjectData> selected_object_data_dict;
-
+		
 	//シンプルタッチストラクト
 	public struct SimpleTouch{
 		public Vector2 StartTouchLocation;
@@ -78,22 +188,23 @@ public class GameModel : MonoBehaviour {
 		public DateTime StartTime;
 		public TouchPhase Phase;
 	}
-
+		
 	//ローカルのjsonのパス
 	public static string Json_Path = "/Json/data.json";
 
+	private static GameModel instance = null;
 	public static GameModel Instance {
 		get {	
 				return GameModel.instance;	
 			}
 	}
 		
-
 	//初期化
 	public void Init(){
 		total_point = rowCount = columnCount = 0;
 		_uniqe_index = 0;
 	}
+
 
 	void Awake()
 	{
@@ -111,125 +222,7 @@ public class GameModel : MonoBehaviour {
 
 	}
 
-	[SerializeField]
-	public int TotalPoint
-	{
-		get { return this.total_point; } 
-		set { this.total_point = value; }
-	}
 
-	[SerializeField]
-	public JsonData OriginalJsonData
-	{
-		get { return this.original_json_data; } 
-		set { this.original_json_data = value; }
-	}
-		
-	[SerializeField]
-	public int RowCount
-	{
-		get { return this.rowCount; } 
-		set { this.rowCount = value; }
-	}
-		
-	[SerializeField]
-	public int ColumnCount
-	{
-		get { return this.columnCount; } 
-		set { this.columnCount = value; }
-	}
-
-	[SerializeField]
-	public Dictionary<string,ObjectData> ObjectDataDict
-	{
-		get { return this.object_data_dict;} 
-		set { this.object_data_dict = value;}
-	}
-
-	[SerializeField]
-	public bool IsInteractive
-	{
-		get { return this.isInteractive; } 
-		set { this.isInteractive = value; }
-	}
-
-	[SerializeField]
-	public Touch DeviceTouch
-	{
-		get { return this.deviceTouch; } 
-		set { this.deviceTouch = value; }
-	}
-
-	[SerializeField]
-	public float SwipeTime
-	{
-		get { return this.swipeTime; } 
-		set { this.swipeTime = value; }
-	}
-
-	[SerializeField]
-	public float SwipeDistance
-	{
-		get { return this.swipeDistance; } 
-		set { this.swipeDistance = value; }
-	}
-
-	[SerializeField]
-	public bool IsButtonDown
-	{
-		get { return this.isButtonDown; } 
-		set { this.isButtonDown = value; }
-	}
-
-	[SerializeField]
-	public int FirstObjectSelectedCategory
-	{
-		get { return this.first_object_selected_category; } 
-		set { this.first_object_selected_category = value; }
-	}
-
-
-	[SerializeField]
-	public float TouchDistance
-	{
-		get { return this.touch_distance; } 
-		set { this.touch_distance = value; }
-	}
-
-	[SerializeField]
-	public ObjectData LastObjectSelected
-	{
-		get { return this.last_object_selected; } 
-		set { this.last_object_selected = value; }
-	}
-
-	[SerializeField]
-	public ObjectData NearestObj
-	{
-		get { return this.nearest_obj; } 
-		set { this.nearest_obj = value; }
-	}
-
-	[SerializeField]
-	public float NearestDist
-	{
-	    get { return this.NearestDist; } 
-	    set { this.NearestDist = value; }
-	}
-
-	[SerializeField]
-	public Dictionary<string,ObjectData>SelectedObjectDataDict
-	{
-		get { return this.selected_object_data_dict; } 
-		set { this.selected_object_data_dict = value; }
-	}
-
-	[SerializeField]
-	public int MinimumNumberOfObjectData
-	{
-		get { return this.minimum_number_of_object_data; } 
-		set { this.minimum_number_of_object_data = value; }
-	}
 
 
 

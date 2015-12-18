@@ -334,8 +334,6 @@ public class Main : MonoBehaviour {
 			string tmp_key = pair.Key;
 			ObjectData tmp_data = pair.Value;
 
-
-
 			if(_game_model.SelectedObjectDataDict.ContainsKey(tmp_key)){
 			
 				//ゲームオブジェクトの削除
@@ -343,6 +341,9 @@ public class Main : MonoBehaviour {
 
 				//獲得ポイント追加
 				_game_model.TotalPoint += tmp_data.Point;
+
+				//獲得オブジェクト数の追加
+				_game_model.TotalObjectCount += 1;
 
 				//元となる配列から参照の削除
 				_game_model.ObjectDataDict.Remove (tmp_key);
@@ -352,7 +353,7 @@ public class Main : MonoBehaviour {
 		}
 
 		AddRemovedObjectsPoint ();
-
+		AddRemovedObjectsCount ();
 
 	}
 
@@ -364,11 +365,18 @@ public class Main : MonoBehaviour {
 		point_text.text = _game_model.TotalPoint.ToString ();
 	}
 
+	//消されたオブジェクトの数を追加
+	private void AddRemovedObjectsCount(){
+		Text obj_count_text = GameObject.Find ("/GameInfo/Canvas/Count_Text").GetComponent<Text> ();
+		obj_count_text.text = _game_model.TotalObjectCount.ToString ();
+	}
+
 	//既に選択済みかそうでないか
 	//選択済み true, 未選択 false
 	private bool checkAlreadySetObjectsData(ObjectData check_obj){
 	
 		foreach (KeyValuePair<string,ObjectData> pair in _game_model.SelectedObjectDataDict) {
+
 			GameObject other_obj = (GameObject)pair.Value.Obj;
 
 			if (other_obj.Equals(check_obj.Obj)) {
