@@ -77,7 +77,8 @@ public class Main : MonoBehaviour {
 	
 	}
 
-	Timer _timer;
+	private Timer _timer;
+	private bool time_up = false;
 
 	private void InitTimer(){
 		_timer = new Timer ();
@@ -88,8 +89,19 @@ public class Main : MonoBehaviour {
 	//タイマーの表示の更新
 	private void TimerTcick(){
 		Text timer_text = GameObject.Find ("/GameInfo/Canvas/Timer_Text").GetComponent<Text> ();
-		timer_text.text = Mathf.Round (_timer.CurrentTime).ToString () + "/ " + Mathf.Round (_timer.LimitTime).ToString ();
-		//print ("timer tick");
+		string base_time = Mathf.Round (_timer.LimitTime).ToString ();
+		//時間終了判定
+		if (Mathf.Round (_timer.CurrentTime) == Mathf.Round (_timer.LimitTime)) {
+
+			print ("タイムアップ");
+			time_up = true;
+
+			timer_text.text = "0" + "/" + base_time;
+
+		} else {
+			string current_time = Mathf.Round (_timer.LimitTime - _timer.CurrentTime).ToString ();
+			timer_text.text = current_time + "/" + base_time;
+		}
 	}
 
 	//ゲームオブジェクトのデータの初期化
@@ -198,7 +210,13 @@ public class Main : MonoBehaviour {
 			if (_timer.Update ()) {
 
 			}
-			TimerTcick ();
+
+			//タイムアップしていないなら時間の経過
+			if (!time_up) {
+				TimerTcick ();
+			} else {
+				Time.timeScale = 0;
+			}
 			//print (_timer.RemainingTime + "残り時間");
 			//print (_timer.CurrentTime + "経過時間");
 		}
