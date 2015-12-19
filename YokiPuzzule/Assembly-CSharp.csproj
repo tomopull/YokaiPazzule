@@ -62,6 +62,7 @@
      <Compile Include="Assets\lib\LitJson\Lexer.cs" />
      <Compile Include="Assets\lib\LitJson\ParserToken.cs" />
      <Compile Include="Assets\lib\Timer\Delegate.cs" />
+     <Compile Include="Assets\lib\Timer\Timer.cs" />
      <Compile Include="Assets\lib\Util\Util.cs" />
      <None Include="Assets\lib\JsonObject\readme.txt" />
  <Reference Include="UnityEngine.UI">

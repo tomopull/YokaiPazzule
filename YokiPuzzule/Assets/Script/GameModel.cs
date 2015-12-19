@@ -16,6 +16,15 @@ public class GameModel : MonoBehaviour {
 		get { return this.total_object_count; } 
 		set { this.total_object_count = value; }
 	}
+		
+	//ゲームタイム
+	[SerializeField]
+	private float game_time = 60.0f;
+	public float GameTime
+	{
+	    get { return this.game_time; } 
+	    set { this.game_time = value; }
+	}
 
 	//トータル得点
 	[SerializeField]
@@ -203,6 +212,7 @@ public class GameModel : MonoBehaviour {
 	public void Init(){
 		total_point = rowCount = columnCount = 0;
 		_uniqe_index = 0;
+		//game_timer = new Timer ();
 	}
 
 

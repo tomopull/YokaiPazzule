@@ -15,6 +15,10 @@ using LitJson;
 
 //key, value の連想配列でオブジェクト管理しないとだめかも
 
+//数値周りの関数
+//数値を０詰めで返す０００
+//zero_padding();
+
 //※タイマー機能
 //※選択したオブジェクトを戻す機能
 
@@ -35,6 +39,14 @@ public class Main : MonoBehaviour {
 		InitManager ();
 		Init ();
 	}
+
+	//マネージャー初期化
+	private void InitManager(){
+		_game_model = GameModel.Instance;
+		_game_model.Init ();
+
+
+	}
 		
 	//初期化
 	private void Init(){
@@ -52,18 +64,32 @@ public class Main : MonoBehaviour {
 
 		yield return file;
 
-		JsonData data = LitJson.JsonMapper.ToObject (file.text);
+		JsonData data = LitJson.JsonMapper.ToObject(file.text);
 
 		//ローカルにオリジナルjsonデータ保存
 		_game_model.OriginalJsonData = data;
 
+		//オブジェクト初期化
 		InitObjects(data);
+
+		//タイマー初期化
+		InitTimer ();
+	
 	}
-		
-	//マネージャー初期化
-	private void InitManager(){
-		_game_model = GameModel.Instance;
-		_game_model.Init ();
+
+	Timer _timer;
+
+	private void InitTimer(){
+		_timer = new Timer ();
+		_timer.LimitTime = _game_model.GameTime;
+		//_timer.FireDelegate = TimerTcick;
+	}
+
+	//タイマーの表示の更新
+	private void TimerTcick(){
+		Text timer_text = GameObject.Find ("/GameInfo/Canvas/Timer_Text").GetComponent<Text> ();
+		timer_text.text = Mathf.Round (_timer.CurrentTime).ToString () + "/ " + Mathf.Round (_timer.LimitTime).ToString ();
+		//print ("timer tick");
 	}
 
 	//ゲームオブジェクトのデータの初期化
@@ -166,6 +192,16 @@ public class Main : MonoBehaviour {
 
 	// Update is called once per frame
 	void Update () {
+	
+		//タイマーの更新
+		if (_timer != null) {
+			if (_timer.Update ()) {
+
+			}
+			TimerTcick ();
+			//print (_timer.RemainingTime + "残り時間");
+			//print (_timer.CurrentTime + "経過時間");
+		}
 
 		if(Application.isEditor){
 			if (Input.GetMouseButton (0)) {
