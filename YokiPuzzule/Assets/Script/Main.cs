@@ -33,7 +33,6 @@ public class Main : MonoBehaviour {
 	//ユーザーインプット管理
 	private GameModel.SimpleTouch ActiveTouch;
 
-
 	// Use this for initialization
 	void Start () {
 		InitManager ();
@@ -44,8 +43,6 @@ public class Main : MonoBehaviour {
 	private void InitManager(){
 		_game_model = GameModel.Instance;
 		_game_model.Init ();
-
-
 	}
 		
 	//初期化
@@ -74,7 +71,6 @@ public class Main : MonoBehaviour {
 
 		//タイマー初期化
 		InitTimer ();
-	
 	}
 
 	private Timer _timer;
@@ -148,8 +144,7 @@ public class Main : MonoBehaviour {
 			}
 		}
 	}
-
-
+		
 	//現在のオブジェクトの数がいくつかカウント一定数以下になっていたらオブジェクトの追加
 	private bool CheckObjectsDataCount(){
 
@@ -201,10 +196,78 @@ public class Main : MonoBehaviour {
 		double touchTimeSpan    = timeGap.TotalSeconds;
 		string touchType        = ( touchDistance > _game_model.SwipeDistance && touchTimeSpan > _game_model.SwipeTime ) ? "Swipe" : "Tap";
 	}
+		
+	private void SetLineObjetsData(){
+			//近くのオブジェクト同士を線でつなぐ
+			//マウスの位置を常に取得しマウスとオブジェクトが十分近ければライン描画用お配列に追加
+			//同じオブジェクトを配列に追加しない。
+			//マウスダウンされた位置のスクリーン座標をゲームのワールド座標で取得
+			Vector2 world_mouse_pos = Camera.main.ScreenToWorldPoint (Input.mousePosition);
+			//マウスとオブジェクトとの距離を判定
+			//マウスから一番近いオブジェクトの取得
+			//一番近いオブジェクトでなおかつ種類の同じものをなぞっていくと線がつながる
+
+		foreach (KeyValuePair<string,ObjectData> pair in _game_model.ObjectDataDict) {
+
+			ObjectData now_data = (ObjectData)pair.Value;
+			string now_key = pair.Key;
+
+			float now_distance = Vector3.Distance (world_mouse_pos, now_data.Obj.transform.position);
+
+			//最後に選択されたオブジェクトがある場合はそれとの距離とともに判定
+			if (_game_model.LastObjectSelected != null) {
+			
+				float now_distance_from_last_selected = Vector3.Distance (world_mouse_pos, _game_model.LastObjectSelected.Obj.transform.position);
+
+				//マウスと十分近いかどうか
+				//既に選択済みのオブジェクトがある場合は最後に選択済みのオブジェクトと十分近いかどうか
+				if (now_distance <= _game_model.TouchDistance && now_distance_from_last_selected <= _game_model.TouchDistance) {
+
+					//一番最初に選択したオブジェクトと同じ種類かどうか
+					//おなじなら選択済み配列に追加
+					if (_game_model.FirstObjectSelectedCategory == _game_model.ObjectDataDict[now_key].Category && !checkAlreadySetObjectsData (_game_model.ObjectDataDict[now_key])) {
+
+						_game_model.SelectedObjectDataDict.Add (now_key,now_data);
+
+						//最後に選択されたオブジェクトに代入
+						_game_model.LastObjectSelected = now_data;
+
+					}
+
+				}
+					
+			}else {
+				//最初に選択したオブジェクトの場合
+				//マウスと十分近いかどうか
+				if (now_distance <= _game_model.TouchDistance) {
+
+					//一番最初に選択したオブジェクトの種類がnullなら現在のオブジェクトの種類を代入
+					if (_game_model.FirstObjectSelectedCategory == ObjectData.NullCategory) {
+						_game_model.FirstObjectSelectedCategory = _game_model.ObjectDataDict[now_key].Category;
+					}
+
+					//一番最初に選択したオブジェクトと同じ種類かどうか
+					//おなじなら選択済み配列に追加
+					if (_game_model.FirstObjectSelectedCategory == _game_model.ObjectDataDict[now_key].Category && !checkAlreadySetObjectsData (_game_model.ObjectDataDict [now_key])) {
+					
+						_game_model.SelectedObjectDataDict.Add (now_key,now_data);
+						//最後に選択されたオブジェクトに代入
+						_game_model.LastObjectSelected = now_data;
+
+					}
+
+				}
+					
+			}
+				
+		}
+
+	}
+
 
 	// Update is called once per frame
 	void Update () {
-	
+
 		//タイマーの更新
 		if (_timer != null) {
 			if (_timer.Update ()) {
@@ -294,77 +357,10 @@ public class Main : MonoBehaviour {
 			DrawLine (_game_model.SelectedObjectDataDict);
 
 		}
-						
-	
-	}
 
-	private void SetLineObjetsData(){
-			//近くのオブジェクト同士を線でつなぐ
-			//マウスの位置を常に取得しマウスとオブジェクトが十分近ければライン描画用お配列に追加
-			//同じオブジェクトを配列に追加しない。
-			//マウスダウンされた位置のスクリーン座標をゲームのワールド座標で取得
-			Vector2 world_mouse_pos = Camera.main.ScreenToWorldPoint (Input.mousePosition);
-			//マウスとオブジェクトとの距離を判定
-			//マウスから一番近いオブジェクトの取得
-			//一番近いオブジェクトでなおかつ種類の同じものをなぞっていくと線がつながる
-
-		foreach (KeyValuePair<string,ObjectData> pair in _game_model.ObjectDataDict) {
-
-			ObjectData now_data = (ObjectData)pair.Value;
-			string now_key = pair.Key;
-
-			float now_distance = Vector3.Distance (world_mouse_pos, now_data.Obj.transform.position);
-
-			//最後に選択されたオブジェクトがある場合はそれとの距離とともに判定
-			if (_game_model.LastObjectSelected != null) {
-			
-				float now_distance_from_last_selected = Vector3.Distance (world_mouse_pos, _game_model.LastObjectSelected.Obj.transform.position);
-
-				//マウスと十分近いかどうか
-				//既に選択済みのオブジェクトがある場合は最後に選択済みのオブジェクトと十分近いかどうか
-				if (now_distance <= _game_model.TouchDistance && now_distance_from_last_selected <= _game_model.TouchDistance) {
-
-					//一番最初に選択したオブジェクトと同じ種類かどうか
-					//おなじなら選択済み配列に追加
-					if (_game_model.FirstObjectSelectedCategory == _game_model.ObjectDataDict[now_key].Category && !checkAlreadySetObjectsData (_game_model.ObjectDataDict[now_key])) {
-
-						_game_model.SelectedObjectDataDict.Add (now_key,now_data);
-
-						//最後に選択されたオブジェクトに代入
-						_game_model.LastObjectSelected = now_data;
-
-					}
-
-				}
-					
-			}else {
-				//最初に選択したオブジェクトの場合
-				//マウスと十分近いかどうか
-				if (now_distance <= _game_model.TouchDistance) {
-
-					//一番最初に選択したオブジェクトの種類がnullなら現在のオブジェクトの種類を代入
-					if (_game_model.FirstObjectSelectedCategory == ObjectData.NullCategory) {
-						_game_model.FirstObjectSelectedCategory = _game_model.ObjectDataDict[now_key].Category;
-					}
-
-					//一番最初に選択したオブジェクトと同じ種類かどうか
-					//おなじなら選択済み配列に追加
-					if (_game_model.FirstObjectSelectedCategory == _game_model.ObjectDataDict[now_key].Category && !checkAlreadySetObjectsData (_game_model.ObjectDataDict [now_key])) {
-					
-						_game_model.SelectedObjectDataDict.Add (now_key,now_data);
-						//最後に選択されたオブジェクトに代入
-						_game_model.LastObjectSelected = now_data;
-
-					}
-
-				}
-					
-			}
-				
-		}
 
 	}
-		
+
 	//選択したリストのチェック
 	//二つ以上選択しているかどうか 二つ以上選択していたらtrue
 	private bool CheckLineObjectData(){
@@ -408,7 +404,6 @@ public class Main : MonoBehaviour {
 
 		AddRemovedObjectsPoint ();
 		AddRemovedObjectsCount ();
-
 	}
 
 	//消されたオブジェクトの得点の追加
