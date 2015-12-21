@@ -289,14 +289,12 @@ public class Main : MonoBehaviour {
 			float now_distance_from_last_but_one_object_selected = Vector3.Distance (world_mouse_pos, _game_model.LastButOneObjectSelected.transform.position);
 
 			if(now_distance_from_last_but_one_object_selected <= _game_model.TouchDistance && now_distance_from_last_object_selected >= _game_model.TouchDistance){
-			
+
 				//一番最後と二番目のオブジェクトの削除
 				_game_model.SelectedObjectDataDict.Remove (_game_model.LastObjectSelected.Key);
 				_game_model.SelectedObjectDataDict.Remove (_game_model.LastButOneObjectSelected.Key);
-
 				//最後から二番目のオブジェクトを一番最後に戻す
 				_game_model.SelectedObjectDataDict.Add (_game_model.LastButOneObjectSelected.Key, _game_model.LastButOneObjectSelected);
-
 
 
 				print ("もどす");
