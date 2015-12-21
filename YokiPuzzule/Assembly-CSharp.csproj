@@ -49,7 +49,7 @@
      <Compile Include="Assets\Script\GameModel.cs" />
      <Compile Include="Assets\Script\Main.cs" />
      <Compile Include="Assets\Script\ObjectData.cs" />
-     <Compile Include="Assets\Script\ObjectGenerator.cs" />
+     <Compile Include="Assets\Script\ObjectManager.cs" />
      <Compile Include="Assets\lib\JsonObject\JSONObject.cs" />
      <Compile Include="Assets\lib\JsonObject\JSONTemplates.cs" />
      <Compile Include="Assets\lib\JsonObject\VectorTemplates.cs" />

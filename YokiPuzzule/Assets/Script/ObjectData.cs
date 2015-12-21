@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class ObjectData : MonoBehaviour {
+public class ObjectData : MonoBehaviour{
 
 
 	[SerializeField]
@@ -33,5 +33,15 @@ public class ObjectData : MonoBehaviour {
 	    get { return this.obj; } 
 	    set { this.obj = value; }
 	}
+
+	//データが格納される連想配列のkey
+	[SerializeField]
+	private string key;
+	public string Key
+	{
+	    get { return this.key; } 
+	    set { this.key = value; }
+	}
+
 
 }

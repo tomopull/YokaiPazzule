@@ -21,6 +21,7 @@ using LitJson;
 
 //※タイマー機能
 //※選択したオブジェクトを戻す機能
+//*オブジェクトを追加するタイミング
 
 public class Main : MonoBehaviour {
 
@@ -28,7 +29,7 @@ public class Main : MonoBehaviour {
 	private GameModel _game_model;
 
 	//ゲームのオブジェクト生成
-	public ObjectGenerator _object_generator;
+	public ObjectManager _object_manager;
 
 	//ユーザーインプット管理
 	private GameModel.SimpleTouch ActiveTouch;
@@ -39,9 +40,20 @@ public class Main : MonoBehaviour {
 		Init ();
 	}
 
-	//マネージャー初期化
+	//スワイプかタッチか判別
+	private void CaluculateTouchInput(GameModel.SimpleTouch CurrentTouch){
+
+		Vector2 touchDirection  = (CurrentTouch.CurrentTouchLocation - CurrentTouch.StartTouchLocation).normalized;
+		float touchDistance     = (CurrentTouch.StartTouchLocation - CurrentTouch.CurrentTouchLocation).magnitude;
+		TimeSpan timeGap        = System.DateTime.Now - CurrentTouch.StartTime;
+		double touchTimeSpan    = timeGap.TotalSeconds;
+		string touchType        = ( touchDistance > _game_model.SwipeDistance && touchTimeSpan > _game_model.SwipeTime ) ? "Swipe" : "Tap";
+	}
+
+	//各マネージャー、モデル初期化
 	private void InitManager(){
 		_game_model = GameModel.Instance;
+		_object_manager = ObjectManager.Instance;
 		_game_model.Init ();
 	}
 		
@@ -111,7 +123,6 @@ public class Main : MonoBehaviour {
 		AddObjectsData (data, _game_model.RowCount, _game_model.ColumnCount);
 	}
 		
-
 	//オブジェクトを追加
 	private void AddObjectsData(JsonData data,int row_count, int column_count,Vector3 offset = new Vector3()){
 	
@@ -134,9 +145,12 @@ public class Main : MonoBehaviour {
 				ObjectData obj_data = obj.GetComponent<ObjectData> ();
 				obj_data.Point = (int)data ["object_data"][i]["point"];
 				obj_data.Category = (int)data ["object_data"][j]["category"];
-				obj_data.Obj = obj;
 
-				_game_model.ObjectDataDict.Add (i + "_" + j + "_" + GameModel.GetUniqueIndex(), obj_data);
+				string _key = i + "_" + j + "_" + GameModel.GetUniqueIndex ();
+				_game_model.ObjectDataDict.Add (_key, obj_data);
+
+				obj_data.Key = _key;
+				obj_data.Obj = obj;
 
 				//print (i + "_" + j + "_" + GameModel.GetUniqueIndex ());
 				SetColor(obj_data.Category,obj);
@@ -187,16 +201,8 @@ public class Main : MonoBehaviour {
 
 	}
 
-	//スワイプかタッチか判別
-	private void CaluculateTouchInput(GameModel.SimpleTouch CurrentTouch){
-
-		Vector2 touchDirection  = (CurrentTouch.CurrentTouchLocation - CurrentTouch.StartTouchLocation).normalized;
-		float touchDistance     = (CurrentTouch.StartTouchLocation - CurrentTouch.CurrentTouchLocation).magnitude;
-		TimeSpan timeGap        = System.DateTime.Now - CurrentTouch.StartTime;
-		double touchTimeSpan    = timeGap.TotalSeconds;
-		string touchType        = ( touchDistance > _game_model.SwipeDistance && touchTimeSpan > _game_model.SwipeTime ) ? "Swipe" : "Tap";
-	}
-		
+	//ボタンをダウンしている間つねにどのオブジェクト間にラインを引きどのオブジェクト間にラインを
+	//引かないか判定している。
 	private void SetLineObjetsData(){
 			//近くのオブジェクト同士を線でつなぐ
 			//マウスの位置を常に取得しマウスとオブジェクトが十分近ければライン描画用お配列に追加
@@ -229,11 +235,14 @@ public class Main : MonoBehaviour {
 
 						_game_model.SelectedObjectDataDict.Add (now_key,now_data);
 
+						//前回に選択されていたオブジェクトへの参照
+						_game_model.LastButOneObjectSelected = _game_model.LastObjectSelected;
+						print ("最後から二番目");
 						//最後に選択されたオブジェクトに代入
 						_game_model.LastObjectSelected = now_data;
-
+						print ("最後");
 					}
-
+						
 				}
 					
 			}else {
@@ -253,7 +262,7 @@ public class Main : MonoBehaviour {
 						_game_model.SelectedObjectDataDict.Add (now_key,now_data);
 						//最後に選択されたオブジェクトに代入
 						_game_model.LastObjectSelected = now_data;
-
+						print ("最初");
 					}
 
 				}
@@ -265,6 +274,38 @@ public class Main : MonoBehaviour {
 	}
 
 
+	private void SetLineObjectDataReverse(){
+
+		//マウスダウンされた位置のスクリーン座標をゲームのワールド座標で取得
+		Vector2 world_mouse_pos = Camera.main.ScreenToWorldPoint (Input.mousePosition);
+
+		//オブジェクトを逆になぞりなおす処理
+		//前回なぞったオブジェクトをさかのぼると線をけしていける
+		//前回なぞったオブジェクトと十分マウスが近づいたらライン配列への登録解除
+		if(_game_model.LastObjectSelected != null && _game_model.LastButOneObjectSelected != null  ){
+		
+			float now_distance_from_last_object_selected = Vector3.Distance (world_mouse_pos,_game_model.LastObjectSelected.transform.position);
+
+			float now_distance_from_last_but_one_object_selected = Vector3.Distance (world_mouse_pos, _game_model.LastButOneObjectSelected.transform.position);
+
+			if(now_distance_from_last_but_one_object_selected <= _game_model.TouchDistance && now_distance_from_last_object_selected >= _game_model.TouchDistance){
+			
+				//一番最後と二番目のオブジェクトの削除
+				_game_model.SelectedObjectDataDict.Remove (_game_model.LastObjectSelected.Key);
+				_game_model.SelectedObjectDataDict.Remove (_game_model.LastButOneObjectSelected.Key);
+
+				//最後から二番目のオブジェクトを一番最後に戻す
+				_game_model.SelectedObjectDataDict.Add (_game_model.LastButOneObjectSelected.Key, _game_model.LastButOneObjectSelected);
+
+
+
+				print ("もどす");
+
+			}
+
+		}
+	}
+		
 	// Update is called once per frame
 	void Update () {
 
@@ -341,12 +382,18 @@ public class Main : MonoBehaviour {
 
 		//ボタンをダウンしていたら、していなかったら
 		if (_game_model.IsButtonDown) {
+
+			//オブジェクト上にラインの描画
 			SetLineObjetsData ();
+		
+			SetLineObjectDataReverse ();
+
 			DrawLine (_game_model.SelectedObjectDataDict);
 
 			HighLightSelectedData (_game_model.SelectedObjectDataDict);
 
 		} else {
+
 			if(_game_model.SelectedObjectDataDict != null){
 
 				ResetHighLightSelectedData (_game_model.SelectedObjectDataDict);
@@ -354,10 +401,10 @@ public class Main : MonoBehaviour {
 			}
 
 			ResetLineObjectData ();
+
 			DrawLine (_game_model.SelectedObjectDataDict);
 
 		}
-
 
 	}
 
@@ -439,6 +486,7 @@ public class Main : MonoBehaviour {
 		return false;
 
 	}
+		
 	//ライン描画のリセット
 	private void ResetLineObjectData(){
 		_game_model.SelectedObjectDataDict = new Dictionary<string,ObjectData>();

@@ -137,6 +137,15 @@ public class GameModel : MonoBehaviour {
 	}
 
 
+	//最後の一つ前に選択されたオブジェクト
+	[SerializeField]
+	private ObjectData last_but_one_object_selected;
+	public ObjectData LastButOneObjectSelected
+	{
+	    get { return this.last_but_one_object_selected; } 
+	    set { this.last_but_one_object_selected = value; }
+	}
+
 	//最後に選択されたオブジェクト
 	[SerializeField]
 	private ObjectData last_object_selected;
@@ -189,7 +198,7 @@ public class GameModel : MonoBehaviour {
 		//print (_uniqe_index);
 		return _uniqe_index;
 	}
-		
+
 	//シンプルタッチストラクト
 	public struct SimpleTouch{
 		public Vector2 StartTouchLocation;
