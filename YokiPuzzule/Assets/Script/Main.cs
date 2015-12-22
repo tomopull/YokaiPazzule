@@ -101,7 +101,7 @@ public class Main : MonoBehaviour {
 		//時間終了判定
 		if (Mathf.Round (_timer.CurrentTime) == Mathf.Round (_timer.LimitTime)) {
 
-			print ("タイムアップ");
+			//print ("タイムアップ");
 			time_up = true;
 
 			timer_text.text = "0" + "/" + base_time;
@@ -162,7 +162,7 @@ public class Main : MonoBehaviour {
 	//現在のオブジェクトの数がいくつかカウント一定数以下になっていたらオブジェクトの追加
 	private bool CheckObjectsDataCount(){
 
-		print (_game_model.ObjectDataDict.Count + "現在のオブジェクトの数");
+		//print (_game_model.ObjectDataDict.Count + "現在のオブジェクトの数");
 
 		if (_game_model.ObjectDataDict.Count <= _game_model.MinimumNumberOfObjectData) {
 			return true;
@@ -235,12 +235,12 @@ public class Main : MonoBehaviour {
 
 						_game_model.SelectedObjectDataDict.Add (now_key,now_data);
 
-						//前回に選択されていたオブジェクトへの参照
+						//最後から二番目に選択されていたオブジェクトへの参照(ここの代入の順番変えちゃだめ)
 						_game_model.LastButOneObjectSelected = _game_model.LastObjectSelected;
-						print ("最後から二番目");
+
 						//最後に選択されたオブジェクトに代入
 						_game_model.LastObjectSelected = now_data;
-						print ("最後");
+
 					}
 						
 				}
@@ -262,7 +262,7 @@ public class Main : MonoBehaviour {
 						_game_model.SelectedObjectDataDict.Add (now_key,now_data);
 						//最後に選択されたオブジェクトに代入
 						_game_model.LastObjectSelected = now_data;
-						print ("最初");
+						//print ("最初");
 					}
 
 				}
@@ -290,18 +290,59 @@ public class Main : MonoBehaviour {
 
 			if(now_distance_from_last_but_one_object_selected <= _game_model.TouchDistance && now_distance_from_last_object_selected >= _game_model.TouchDistance){
 
-				//一番最後と二番目のオブジェクトの削除
+				//一番最後のオブジェクトの参照の削除
 				_game_model.SelectedObjectDataDict.Remove (_game_model.LastObjectSelected.Key);
-				_game_model.SelectedObjectDataDict.Remove (_game_model.LastButOneObjectSelected.Key);
-				//最後から二番目のオブジェクトを一番最後に戻す
-				_game_model.SelectedObjectDataDict.Add (_game_model.LastButOneObjectSelected.Key, _game_model.LastButOneObjectSelected);
+
+				int tmp_count = 0;
+				//一番最後のオブジェクトの参照のセット
+
+				if (_game_model.SelectedObjectDataDict.Count >= 2) {
+				
+					foreach (KeyValuePair<string,ObjectData> pair in _game_model.SelectedObjectDataDict) {
+
+						ObjectData now_data = (ObjectData)pair.Value;
+						string now_key = pair.Key;
+
+						tmp_count += 1;
+
+						if(tmp_count == _game_model.SelectedObjectDataDict.Count){
+							_game_model.LastObjectSelected = now_data;
+							//print ("一番最後のオブジェクトの参照のセット");
+						}
 
 
-				print ("もどす");
+					}
+
+				
+				}
+
+				tmp_count = 0;
+
+				//最後から二番目のオブジェクトの参照のセット
+				foreach (KeyValuePair<string,ObjectData> pair in _game_model.SelectedObjectDataDict) {
+
+					ObjectData now_data = (ObjectData)pair.Value;
+					string now_key = pair.Key;
+
+					tmp_count += 1;
+
+					if(tmp_count == _game_model.SelectedObjectDataDict.Count -1){
+						_game_model.LastButOneObjectSelected = now_data;
+						//print ("最後から二番目のオブジェクトの参照のセット");
+					}
+						
+				}
+
+
+				//print ("もどす");
 
 			}
 
+
+
 		}
+
+
 	}
 		
 	// Update is called once per frame
@@ -455,7 +496,7 @@ public class Main : MonoBehaviour {
 	private void AddRemovedObjectsPoint(){
 	
 		Text point_text = GameObject.Find ("/GameInfo/Canvas/Point_Text").GetComponent<Text> ();
-		print (_game_model.TotalPoint);
+		// (_game_model.TotalPoint);
 		point_text.text = _game_model.TotalPoint.ToString ();
 	}
 
@@ -474,13 +515,13 @@ public class Main : MonoBehaviour {
 			GameObject other_obj = (GameObject)pair.Value.Obj;
 
 			if (other_obj.Equals(check_obj.Obj)) {
-				print ("既に選択済み");
+				//print ("既に選択済み");
 				return true;
 			}
 				
 		}
 
-		print ("既に選択済みでない");
+		//print ("既に選択済みでない");
 		return false;
 
 	}
