@@ -290,12 +290,19 @@ public class Main : MonoBehaviour {
 
 			if(now_distance_from_last_but_one_object_selected <= _game_model.TouchDistance && now_distance_from_last_object_selected >= _game_model.TouchDistance){
 
+
+
+				//元の色に戻す
+				SetColor (_game_model.LastObjectSelected.Category,_game_model.LastObjectSelected.Obj);
+
 				//一番最後のオブジェクトの参照の削除
 				_game_model.SelectedObjectDataDict.Remove (_game_model.LastObjectSelected.Key);
 
 				int tmp_count = 0;
 				//一番最後のオブジェクトの参照のセット
 
+				//ライン上に選択しているオブジェクトが二つ以上ある場合は
+				//最後に選択したオブジェクトと最後から二番目に選択したオブジェクトの参照を設定し直す。
 				if (_game_model.SelectedObjectDataDict.Count >= 2) {
 				
 					foreach (KeyValuePair<string,ObjectData> pair in _game_model.SelectedObjectDataDict) {
@@ -309,11 +316,9 @@ public class Main : MonoBehaviour {
 							_game_model.LastObjectSelected = now_data;
 							//print ("一番最後のオブジェクトの参照のセット");
 						}
-
-
+							
 					}
-
-				
+						
 				}
 
 				tmp_count = 0;
@@ -326,23 +331,17 @@ public class Main : MonoBehaviour {
 
 					tmp_count += 1;
 
-					if(tmp_count == _game_model.SelectedObjectDataDict.Count -1){
+					if (tmp_count == _game_model.SelectedObjectDataDict.Count - 1) {
 						_game_model.LastButOneObjectSelected = now_data;
 						//print ("最後から二番目のオブジェクトの参照のセット");
 					}
-						
+				
 				}
-
-
-				//print ("もどす");
-
+			
 			}
-
-
-
+		
 		}
-
-
+			
 	}
 		
 	// Update is called once per frame
@@ -427,9 +426,11 @@ public class Main : MonoBehaviour {
 		
 			SetLineObjectDataReverse ();
 
+			HighLightSelectedData (_game_model.SelectedObjectDataDict);
+
 			DrawLine (_game_model.SelectedObjectDataDict);
 
-			HighLightSelectedData (_game_model.SelectedObjectDataDict);
+
 
 		} else {
 
