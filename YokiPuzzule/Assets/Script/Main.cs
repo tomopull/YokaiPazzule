@@ -289,10 +289,8 @@ public class Main : MonoBehaviour {
 			float now_distance_from_last_but_one_object_selected = Vector3.Distance (world_mouse_pos, _game_model.LastButOneObjectSelected.transform.position);
 
 			if(now_distance_from_last_but_one_object_selected <= _game_model.TouchDistance && now_distance_from_last_object_selected >= _game_model.TouchDistance){
-
-
-
-				//元の色に戻す
+			
+				//一番最後のオブジェクトをとりあえず元の色に戻す
 				SetColor (_game_model.LastObjectSelected.Category,_game_model.LastObjectSelected.Obj);
 
 				//一番最後のオブジェクトの参照の削除
@@ -303,7 +301,7 @@ public class Main : MonoBehaviour {
 
 				//ライン上に選択しているオブジェクトが二つ以上ある場合は
 				//最後に選択したオブジェクトと最後から二番目に選択したオブジェクトの参照を設定し直す。
-				if (_game_model.SelectedObjectDataDict.Count >= 2) {
+				if (_game_model.SelectedObjectDataDict.Count >= 1) {
 				
 					foreach (KeyValuePair<string,ObjectData> pair in _game_model.SelectedObjectDataDict) {
 
@@ -312,32 +310,18 @@ public class Main : MonoBehaviour {
 
 						tmp_count += 1;
 
-						if(tmp_count == _game_model.SelectedObjectDataDict.Count){
+						if (tmp_count == _game_model.SelectedObjectDataDict.Count) {
 							_game_model.LastObjectSelected = now_data;
 							//print ("一番最後のオブジェクトの参照のセット");
+						} else if (tmp_count == _game_model.SelectedObjectDataDict.Count - 1) {
+							_game_model.LastButOneObjectSelected = now_data;
+							//print ("最後から二番目のオブジェクトの参照のセット");
 						}
 							
 					}
 						
 				}
-
-				tmp_count = 0;
-
-				//最後から二番目のオブジェクトの参照のセット
-				foreach (KeyValuePair<string,ObjectData> pair in _game_model.SelectedObjectDataDict) {
-
-					ObjectData now_data = (ObjectData)pair.Value;
-					string now_key = pair.Key;
-
-					tmp_count += 1;
-
-					if (tmp_count == _game_model.SelectedObjectDataDict.Count - 1) {
-						_game_model.LastButOneObjectSelected = now_data;
-						//print ("最後から二番目のオブジェクトの参照のセット");
-					}
-				
-				}
-			
+					
 			}
 		
 		}
