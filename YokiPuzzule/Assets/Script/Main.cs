@@ -36,8 +36,12 @@ public class Main : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
+	
 		InitManager ();
 		Init ();
+
+		//プラットフォーム表示
+		InitPlatformTextDebug ();
 	}
 
 	//スワイプかタッチか判別
@@ -64,12 +68,12 @@ public class Main : MonoBehaviour {
 
 	//外部ファイルのロード
 	private void LoadFile(){
-		StartCoroutine("LoadFileCorutine",Application.dataPath + GameModel.Json_Path);
+		StartCoroutine("LoadFileCorutine",_game_model.Json_Path);
 	}
 
 	IEnumerator LoadFileCorutine(string _file_path){
 
-		WWW file = new WWW ("file://" + _file_path);
+		WWW file = new WWW (_file_path);
 
 		yield return file;
 
@@ -83,7 +87,17 @@ public class Main : MonoBehaviour {
 
 		//タイマー初期化
 		InitTimer ();
+
 	}
+
+
+	private void InitPlatformTextDebug(){
+		Text base_url_text = GameObject.Find ("/GameInfo/Canvas/BaseURL_Text").GetComponent<Text> ();
+		Text url_text = GameObject.Find ("/GameInfo/Canvas/URL_Text").GetComponent<Text> ();
+		base_url_text.text = Util.GetBaseURL ().ToString ();
+		url_text.text = _game_model.Json_Path.ToString ();
+	}
+
 
 	private Timer _timer;
 	private bool time_up = false;
@@ -413,8 +427,6 @@ public class Main : MonoBehaviour {
 			HighLightSelectedData (_game_model.SelectedObjectDataDict);
 
 			DrawLine (_game_model.SelectedObjectDataDict);
-
-
 
 		} else {
 

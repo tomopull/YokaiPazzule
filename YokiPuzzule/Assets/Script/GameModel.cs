@@ -199,6 +199,9 @@ public class GameModel : MonoBehaviour {
 		return _uniqe_index;
 	}
 
+
+
+
 	//シンプルタッチストラクト
 	public struct SimpleTouch{
 		public Vector2 StartTouchLocation;
@@ -208,7 +211,20 @@ public class GameModel : MonoBehaviour {
 	}
 		
 	//ローカルのjsonのパス
-	public static string Json_Path = "/Json/data.json";
+	[SerializeField]
+	private string json_path;
+	public string Json_Path {
+
+		get { 
+			json_path = Util.GetBaseURL() + "/Json/data.json";
+			return json_path;
+		}
+
+//		set {
+//			this.json_path = value; 
+//		}
+
+	}
 
 	private static GameModel instance = null;
 	public static GameModel Instance {
@@ -221,7 +237,6 @@ public class GameModel : MonoBehaviour {
 	public void Init(){
 		total_point = rowCount = columnCount = 0;
 		_uniqe_index = 0;
-		//game_timer = new Timer ();
 	}
 
 

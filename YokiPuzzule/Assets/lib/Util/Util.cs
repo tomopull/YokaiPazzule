@@ -21,5 +21,34 @@ public class Util : MonoBehaviour {
 			data["object_data"][randomIndex] = temp;
 		}
 	}
+
+
+	//ベースのurlの決定
+	static public string GetBaseURL(){
+
+		string base_url = "";
+
+		if (Application.platform == RuntimePlatform.OSXEditor) {
+			//OSX Editor
+			base_url = "file://" + Application.dataPath + "/StreamingAssets";
+
+		} else if (Application.platform == RuntimePlatform.OSXPlayer) {
+			//PC Mac & linux StandAlone
+			base_url = "file://" + Application.dataPath + "/StreamingAssets";
+
+		}else if(Application.platform == RuntimePlatform.IPhonePlayer){
+			//Ipone
+			base_url = "file://" + Application.dataPath + "/Raw";
+
+		} else if(Application.platform == RuntimePlatform.OSXWebPlayer){
+			//Web Player
+			//絶対パス
+			base_url = Application.dataPath;
+		}
+
+		return base_url;
+	}
+
+
 		
 }
