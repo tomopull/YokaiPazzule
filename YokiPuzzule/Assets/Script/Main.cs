@@ -405,7 +405,7 @@ public class Main : MonoBehaviour {
 					ActiveTouch.StartTime = System.DateTime.Now;
 					ActiveTouch.StartTouchLocation = _game_model.DeviceTouch.position;
 					ActiveTouch.CurrentTouchLocation = _game_model.DeviceTouch.position;
-
+					_game_model.IsButtonDown = true;
 				} else {
 					ActiveTouch.CurrentTouchLocation = _game_model.DeviceTouch.position;
 				}
@@ -414,6 +414,17 @@ public class Main : MonoBehaviour {
 				if(ActiveTouch.Phase != TouchPhase.Canceled){
 					CaluculateTouchInput (ActiveTouch);
 					ActiveTouch.Phase = TouchPhase.Canceled;
+					_game_model.IsButtonDown = false;
+					//二つ以上選択していたら消す
+					//ポイントとか追加
+					if(CheckLineObjectData ()){
+						RemoveSelectedLineObjectData ();
+						//オブジェクトの数が一定数以下になっていたらランダムで新規のオブジェクト追加
+						if (CheckObjectsDataCount()) {
+							AddRandomObjectData ();
+						}
+					}
+
 				}
 			}
 		}
@@ -569,7 +580,7 @@ public class Main : MonoBehaviour {
 
 		//ラインの頂点数のカウント
 		int i = 0;
-
+		//順番に配列が代入されると仮定。
 		foreach (ObjectData value  in _selected_dict.Values) {
 			line.SetPosition (i,value.Obj.transform.position);
 			i += 1;

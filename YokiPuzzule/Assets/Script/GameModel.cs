@@ -19,7 +19,7 @@ public class GameModel : MonoBehaviour {
 		
 	//ゲームタイム
 	[SerializeField]
-	private float game_time = 120.0f;
+	private float game_time = 999.0f;
 	public float GameTime
 	{
 	    get { return this.game_time; } 
