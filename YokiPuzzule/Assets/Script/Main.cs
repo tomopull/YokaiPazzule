@@ -130,11 +130,12 @@ public class Main : MonoBehaviour {
 	private void InitObjects(JsonData data){
 
 		_game_model.ObjectDataDict = new Dictionary<String,ObjectData> ();
-		_game_model.RowCount = 8;
+		_game_model.RowCount = 7;
 		_game_model.ColumnCount = 7;
 		_game_model.IsInteractive = !_game_model.IsInteractive;
 
 		AddObjectsData (data, _game_model.RowCount, _game_model.ColumnCount);
+
 	}
 		
 	//オブジェクトを追加
@@ -148,8 +149,8 @@ public class Main : MonoBehaviour {
 		for (int i = 0; i < row_count; i++) {
 
 			for (int j = 0; j < column_count; j++) {
-				GameObject obj = (GameObject)Instantiate(Resources.Load("Prefabs/Object"),new Vector3(1.2f * i,1.2f * j,0),Quaternion.identity);
-				obj.transform.Translate (new Vector3 (-2f, 0, 0));//位置微調整後で消したい。
+				GameObject obj = (GameObject)Instantiate(Resources.Load("Prefabs/Object"),new Vector3(0.6f * i,0.6f * j,0),Quaternion.identity);
+				obj.transform.Translate (new Vector3 (0.3f, 0.3f, 0));//位置微調整後で消したい。
 				obj.transform.Translate (offset);
 
 				//親のゲームオブジェクトの指定
@@ -171,6 +172,7 @@ public class Main : MonoBehaviour {
 
 			}
 		}
+			
 	}
 		
 	//現在のオブジェクトの数がいくつかカウント一定数以下になっていたらオブジェクトの追加
@@ -187,7 +189,7 @@ public class Main : MonoBehaviour {
 
 	//オブジェクトを消した際に新規でオブジェクトを追加
 	private void AddRandomObjectData(){
-		AddObjectsData (_game_model.OriginalJsonData, 8, 3,new Vector3(0,7,0));
+		AddObjectsData (_game_model.OriginalJsonData, 6, 3,new Vector3(0.55f,7,0));
 	}
 
 	//カラーチェンジ

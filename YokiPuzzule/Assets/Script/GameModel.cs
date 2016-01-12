@@ -129,7 +129,7 @@ public class GameModel : MonoBehaviour {
 
 	//オブジェクトをタッチできる距離
 	[SerializeField]
-	private float touch_distance = 0.7f;
+	private float touch_distance = 0.5f;
 	public float TouchDistance
 	{
 		get { return this.touch_distance; } 
