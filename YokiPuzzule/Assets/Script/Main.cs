@@ -23,6 +23,9 @@ using LitJson;
 //※選択したオブジェクトを戻す機能
 //*オブジェクトを追加するタイミング
 
+
+//台を叩いてオブジェクトをシャッフルする機能。
+
 public class Main : MonoBehaviour {
 
 	//ゲームのデータ管理
@@ -463,7 +466,7 @@ public class Main : MonoBehaviour {
 	
 		if (_game_model.SelectedObjectDataDict != null) {
 
-			if (_game_model.SelectedObjectDataDict.Count >= 2) {
+			if (_game_model.SelectedObjectDataDict.Count >= _game_model.LineNum) {
 				return true;
 			}
 
@@ -481,6 +484,10 @@ public class Main : MonoBehaviour {
 			ObjectData tmp_data = pair.Value;
 
 			if(_game_model.SelectedObjectDataDict.ContainsKey(tmp_key)){
+
+
+				GameObject obj = (GameObject)Instantiate(Resources.Load("Prefabs/ParticleExplode"),new Vector3(tmp_data.transform.position.x,tmp_data.transform.position.y,tmp_data.transform.position.z),Quaternion.identity);
+				obj.GetComponent<ParticleSystem> ().Play ();
 			
 				//ゲームオブジェクトの削除
 				Destroy (tmp_data.Obj);

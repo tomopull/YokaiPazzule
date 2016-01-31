@@ -26,6 +26,15 @@ public class GameModel : MonoBehaviour {
 	    set { this.game_time = value; }
 	}
 
+	//最低何個のオブジェクトをつなげたらラインが消えるか
+	[SerializeField]
+	private int line_num = 3;
+	public int LineNum
+	{
+	    get { return this.line_num; } 
+	    set { this.line_num = value; }
+	}
+
 	//トータル得点
 	[SerializeField]
 	private int total_point = 0;
