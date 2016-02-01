@@ -127,6 +127,8 @@ public class Main : MonoBehaviour {
 			string current_time = Mathf.Round (_timer.LimitTime - _timer.CurrentTime).ToString ();
 			timer_text.text = current_time + "/" + base_time;
 		}
+
+
 	}
 
 	//ゲームオブジェクトのデータの初期化
@@ -136,6 +138,7 @@ public class Main : MonoBehaviour {
 		_game_model.RowCount = 7;
 		_game_model.ColumnCount = 7;
 		_game_model.IsInteractive = !_game_model.IsInteractive;
+		_game_model.VanishParticleList = new List<GameObject> ();
 
 		AddObjectsData (data, _game_model.RowCount, _game_model.ColumnCount);
 
@@ -458,6 +461,10 @@ public class Main : MonoBehaviour {
 
 		}
 
+
+		//再生終了したパーティクルデータを削除
+		RemoveParticleData ();
+
 	}
 
 	//選択したリストのチェック
@@ -484,10 +491,13 @@ public class Main : MonoBehaviour {
 			ObjectData tmp_data = pair.Value;
 
 			if(_game_model.SelectedObjectDataDict.ContainsKey(tmp_key)){
-
-
+			
+				//オブジェクトが消える時のパーティクルが発生する
 				GameObject obj = (GameObject)Instantiate(Resources.Load("Prefabs/ParticleExplode"),new Vector3(tmp_data.transform.position.x,tmp_data.transform.position.y,tmp_data.transform.position.z),Quaternion.identity);
 				obj.GetComponent<ParticleSystem> ().Play ();
+
+				//現在存在しているパーティクルの参照の保存
+				_game_model.VanishParticleList.Add (obj);
 			
 				//ゲームオブジェクトの削除
 				Destroy (tmp_data.Obj);
@@ -507,6 +517,35 @@ public class Main : MonoBehaviour {
 
 		AddRemovedObjectsPoint ();
 		AddRemovedObjectsCount ();
+	}
+
+
+	/// <summary>
+	/// 再生されたパーティクルデータを削除
+	/// </summary>
+
+	private void RemoveParticleData(){
+
+		if (_game_model.VanishParticleList != null) {
+		
+			for (int i = 0; i < _game_model.VanishParticleList.Count; i++) {
+			
+				GameObject obj = (GameObject)_game_model.VanishParticleList [i];
+
+				ParticleSystem particle = obj.GetComponent<ParticleSystem> ();
+
+				if(!particle.IsAlive()){
+					particle.Clear ();
+					_game_model.VanishParticleList.Remove (particle.gameObject);
+					Destroy (particle.gameObject);
+					//Debug.Log ("パーティクル削除");
+				}
+					
+			}
+
+		}
+
+
 	}
 
 	//消されたオブジェクトの得点の追加

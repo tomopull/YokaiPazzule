@@ -201,14 +201,22 @@ public class GameModel : MonoBehaviour {
 	}
 
 
+	//オブジェクトが消えるパーティクルのデータ
+	[SerializeField]
+	private List<GameObject> vanish_particle_list;
+	public List<GameObject> VanishParticleList
+	{
+		get { return this.vanish_particle_list; } 
+		set { this.vanish_particle_list = value; }
+	}
+
+
 	//ユニークな整数の取得
 	public static ulong GetUniqueIndex(){
 		_uniqe_index += 1;
 		//print (_uniqe_index);
 		return _uniqe_index;
 	}
-
-
 
 
 	//シンプルタッチストラクト
@@ -228,11 +236,7 @@ public class GameModel : MonoBehaviour {
 			json_path = Util.GetBaseURL() + "/Json/data.json";
 			return json_path;
 		}
-
-//		set {
-//			this.json_path = value; 
-//		}
-
+			
 	}
 
 	private static GameModel instance = null;
