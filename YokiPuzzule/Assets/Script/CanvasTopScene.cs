@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.UI;
 
 public class CanvasTopScene : MonoBehaviour {
 
@@ -55,6 +56,25 @@ public class CanvasTopScene : MonoBehaviour {
 
 
 	private void initStartPage(){
+
+		//タイトルテキスト
+		//_top_scene_model.CanvasTopScene.gameObject.
+		Text title_text = Util.FindTextComponent ("/CanvasTopScene(Clone)/TextTitle");
+		title_text.enabled = false;
+
+		//メニュー
+
+		//スタートボタン
+
+
+		//ルールボタン
+
+
+		//モアボタン
+
+
+
+
 
 	}
 
