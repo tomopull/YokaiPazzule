@@ -6,6 +6,18 @@ using LitJson;
 
 public class GameModel : MonoBehaviour {
 
+
+	//prefab resource path
+	[SerializeField]
+	private string prefab_resource_path = "Prefabs/";
+	public string PrefabResourcePath
+	{
+	    get { return this.prefab_resource_path; } 
+	    set { this.prefab_resource_path = value; }
+	}
+
+	//
+
 	private static ulong _uniqe_index = 0;
 
 	//トータルのオブジェクトのカウント

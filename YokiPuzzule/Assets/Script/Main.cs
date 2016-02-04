@@ -95,8 +95,9 @@ public class Main : MonoBehaviour {
 
 
 	private void InitPlatformTextDebug(){
-		Text base_url_text = GameObject.Find ("/GameInfo/Canvas/BaseURL_Text").GetComponent<Text> ();
-		Text url_text = GameObject.Find ("/GameInfo/Canvas/URL_Text").GetComponent<Text> ();
+		Text base_url_text = Util.FindTextComponent("/GameInfo/Canvas/BaseURL_Text");
+		Text url_text = Util.FindTextComponent ("/GameInfo/Canvas/URL_Text");
+
 		base_url_text.text = Util.GetBaseURL ().ToString ();
 		url_text.text = _game_model.Json_Path.ToString ();
 	}
@@ -113,7 +114,7 @@ public class Main : MonoBehaviour {
 
 	//タイマーの表示の更新
 	private void TimerTcick(){
-		Text timer_text = GameObject.Find ("/GameInfo/Canvas/Timer_Text").GetComponent<Text> ();
+		Text timer_text = Util.FindTextComponent ("/GameInfo/Canvas/Timer_Text");
 		string base_time = Mathf.Round (_timer.LimitTime).ToString ();
 		//時間終了判定
 		if (Mathf.Round (_timer.CurrentTime) == Mathf.Round (_timer.LimitTime)) {
@@ -155,13 +156,14 @@ public class Main : MonoBehaviour {
 		for (int i = 0; i < row_count; i++) {
 
 			for (int j = 0; j < column_count; j++) {
-				GameObject obj = (GameObject)Instantiate(Resources.Load("Prefabs/Object"),new Vector3(0.6f * i,0.6f * j,0),Quaternion.identity);
+
+				GameObject obj = Util.InstantiateUtil (_game_model, "Object", new Vector3 (0.6f * i, 0.6f * j, 0), Quaternion.identity);
 				obj.transform.Translate (new Vector3 (0.3f, 0.3f, 0));//位置微調整後で消したい。
 				obj.transform.Translate (offset);
 
 				//親のゲームオブジェクトの指定
 				obj.transform.parent = game_object_container.transform;
-
+		
 				//オブジェクトにデータを追加
 				ObjectData obj_data = obj.GetComponent<ObjectData> ();
 				obj_data.Point = (int)data ["object_data"][i]["point"];
@@ -238,6 +240,7 @@ public class Main : MonoBehaviour {
 		foreach (KeyValuePair<string,ObjectData> pair in _game_model.ObjectDataDict) {
 
 			ObjectData now_data = (ObjectData)pair.Value;
+
 			string now_key = pair.Key;
 
 			float now_distance = Vector3.Distance (world_mouse_pos, now_data.Obj.transform.position);
@@ -493,8 +496,11 @@ public class Main : MonoBehaviour {
 			if(_game_model.SelectedObjectDataDict.ContainsKey(tmp_key)){
 			
 				//オブジェクトが消える時のパーティクルが発生する
-				GameObject obj = (GameObject)Instantiate(Resources.Load("Prefabs/ParticleExplode"),new Vector3(tmp_data.transform.position.x,tmp_data.transform.position.y,tmp_data.transform.position.z),Quaternion.identity);
+				GameObject obj = Util.InstantiateUtil (_game_model, "ParticleExplode", new Vector3 (tmp_data.transform.position.x, tmp_data.transform.position.y, tmp_data.transform.position.z), Quaternion.identity);
+				
 				obj.GetComponent<ParticleSystem> ().Play ();
+
+				//obj.GetComponent<ParticleSystem>().
 
 				//現在存在しているパーティクルの参照の保存
 				_game_model.VanishParticleList.Add (obj);
@@ -551,14 +557,14 @@ public class Main : MonoBehaviour {
 	//消されたオブジェクトの得点の追加
 	private void AddRemovedObjectsPoint(){
 	
-		Text point_text = GameObject.Find ("/GameInfo/Canvas/Point_Text").GetComponent<Text> ();
+		Text point_text = Util.FindTextComponent ("/GameInfo/Canvas/Point_Text");
 		// (_game_model.TotalPoint);
 		point_text.text = _game_model.TotalPoint.ToString ();
 	}
 
 	//消されたオブジェクトの数を追加
 	private void AddRemovedObjectsCount(){
-		Text obj_count_text = GameObject.Find ("/GameInfo/Canvas/Count_Text").GetComponent<Text> ();
+		Text obj_count_text = Util.FindTextComponent ("/GameInfo/Canvas/Count_Text");
 		obj_count_text.text = _game_model.TotalObjectCount.ToString ();
 	}
 
@@ -615,9 +621,19 @@ public class Main : MonoBehaviour {
 		}
 			
 	}
-		
+
+
+//	private GameObject line_particle_obj;
+//	private ParticleSystem line_particle;
+
 	//マウスをドラッグ中なら近くのオブジェクト同時をつなぐ線の描画処理を継続
 	private void DrawLine(Dictionary<string,ObjectData> _selected_dict){
+
+//		if (line_particle == null) {
+//			line_particle_obj = (GameObject)Instantiate(Resources.Load("Prefabs/ParticleLine"),new Vector3(),Quaternion.identity);
+//			line_particle = line_particle_obj.GetComponent<ParticleSystem> ();
+//			line_particle.Stop ();
+//		}
 	
 		LineRenderer line = GameObject.Find ("LineContainer").GetComponent<LineRenderer>();
 		line.sortingOrder = 10;
@@ -631,6 +647,8 @@ public class Main : MonoBehaviour {
 			line.SetPosition (i,value.Obj.transform.position);
 			i += 1;
 		}
+
+
 	
 	}
 		

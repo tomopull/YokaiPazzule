@@ -1,8 +1,14 @@
 ﻿using UnityEngine;
 using System.Collections;
 using LitJson;
+using UnityEngine.UI;
 
 public class Util : MonoBehaviour {
+
+//	public struct ComponentType{
+//		public string TEXT = "text_componet";
+//		public string IMAGE = "image_component";
+//	}
 
 	void Shuffle (int[] deck) {
 		for (int i = 0; i < deck.Length; i++) {
@@ -47,6 +53,25 @@ public class Util : MonoBehaviour {
 		}
 
 		return base_url;
+	}
+
+
+	/// <summary>
+	/// テキストコンポネーントを取得
+	/// </summary>
+	/// <returns>The text component.</returns>
+	/// <param name="str">String.</param>
+	static public Text FindTextComponent(string str){
+		Text return_str = GameObject.Find (str).GetComponent<Text> ();
+		return return_str;
+	}
+		
+	/// <summary>
+	/// リソースのprefabから複製
+	/// </summary>
+	static public GameObject InstantiateUtil(GameModel _game_model, string resource_path,Vector3 default_position,Quaternion default_quaernion){
+		GameObject obj = (GameObject)Instantiate(Resources.Load(_game_model.PrefabResourcePath + resource_path),default_position ,default_quaernion);
+		return obj;
 	}
 
 
