@@ -45,6 +45,7 @@
 	</Reference>
   </ItemGroup>
   <ItemGroup>
+     <Compile Include="Assets\Script\CallMethodTest.cs" />
      <Compile Include="Assets\Script\CanvasTopScene.cs" />
      <Compile Include="Assets\Script\GameInfo.cs" />
      <Compile Include="Assets\Script\GameModel.cs" />
@@ -52,6 +53,7 @@
      <Compile Include="Assets\Script\ObjectData.cs" />
      <Compile Include="Assets\Script\ObjectManager.cs" />
      <Compile Include="Assets\Script\TopSceneModel.cs" />
+     <Compile Include="Assets\Script\UIManager.cs" />
      <Compile Include="Assets\lib\JsonObject\JSONObject.cs" />
      <Compile Include="Assets\lib\JsonObject\JSONTemplates.cs" />
      <Compile Include="Assets\lib\JsonObject\VectorTemplates.cs" />

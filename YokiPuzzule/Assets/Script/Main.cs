@@ -95,8 +95,8 @@ public class Main : MonoBehaviour {
 
 
 	private void InitPlatformTextDebug(){
-		Text base_url_text = Util.FindTextComponent("/GameInfo/Canvas/BaseURL_Text");
-		Text url_text = Util.FindTextComponent ("/GameInfo/Canvas/URL_Text");
+		Text base_url_text = Util.FindTextComponentUtil("/GameInfo/Canvas/BaseURL_Text");
+		Text url_text = Util.FindTextComponentUtil ("/GameInfo/Canvas/URL_Text");
 
 		base_url_text.text = Util.GetBaseURL ().ToString ();
 		url_text.text = _game_model.Json_Path.ToString ();
@@ -114,7 +114,7 @@ public class Main : MonoBehaviour {
 
 	//タイマーの表示の更新
 	private void TimerTcick(){
-		Text timer_text = Util.FindTextComponent ("/GameInfo/Canvas/Timer_Text");
+		Text timer_text = Util.FindTextComponentUtil ("/GameInfo/Canvas/Timer_Text");
 		string base_time = Mathf.Round (_timer.LimitTime).ToString ();
 		//時間終了判定
 		if (Mathf.Round (_timer.CurrentTime) == Mathf.Round (_timer.LimitTime)) {
@@ -557,14 +557,14 @@ public class Main : MonoBehaviour {
 	//消されたオブジェクトの得点の追加
 	private void AddRemovedObjectsPoint(){
 	
-		Text point_text = Util.FindTextComponent ("/GameInfo/Canvas/Point_Text");
+		Text point_text = Util.FindTextComponentUtil ("/GameInfo/Canvas/Point_Text");
 		// (_game_model.TotalPoint);
 		point_text.text = _game_model.TotalPoint.ToString ();
 	}
 
 	//消されたオブジェクトの数を追加
 	private void AddRemovedObjectsCount(){
-		Text obj_count_text = Util.FindTextComponent ("/GameInfo/Canvas/Count_Text");
+		Text obj_count_text = Util.FindTextComponentUtil ("/GameInfo/Canvas/Count_Text");
 		obj_count_text.text = _game_model.TotalObjectCount.ToString ();
 	}
 

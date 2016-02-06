@@ -57,21 +57,44 @@ public class Util : MonoBehaviour {
 
 
 	/// <summary>
-	/// テキストコンポネーントを取得
-	/// </summary>
-	/// <returns>The text component.</returns>
-	/// <param name="str">String.</param>
-	static public Text FindTextComponent(string str){
-		Text return_str = GameObject.Find (str).GetComponent<Text> ();
-		return return_str;
-	}
-		
-	/// <summary>
 	/// リソースのprefabから複製
 	/// </summary>
 	static public GameObject InstantiateUtil(GameModel _game_model, string resource_path,Vector3 default_position,Quaternion default_quaernion){
 		GameObject obj = (GameObject)Instantiate(Resources.Load(_game_model.PrefabResourcePath + resource_path),default_position ,default_quaernion);
+		//自動的につく(cloneの文字を除去処理 名称をresource_pathのみにする)
+		obj.name = resource_path;
+
 		return obj;
+	}
+
+
+	/// <summary>
+	/// テキストコンポネーントを取得
+	/// </summary>
+	/// <returns>The text component.</returns>
+	/// <param name="str">String.</param>
+	static public Text FindTextComponentUtil(string str){
+		Text return_str = GameObject.Find (str).GetComponent<Text> ();
+		return return_str;
+	}
+
+	/// <summary>
+	/// ゲームオブジェクトを取得
+	/// </summary>
+	/// <returns>The game object util.</returns>
+	/// <param name="str">String.</param>
+	static public GameObject FindGameObjectUtil(string str){
+		GameObject obj = (GameObject)GameObject.Find (str);
+		return obj;
+	}
+		
+	/// <summary>
+	/// ボタンコンポーネントの
+	/// </summary>
+	/// <returns>The button component util.</returns>
+	static public Button FindButtonComponentUtil(string str){
+		Button btn = GameObject.Find (str).GetComponent<Button> ();
+		return btn;
 	}
 
 

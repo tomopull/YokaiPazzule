@@ -6,9 +6,6 @@ using LitJson;
 
 public class TopSceneModel : MonoBehaviour {
 
-
-
-
 	//キャンバストップシーン
 	[SerializeField]
 	private GameObject canvas_top_scene;
