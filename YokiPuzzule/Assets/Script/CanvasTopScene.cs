@@ -9,7 +9,7 @@ public class CanvasTopScene : MonoBehaviour {
 
 	private TopSceneModel _top_scene_model;
 	private GameModel _game_model;
-	private UIManager uiManager;
+	private UIManager _ui_manager;
 
 	void Awake(){
 
@@ -25,7 +25,7 @@ public class CanvasTopScene : MonoBehaviour {
 	private void InitModel(){
 		_game_model = GameModel.Instance;
 		_top_scene_model = TopSceneModel.Instance;
-		this.uiManager = GameObject.Find ("UIManager").GetComponent<UIManager> ();
+		_ui_manager = UIManager.Instance.GetComponent<UIManager> ();
 	}
 
 
@@ -80,7 +80,7 @@ public class CanvasTopScene : MonoBehaviour {
 
 		//ルールボタン
 		Button rule_button = Util.FindButtonComponentUtil ("/CanvasTopScene/ImageButtonMenu/UIRuleButton");
-		this.uiManager.OnClick += ClickRuleButtonHandler;
+		_ui_manager.OnClick += ClickRuleButtonHandler;
 
 		//モアボタン
 		Button more_button = Util.FindButtonComponentUtil ("/CanvasTopScene/ImageButtonMenu/UIMoreButton");
@@ -89,8 +89,7 @@ public class CanvasTopScene : MonoBehaviour {
 	}
 
 	public void ClickRuleButtonHandler(object sender,EventArgs args){
-		Debug.Log ("click rule button");
-
+		Debug.Log ("click rule button test");
 	}
 	private void initRulePage (){
 
