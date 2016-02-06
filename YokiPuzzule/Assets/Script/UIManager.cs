@@ -15,7 +15,6 @@ public class UIManager : MonoBehaviour {
 	 */
 	public event EventHandler OnClick;
 
-
 	/**
 	 *OnGUI.
 	 */
@@ -23,15 +22,13 @@ public class UIManager : MonoBehaviour {
 		// イベント実行
 		if (this.OnClick != null) this.OnClick(this, EventArgs.Empty);
 	}
-
-
+		
 
 	public static UIManager Instance {
 		get {	
 			return UIManager.instance;	
 		}
 	}
-
 
 
 	void Awake()
@@ -49,7 +46,5 @@ public class UIManager : MonoBehaviour {
 		}
 
 	}
-
-
-
+		
 }

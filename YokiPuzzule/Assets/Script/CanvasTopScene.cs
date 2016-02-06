@@ -32,6 +32,7 @@ public class CanvasTopScene : MonoBehaviour {
 	//インターフェイス初期化
 	private void InitInterface(){
 		_top_scene_model.CanvasTopScene = Util.InstantiateUtil (_game_model, "CanvasTopScene", new Vector3 (183.5f, 326.5f, 0), Quaternion.identity);
+		InitPage();
 		ChangePage(0);
 	}
 		
@@ -44,63 +45,110 @@ public class CanvasTopScene : MonoBehaviour {
 		switch(page_id){
 
 		case 0:
-			initStartPage ();
+			GotoStartPage ();
 			break;
 
 		case 1:
-			initRulePage ();
+			GotoRulePage ();
 			break;
 
 		case 2:
-			initMorePage ();
+			GotoMorePage ();
 			break;
 
 		}
 
+	}
+		
+	//タイトルテキスト
+	private Text _title_text;
+
+	//ルールテキスト
+	private Text _rule_text;
+
+	//モアーテキスト
+	private Text _more_text;
+
+	//メニュー
+	private GameObject _menu;
+
+	//スタートボタン
+	private Button _start_button;
+
+	//ルールボタン
+	private Button _rule_button;
+
+	//モアボタン
+	private Button _more_button;
+
+	/// <summary>
+	///ページのすべての要素の
+	/// </summary>
+	private void InitPage(){
+
+		_title_text = Util.FindTextComponentUtil ("/CanvasTopScene/TextTitle");
+		_rule_text = Util.FindTextComponentUtil ("/CanvasTopScene/TextRule");
+		_more_text = Util.FindTextComponentUtil ("/CanvasTopScene/TextMore");
+
+		_menu = Util.FindGameObjectUtil ("/CanvasTopScene/ImageButtonMenu");
+
+		_start_button = Util.FindButtonComponentUtil ("/CanvasTopScene/ImageButtonMenu/UIStartButton");
+		_rule_button = Util.FindButtonComponentUtil ("/CanvasTopScene/ImageButtonMenu/UIRuleButton");
+		_more_button = Util.FindButtonComponentUtil ("/CanvasTopScene/ImageButtonMenu/UIMoreButton");
 
 	}
 
-
-	private void initStartPage(){
-
-		//タイトルテキスト
-		//_top_scene_model.CanvasTopScene.gameObject.
-		Text title_text = Util.FindTextComponentUtil ("/CanvasTopScene/TextTitle");
-		title_text.enabled = true;
-
-		//ルールテキスト
-		Text rule_text = Util.FindTextComponentUtil ("/CanvasTopScene/TextRule");
-		rule_text.enabled = false;
-
-		//メニュー
-		GameObject menu = Util.FindGameObjectUtil ("/CanvasTopScene/ImageButtonMenu");
-
-		//スタートボタン
-		Button start_button = Util.FindButtonComponentUtil ("/CanvasTopScene/ImageButtonMenu/UIStartButton");
-
-		//ルールボタン
-		Button rule_button = Util.FindButtonComponentUtil ("/CanvasTopScene/ImageButtonMenu/UIRuleButton");
-		_ui_manager.OnClick += ClickRuleButtonHandler;
-
-		//モアボタン
-		Button more_button = Util.FindButtonComponentUtil ("/CanvasTopScene/ImageButtonMenu/UIMoreButton");
-
-
+	/// <summary>
+	/// ゲーム開始
+	/// </summary>
+	private void StartGame(){
+		Application.LoadLevel ("Main");
 	}
 
-	public void ClickRuleButtonHandler(object sender,EventArgs args){
-		Debug.Log ("click rule button test");
+	private void GotoStartPage(){
+		_title_text.enabled = true;
+		_rule_text.enabled = false;
+		_more_text.enabled = false;
+
+		_rule_button.onClick.RemoveListener (GotoRulePage);
+		_more_button.onClick.RemoveListener (GotoMorePage);
+		_start_button.onClick.RemoveListener (StartGame);
+
+		_rule_button.onClick.AddListener (GotoRulePage);
+		_more_button.onClick.AddListener (GotoMorePage);
+		_start_button.onClick.AddListener (StartGame);
 	}
-	private void initRulePage (){
+		
+	private void GotoRulePage (){
+		_rule_text.enabled = true;
+		_title_text.enabled = false;
+		_more_text.enabled = false;
+
+		_rule_button.onClick.RemoveListener (GotoRulePage);
+		_more_button.onClick.RemoveListener (GotoMorePage);
+		_start_button.onClick.RemoveListener (StartGame);
+
+		_rule_button.onClick.RemoveListener (GotoRulePage);
+		_more_button.onClick.AddListener (GotoMorePage);
+		_start_button.onClick.AddListener (StartGame);
+	}
+		
+
+	private void GotoMorePage (){
+		_rule_text.enabled = false;
+		_title_text.enabled = false;
+		_more_text.enabled = true;
+
+		_rule_button.onClick.RemoveListener (GotoRulePage);
+		_more_button.onClick.RemoveListener (GotoMorePage);
+		_start_button.onClick.RemoveListener (StartGame);
+
+		_rule_button.onClick.AddListener (GotoRulePage);
+		_more_button.onClick.RemoveListener (GotoMorePage);
+		_start_button.onClick.AddListener (StartGame);
 
 	}
-
-
-	private void initMorePage (){
-
-	}
-
-
+		
 	// Update is called once per frame
 	void Update () {
 

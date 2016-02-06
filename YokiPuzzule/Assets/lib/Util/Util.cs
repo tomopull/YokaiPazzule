@@ -63,7 +63,6 @@ public class Util : MonoBehaviour {
 		GameObject obj = (GameObject)Instantiate(Resources.Load(_game_model.PrefabResourcePath + resource_path),default_position ,default_quaernion);
 		//自動的につく(cloneの文字を除去処理 名称をresource_pathのみにする)
 		obj.name = resource_path;
-
 		return obj;
 	}
 
