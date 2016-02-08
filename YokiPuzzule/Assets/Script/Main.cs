@@ -15,10 +15,6 @@ using LitJson;
 
 //key, value の連想配列でオブジェクト管理しないとだめかも
 
-//数値周りの関数
-//数値を０詰めで返す０００
-//zero_padding();
-
 //※タイマー機能
 //※選択したオブジェクトを戻す機能
 //*オブジェクトを追加するタイミング
@@ -91,15 +87,44 @@ public class Main : MonoBehaviour {
 		//タイマー初期化
 		InitTimer ();
 
+		//インフォの初期化
+		InitDebugInfo ();
+
+	}
+
+	//base url text
+	private Text _base_url_text;
+	//url text
+	private Text _url_text;
+
+	//point text
+	private Text _point_text;
+
+	//obj count text;
+	private Text _obj_count_text;
+
+	private  void InitDebugInfo(){
+		_base_url_text = Util.FindTextComponentUtil("/GameInfo/Canvas/BaseURL_Text");
+		_url_text = Util.FindTextComponentUtil ("/GameInfo/Canvas/URL_Text");
+		_point_text = Util.FindTextComponentUtil ("/GameInfo/Canvas/Point_Text");
+		_obj_count_text = Util.FindTextComponentUtil ("/GameInfo/Canvas/Count_Text");
 	}
 
 
 	private void InitPlatformTextDebug(){
-		Text base_url_text = Util.FindTextComponentUtil("/GameInfo/Canvas/BaseURL_Text");
-		Text url_text = Util.FindTextComponentUtil ("/GameInfo/Canvas/URL_Text");
+		_base_url_text.text = Util.GetBaseURL ().ToString ();
+		_url_text.text = _game_model.Json_Path.ToString ();
+	}
 
-		base_url_text.text = Util.GetBaseURL ().ToString ();
-		url_text.text = _game_model.Json_Path.ToString ();
+
+	//消されたオブジェクトの得点の追加
+	private void AddRemovedObjectsPoint(){
+		_point_text.text = _game_model.TotalPoint.ToString ();
+	}
+
+	//消されたオブジェクトの数を追加
+	private void AddRemovedObjectsCount(){
+		_obj_count_text.text = _game_model.TotalObjectCount.ToString ();
 	}
 
 
@@ -140,6 +165,7 @@ public class Main : MonoBehaviour {
 		_game_model.ColumnCount = 7;
 		_game_model.IsInteractive = !_game_model.IsInteractive;
 		_game_model.VanishParticleList = new List<GameObject> ();
+		_game_model.GetPointParticleList = new List<GameObject> ();
 
 		AddObjectsData (data, _game_model.RowCount, _game_model.ColumnCount);
 
@@ -496,15 +522,21 @@ public class Main : MonoBehaviour {
 			if(_game_model.SelectedObjectDataDict.ContainsKey(tmp_key)){
 			
 				//オブジェクトが消える時のパーティクルが発生する
-				GameObject obj = Util.InstantiateUtil (_game_model, "ParticleExplode", new Vector3 (tmp_data.transform.position.x, tmp_data.transform.position.y, tmp_data.transform.position.z), Quaternion.identity);
-				
-				obj.GetComponent<ParticleSystem> ().Play ();
+				GameObject _vanish_particle_obj = Util.InstantiateUtil (_game_model, "ParticleExplode", new Vector3 (tmp_data.transform.position.x, tmp_data.transform.position.y, tmp_data.transform.position.z), Quaternion.identity);
 
-				//obj.GetComponent<ParticleSystem>().
+				//ゲットポイントのパーティクルのが発生する
+				GameObject _get_point_particle_obj = Util.InstantiateUtil (_game_model, "GetPointParticle", new Vector3 (tmp_data.transform.position.x, tmp_data.transform.position.y, tmp_data.transform.position.z), Quaternion.identity);
+
+				iTween.MoveTo (_get_point_particle_obj, iTween.Hash ("position", new Vector3 (_point_text.transform.position.x, _point_text.transform.position.y, _point_text.transform.position.z), "easeType", iTween.EaseType.easeInOutCubic));
+
+
+
+				_vanish_particle_obj.GetComponent<ParticleSystem> ().Play ();
 
 				//現在存在しているパーティクルの参照の保存
-				_game_model.VanishParticleList.Add (obj);
-			
+				_game_model.VanishParticleList.Add (_vanish_particle_obj);
+				_game_model.GetPointParticleList.Add (_get_point_particle_obj);
+
 				//ゲームオブジェクトの削除
 				Destroy (tmp_data.Obj);
 
@@ -523,6 +555,7 @@ public class Main : MonoBehaviour {
 
 		AddRemovedObjectsPoint ();
 		AddRemovedObjectsCount ();
+
 	}
 
 
@@ -532,6 +565,7 @@ public class Main : MonoBehaviour {
 
 	private void RemoveParticleData(){
 
+		//消えるエフェクト再生終わったら
 		if (_game_model.VanishParticleList != null) {
 		
 			for (int i = 0; i < _game_model.VanishParticleList.Count; i++) {
@@ -552,22 +586,27 @@ public class Main : MonoBehaviour {
 		}
 
 
-	}
+		//目的座標に到着したら
+		if(_game_model.GetPointParticleList != null){
 
-	//消されたオブジェクトの得点の追加
-	private void AddRemovedObjectsPoint(){
-	
-		Text point_text = Util.FindTextComponentUtil ("/GameInfo/Canvas/Point_Text");
-		// (_game_model.TotalPoint);
-		point_text.text = _game_model.TotalPoint.ToString ();
-	}
+			for (int j = 0; j < _game_model.GetPointParticleList.Count; j++) {
 
-	//消されたオブジェクトの数を追加
-	private void AddRemovedObjectsCount(){
-		Text obj_count_text = Util.FindTextComponentUtil ("/GameInfo/Canvas/Count_Text");
-		obj_count_text.text = _game_model.TotalObjectCount.ToString ();
-	}
+				GameObject obj = _game_model.GetPointParticleList [j];
 
+				ParticleSystem particle = obj.GetComponent<ParticleSystem> ();
+
+				if(!particle.IsAlive()){
+					particle.Clear ();
+					_game_model.GetPointParticleList.Remove (particle.gameObject);
+					Destroy (particle.gameObject);
+				}
+					
+			}
+
+		}
+			
+	}
+						
 	//既に選択済みかそうでないか
 	//選択済み true, 未選択 false
 	private bool checkAlreadySetObjectsData(ObjectData check_obj){

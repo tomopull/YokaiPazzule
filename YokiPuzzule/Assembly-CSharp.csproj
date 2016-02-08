@@ -67,7 +67,12 @@
      <Compile Include="Assets\lib\Timer\Delegate.cs" />
      <Compile Include="Assets\lib\Timer\Timer.cs" />
      <Compile Include="Assets\lib\Util\Util.cs" />
+     <Compile Include="Assets\lib\iTween.cs" />
+     <Compile Include="Assets\lib\iTween\Sample\MoveSample.cs" />
+     <Compile Include="Assets\lib\iTween\Sample\RotateSample.cs" />
+     <Compile Include="Assets\lib\iTween\Sample\SampleInfo.cs" />
      <None Include="Assets\lib\JsonObject\readme.txt" />
+     <None Include="Assets\lib\iTween\ReadMe!\ReadMe!.txt" />
  <Reference Include="UnityEngine.UI">
  <HintPath>/Applications/Unity5.2.1f1/UnityUnity5.2.1f1.app/Contents/UnityExtensions/Unity/GUISystem/UnityEngine.UI.dll</HintPath>
  </Reference>

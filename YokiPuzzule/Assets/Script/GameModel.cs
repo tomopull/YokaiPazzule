@@ -222,6 +222,15 @@ public class GameModel : MonoBehaviour {
 		set { this.vanish_particle_list = value; }
 	}
 
+	//オブジェクトが加点されるパーティクルのデータ
+	[SerializeField]
+	private List<GameObject> get_point_particle_list;
+	public List<GameObject> GetPointParticleList
+	{
+		get { return this.get_point_particle_list; } 
+		set { this.get_point_particle_list = value; }
+	}
+
 
 	//ユニークな整数の取得
 	public static ulong GetUniqueIndex(){
