@@ -38,9 +38,6 @@ public class Main : MonoBehaviour {
 	
 		InitManager ();
 		Init ();
-
-		//プラットフォーム表示
-		InitPlatformTextDebug ();
 	}
 
 	//スワイプかタッチか判別
@@ -89,6 +86,9 @@ public class Main : MonoBehaviour {
 
 		//インフォの初期化
 		InitDebugInfo ();
+
+		//プラットフォーム表示
+		InitPlatformTextDebug ();
 
 	}
 
@@ -527,8 +527,11 @@ public class Main : MonoBehaviour {
 				//ゲットポイントのパーティクルのが発生する
 				GameObject _get_point_particle_obj = Util.InstantiateUtil (_game_model, "GetPointParticle", new Vector3 (tmp_data.transform.position.x, tmp_data.transform.position.y, tmp_data.transform.position.z), Quaternion.identity);
 
-				iTween.MoveTo (_get_point_particle_obj, iTween.Hash ("position", new Vector3 (_point_text.transform.position.x, _point_text.transform.position.y, _point_text.transform.position.z), "easeType", iTween.EaseType.easeInOutCubic));
 
+				//float dist_x = tmp_data.transform.position.x - _point_text.transform.position.x;
+				//float dist_y = tmp_data.transform.position.y -_point_text.transform.position.y;
+
+				//iTween.MoveTo (_get_point_particle_obj, iTween.Hash ("position", new Vector3 (dist_x,dist_y, 0), "easeType", iTween.EaseType.easeInOutCubic,"time",3.0f));
 
 
 				_vanish_particle_obj.GetComponent<ParticleSystem> ().Play ();
