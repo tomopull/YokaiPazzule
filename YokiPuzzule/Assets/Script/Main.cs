@@ -537,12 +537,12 @@ public class Main : MonoBehaviour {
 
 				Vector3 world_pos_of_point_text = Camera.main.ScreenToWorldPoint (_point_text.transform.position);
 
-				Debug.Log (world_pos_of_point_text.y);
 				iTween.MoveTo (_get_point_particle_obj, 
 					iTween.Hash (
 						"position", world_pos_of_point_text, 
 						"easeType", iTween.EaseType.easeInOutCubic,"time",0.8f,
-						"oncomplete", "Complete"
+						"oncomplete", "PointGetComplete",
+						"oncompletetarget", this.gameObject
 					));
 
 				_vanish_particle_obj.GetComponent<ParticleSystem> ().Play ();
@@ -567,9 +567,15 @@ public class Main : MonoBehaviour {
 
 		}
 
+//		AddRemovedObjectsPoint ();
+//		AddRemovedObjectsCount ();
+
+	}
+		
+
+	public void PointGetComplete(){
 		AddRemovedObjectsPoint ();
 		AddRemovedObjectsCount ();
-
 	}
 
 
