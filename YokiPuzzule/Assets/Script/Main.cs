@@ -528,11 +528,22 @@ public class Main : MonoBehaviour {
 				GameObject _get_point_particle_obj = Util.InstantiateUtil (_game_model, "GetPointParticle", new Vector3 (tmp_data.transform.position.x, tmp_data.transform.position.y, tmp_data.transform.position.z), Quaternion.identity);
 
 
-				//float dist_x = tmp_data.transform.position.x - _point_text.transform.position.x;
-				//float dist_y = tmp_data.transform.position.y -_point_text.transform.position.y;
+//				float dist_x = _point_text.transform.position.x;
+//				float dist_y = _point_text.transform.position.y;
+//				float dist_x = _point_text.transform.position.x - tmp_data.transform.position.x;
+//				float dist_y = _point_text.transform.position.y - tmp_data.transform.position.y;
+				//Debug.Log (_point_text.transform.position.x + ":x");
+				//Debug.Log (_point_text.transform.position.y + ":y");
 
-				//iTween.MoveTo (_get_point_particle_obj, iTween.Hash ("position", new Vector3 (dist_x,dist_y, 0), "easeType", iTween.EaseType.easeInOutCubic,"time",3.0f));
+				Vector3 world_pos_of_point_text = Camera.main.ScreenToWorldPoint (_point_text.transform.position);
 
+				Debug.Log (world_pos_of_point_text.y);
+				iTween.MoveTo (_get_point_particle_obj, 
+					iTween.Hash (
+						"position", world_pos_of_point_text, 
+						"easeType", iTween.EaseType.easeInOutCubic,"time",0.8f,
+						"oncomplete", "Complete"
+					));
 
 				_vanish_particle_obj.GetComponent<ParticleSystem> ().Play ();
 
