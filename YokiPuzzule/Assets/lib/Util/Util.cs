@@ -2,15 +2,14 @@
 using System.Collections;
 using LitJson;
 using UnityEngine.UI;
-
-public class Util : MonoBehaviour {
+static public class Util  {
 
 //	public struct ComponentType{
 //		public string TEXT = "text_componet";
 //		public string IMAGE = "image_component";
 //	}
 
-	void Shuffle (int[] deck) {
+	static public void Shuffle (int[] deck) {
 		for (int i = 0; i < deck.Length; i++) {
 			int temp = deck[i];
 			int randomIndex = Random.Range(0, deck.Length);
@@ -60,7 +59,7 @@ public class Util : MonoBehaviour {
 	/// リソースのprefabから複製
 	/// </summary>
 	static public GameObject InstantiateUtil(GameModel _game_model, string resource_path,Vector3 default_position,Quaternion default_quaernion){
-		GameObject obj = (GameObject)Instantiate(Resources.Load(_game_model.PrefabResourcePath + resource_path),default_position ,default_quaernion);
+		GameObject obj = (GameObject)GameObject.Instantiate(Resources.Load(_game_model.PrefabResourcePath + resource_path),default_position ,default_quaernion);
 		//自動的につく(cloneの文字を除去処理 名称をresource_pathのみにする)
 		obj.name = resource_path;
 		return obj;
