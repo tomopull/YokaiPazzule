@@ -27,22 +27,26 @@ public class Main : MonoBehaviour {
 	//ゲームのデータ管理
 	private GameModel _game_model;
 
-	//ゲームのオブジェクト生成
-	public ObjectManager _object_manager;
+	//ゲームオブジェクト管理
+	public GameObjectManager _game_object_manager;
+
+	//キャンバスオブジェクト管理
+	public CanvasObjectManager _canvas_object_manager;
+
+	//パーティクル管理
+	public ParticleManager _particle_manager;
 
 	//ユーザーインプット管理
 	private GameModel.SimpleTouch ActiveTouch;
 
 	// Use this for initialization
 	void Start () {
-	
 		InitManager ();
 		Init ();
 	}
 
 	//スワイプかタッチか判別
 	private void CaluculateTouchInput(GameModel.SimpleTouch CurrentTouch){
-
 		Vector2 touchDirection  = (CurrentTouch.CurrentTouchLocation - CurrentTouch.StartTouchLocation).normalized;
 		float touchDistance     = (CurrentTouch.StartTouchLocation - CurrentTouch.CurrentTouchLocation).magnitude;
 		TimeSpan timeGap        = System.DateTime.Now - CurrentTouch.StartTime;
@@ -52,8 +56,12 @@ public class Main : MonoBehaviour {
 
 	//各マネージャー、モデル初期化
 	private void InitManager(){
+
 		_game_model = GameModel.Instance;
-		_object_manager = ObjectManager.Instance;
+		_game_object_manager = GameObjectManager.Instance;
+		_canvas_object_manager = CanvasObjectManager.Instance;
+		_particle_manager = ParticleManager.Instance;
+
 		_game_model.Init ();
 	}
 		
@@ -85,15 +93,17 @@ public class Main : MonoBehaviour {
 		InitTimer ();
 
 		//インフォの初期化
-		InitDebugInfo ();
+		InitCanvasTextInfo ();
 
 		//プラットフォーム表示
-		InitPlatformTextDebug ();
+		Util.UpdateTextStringUtil (_base_url_text, Util.GetBaseURL ().ToString ()); //base url
+		Util.UpdateTextStringUtil (_url_text,_game_model.Json_Path.ToString()); //url text
 
 	}
 
 	//base url text
 	private Text _base_url_text;
+
 	//url text
 	private Text _url_text;
 
@@ -103,31 +113,13 @@ public class Main : MonoBehaviour {
 	//obj count text;
 	private Text _obj_count_text;
 
-	private  void InitDebugInfo(){
+	private  void InitCanvasTextInfo(){
 		_base_url_text = Util.FindTextComponentUtil("/GameInfo/Canvas/BaseURL_Text");
 		_url_text = Util.FindTextComponentUtil ("/GameInfo/Canvas/URL_Text");
 		_point_text = Util.FindTextComponentUtil ("/GameInfo/Canvas/Point_Text");
 		_obj_count_text = Util.FindTextComponentUtil ("/GameInfo/Canvas/Count_Text");
 	}
-
-
-	private void InitPlatformTextDebug(){
-		_base_url_text.text = Util.GetBaseURL ().ToString ();
-		_url_text.text = _game_model.Json_Path.ToString ();
-	}
-
-
-	//消されたオブジェクトの得点の追加
-	private void AddRemovedObjectsPoint(){
-		_point_text.text = _game_model.TotalPoint.ToString ();
-	}
-
-	//消されたオブジェクトの数を追加
-	private void AddRemovedObjectsCount(){
-		_obj_count_text.text = _game_model.TotalObjectCount.ToString ();
-	}
-
-
+		
 	private Timer _timer;
 	private bool time_up = false;
 
@@ -154,7 +146,6 @@ public class Main : MonoBehaviour {
 			timer_text.text = current_time + "/" + base_time;
 		}
 
-
 	}
 
 	//ゲームオブジェクトのデータの初期化
@@ -167,8 +158,15 @@ public class Main : MonoBehaviour {
 		_game_model.VanishParticleList = new List<GameObject> ();
 		_game_model.GetPointParticleList = new List<GameObject> ();
 
-		AddObjectsData (data, _game_model.RowCount, _game_model.ColumnCount);
 
+
+		_game_model.ParticleDataList = new List<List<GameObject>> ();
+		//_particle_manager.AddParticleList (_game_model.VanishParticleList, _game_model);
+		//_particle_manager.AddParticleList (_game_model.VanishParticleList, _game_model);
+
+
+
+		AddObjectsData (data, _game_model.RowCount, _game_model.ColumnCount);
 	}
 		
 	//オブジェクトを追加
@@ -249,134 +247,6 @@ public class Main : MonoBehaviour {
 			break;
 		}
 
-	}
-
-	//ボタンをダウンしている間つねにどのオブジェクト間にラインを引きどのオブジェクト間にラインを
-	//引かないか判定している。
-	private void SetLineObjetsData(){
-			//近くのオブジェクト同士を線でつなぐ
-			//マウスの位置を常に取得しマウスとオブジェクトが十分近ければライン描画用お配列に追加
-			//同じオブジェクトを配列に追加しない。
-			//マウスダウンされた位置のスクリーン座標をゲームのワールド座標で取得
-			Vector2 world_mouse_pos = Camera.main.ScreenToWorldPoint (Input.mousePosition);
-			//マウスとオブジェクトとの距離を判定
-			//マウスから一番近いオブジェクトの取得
-			//一番近いオブジェクトでなおかつ種類の同じものをなぞっていくと線がつながる
-
-		foreach (KeyValuePair<string,ObjectData> pair in _game_model.ObjectDataDict) {
-
-			ObjectData now_data = (ObjectData)pair.Value;
-
-			string now_key = pair.Key;
-
-			float now_distance = Vector3.Distance (world_mouse_pos, now_data.Obj.transform.position);
-
-			//最後に選択されたオブジェクトがある場合はそれとの距離とともに判定
-			if (_game_model.LastObjectSelected != null) {
-			
-				float now_distance_from_last_selected = Vector3.Distance (world_mouse_pos, _game_model.LastObjectSelected.Obj.transform.position);
-
-				//マウスと十分近いかどうか
-				//既に選択済みのオブジェクトがある場合は最後に選択済みのオブジェクトと十分近いかどうか
-				if (now_distance <= _game_model.TouchDistance && now_distance_from_last_selected <= _game_model.TouchDistance) {
-
-					//一番最初に選択したオブジェクトと同じ種類かどうか
-					//おなじなら選択済み配列に追加
-					if (_game_model.FirstObjectSelectedCategory == _game_model.ObjectDataDict[now_key].Category && !checkAlreadySetObjectsData (_game_model.ObjectDataDict[now_key])) {
-
-						_game_model.SelectedObjectDataDict.Add (now_key,now_data);
-
-						//最後から二番目に選択されていたオブジェクトへの参照(ここの代入の順番変えちゃだめ)
-						_game_model.LastButOneObjectSelected = _game_model.LastObjectSelected;
-
-						//最後に選択されたオブジェクトに代入
-						_game_model.LastObjectSelected = now_data;
-
-					}
-						
-				}
-					
-			}else {
-				//最初に選択したオブジェクトの場合
-				//マウスと十分近いかどうか
-				if (now_distance <= _game_model.TouchDistance) {
-
-					//一番最初に選択したオブジェクトの種類がnullなら現在のオブジェクトの種類を代入
-					if (_game_model.FirstObjectSelectedCategory == ObjectData.NullCategory) {
-						_game_model.FirstObjectSelectedCategory = _game_model.ObjectDataDict[now_key].Category;
-					}
-
-					//一番最初に選択したオブジェクトと同じ種類かどうか
-					//おなじなら選択済み配列に追加
-					if (_game_model.FirstObjectSelectedCategory == _game_model.ObjectDataDict[now_key].Category && !checkAlreadySetObjectsData (_game_model.ObjectDataDict [now_key])) {
-					
-						_game_model.SelectedObjectDataDict.Add (now_key,now_data);
-						//最後に選択されたオブジェクトに代入
-						_game_model.LastObjectSelected = now_data;
-						//print ("最初");
-					}
-
-				}
-					
-			}
-				
-		}
-
-	}
-
-
-	private void SetLineObjectDataReverse(){
-
-		//マウスダウンされた位置のスクリーン座標をゲームのワールド座標で取得
-		Vector2 world_mouse_pos = Camera.main.ScreenToWorldPoint (Input.mousePosition);
-
-		//オブジェクトを逆になぞりなおす処理
-		//前回なぞったオブジェクトをさかのぼると線をけしていける
-		//前回なぞったオブジェクトと十分マウスが近づいたらライン配列への登録解除
-		if(_game_model.LastObjectSelected != null && _game_model.LastButOneObjectSelected != null  ){
-		
-			float now_distance_from_last_object_selected = Vector3.Distance (world_mouse_pos,_game_model.LastObjectSelected.transform.position);
-
-			float now_distance_from_last_but_one_object_selected = Vector3.Distance (world_mouse_pos, _game_model.LastButOneObjectSelected.transform.position);
-
-			if(now_distance_from_last_but_one_object_selected <= _game_model.TouchDistance && now_distance_from_last_object_selected >= _game_model.TouchDistance){
-			
-				//一番最後のオブジェクトをとりあえず元の色に戻す
-				SetColor (_game_model.LastObjectSelected.Category,_game_model.LastObjectSelected.Obj);
-
-				//一番最後のオブジェクトの参照の削除
-				_game_model.SelectedObjectDataDict.Remove (_game_model.LastObjectSelected.Key);
-
-				int tmp_count = 0;
-				//一番最後のオブジェクトの参照のセット
-
-				//ライン上に選択しているオブジェクトが二つ以上ある場合は
-				//最後に選択したオブジェクトと最後から二番目に選択したオブジェクトの参照を設定し直す。
-				if (_game_model.SelectedObjectDataDict.Count >= 1) {
-				
-					foreach (KeyValuePair<string,ObjectData> pair in _game_model.SelectedObjectDataDict) {
-
-						ObjectData now_data = (ObjectData)pair.Value;
-						string now_key = pair.Key;
-
-						tmp_count += 1;
-
-						if (tmp_count == _game_model.SelectedObjectDataDict.Count) {
-							_game_model.LastObjectSelected = now_data;
-							//print ("一番最後のオブジェクトの参照のセット");
-						} else if (tmp_count == _game_model.SelectedObjectDataDict.Count - 1) {
-							_game_model.LastButOneObjectSelected = now_data;
-							//print ("最後から二番目のオブジェクトの参照のセット");
-						}
-							
-					}
-						
-				}
-					
-			}
-		
-		}
-			
 	}
 		
 	// Update is called once per frame
@@ -469,7 +339,7 @@ public class Main : MonoBehaviour {
 
 			//オブジェクト上にラインの描画
 			SetLineObjetsData ();
-		
+
 			SetLineObjectDataReverse ();
 
 			HighLightSelectedData (_game_model.SelectedObjectDataDict);
@@ -490,10 +360,136 @@ public class Main : MonoBehaviour {
 
 		}
 
-
 		//再生終了したパーティクルデータを削除
-		RemoveParticleData ();
+		if(_particle_manager != null)_particle_manager.RemoveParticleData ();	
 
+	}
+
+	//ボタンをダウンしている間つねにどのオブジェクト間にラインを引きどのオブジェクト間にラインを
+	//引かないか判定している。
+	private void SetLineObjetsData(){
+			//近くのオブジェクト同士を線でつなぐ
+			//マウスの位置を常に取得しマウスとオブジェクトが十分近ければライン描画用お配列に追加
+			//同じオブジェクトを配列に追加しない。
+			//マウスダウンされた位置のスクリーン座標をゲームのワールド座標で取得
+			Vector2 world_mouse_pos = Camera.main.ScreenToWorldPoint (Input.mousePosition);
+			//マウスとオブジェクトとの距離を判定
+			//マウスから一番近いオブジェクトの取得
+			//一番近いオブジェクトでなおかつ種類の同じものをなぞっていくと線がつながる
+
+		foreach (KeyValuePair<string,ObjectData> pair in _game_model.ObjectDataDict) {
+
+			ObjectData now_data = (ObjectData)pair.Value;
+
+			string now_key = pair.Key;
+
+			float now_distance = Vector3.Distance (world_mouse_pos, now_data.Obj.transform.position);
+
+			//最後に選択されたオブジェクトがある場合はそれとの距離とともに判定
+			if (_game_model.LastObjectSelected != null) {
+			
+				float now_distance_from_last_selected = Vector3.Distance (world_mouse_pos, _game_model.LastObjectSelected.Obj.transform.position);
+
+				//マウスと十分近いかどうか
+				//既に選択済みのオブジェクトがある場合は最後に選択済みのオブジェクトと十分近いかどうか
+				if (now_distance <= _game_model.TouchDistance && now_distance_from_last_selected <= _game_model.TouchDistance) {
+
+					//一番最初に選択したオブジェクトと同じ種類かどうか
+					//おなじなら選択済み配列に追加
+					if (_game_model.FirstObjectSelectedCategory == _game_model.ObjectDataDict[now_key].Category && !checkAlreadySetObjectsData (_game_model.ObjectDataDict[now_key])) {
+
+						_game_model.SelectedObjectDataDict.Add (now_key,now_data);
+
+						//最後から二番目に選択されていたオブジェクトへの参照(ここの代入の順番変えちゃだめ)
+						_game_model.LastButOneObjectSelected = _game_model.LastObjectSelected;
+
+						//最後に選択されたオブジェクトに代入
+						_game_model.LastObjectSelected = now_data;
+
+					}
+						
+				}
+					
+			}else {
+				//最初に選択したオブジェクトの場合
+				//マウスと十分近いかどうか
+				if (now_distance <= _game_model.TouchDistance) {
+
+					//一番最初に選択したオブジェクトの種類がnullなら現在のオブジェクトの種類を代入
+					if (_game_model.FirstObjectSelectedCategory == ObjectData.NullCategory) {
+						_game_model.FirstObjectSelectedCategory = _game_model.ObjectDataDict[now_key].Category;
+					}
+
+					//一番最初に選択したオブジェクトと同じ種類かどうか
+					//おなじなら選択済み配列に追加
+					if (_game_model.FirstObjectSelectedCategory == _game_model.ObjectDataDict[now_key].Category && !checkAlreadySetObjectsData (_game_model.ObjectDataDict [now_key])) {
+					
+						_game_model.SelectedObjectDataDict.Add (now_key,now_data);
+						//最後に選択されたオブジェクトに代入
+						_game_model.LastObjectSelected = now_data;
+						//print ("最初");
+					}
+
+				}
+					
+			}
+				
+		}
+
+	}
+		
+	private void SetLineObjectDataReverse(){
+
+		//マウスダウンされた位置のスクリーン座標をゲームのワールド座標で取得
+		Vector2 world_mouse_pos = Camera.main.ScreenToWorldPoint (Input.mousePosition);
+
+		//オブジェクトを逆になぞりなおす処理
+		//前回なぞったオブジェクトをさかのぼると線をけしていける
+		//前回なぞったオブジェクトと十分マウスが近づいたらライン配列への登録解除
+		if(_game_model.LastObjectSelected != null && _game_model.LastButOneObjectSelected != null  ){
+		
+			float now_distance_from_last_object_selected = Vector3.Distance (world_mouse_pos,_game_model.LastObjectSelected.transform.position);
+
+			float now_distance_from_last_but_one_object_selected = Vector3.Distance (world_mouse_pos, _game_model.LastButOneObjectSelected.transform.position);
+
+			if(now_distance_from_last_but_one_object_selected <= _game_model.TouchDistance && now_distance_from_last_object_selected >= _game_model.TouchDistance){
+			
+				//一番最後のオブジェクトをとりあえず元の色に戻す
+				SetColor (_game_model.LastObjectSelected.Category,_game_model.LastObjectSelected.Obj);
+
+				//一番最後のオブジェクトの参照の削除
+				_game_model.SelectedObjectDataDict.Remove (_game_model.LastObjectSelected.Key);
+
+				int tmp_count = 0;
+				//一番最後のオブジェクトの参照のセット
+
+				//ライン上に選択しているオブジェクトが二つ以上ある場合は
+				//最後に選択したオブジェクトと最後から二番目に選択したオブジェクトの参照を設定し直す。
+				if (_game_model.SelectedObjectDataDict.Count >= 1) {
+				
+					foreach (KeyValuePair<string,ObjectData> pair in _game_model.SelectedObjectDataDict) {
+
+						ObjectData now_data = (ObjectData)pair.Value;
+						string now_key = pair.Key;
+
+						tmp_count += 1;
+
+						if (tmp_count == _game_model.SelectedObjectDataDict.Count) {
+							_game_model.LastObjectSelected = now_data;
+							//print ("一番最後のオブジェクトの参照のセット");
+						} else if (tmp_count == _game_model.SelectedObjectDataDict.Count - 1) {
+							_game_model.LastButOneObjectSelected = now_data;
+							//print ("最後から二番目のオブジェクトの参照のセット");
+						}
+							
+					}
+						
+				}
+					
+			}
+		
+		}
+			
 	}
 
 	//選択したリストのチェック
@@ -526,7 +522,6 @@ public class Main : MonoBehaviour {
 
 				//ゲットポイントのパーティクルのが発生する
 				GameObject _get_point_particle_obj = Util.InstantiateUtil (_game_model, "GetPointParticle", new Vector3 (tmp_data.transform.position.x, tmp_data.transform.position.y, tmp_data.transform.position.z), Quaternion.identity);
-
 
 //				float dist_x = _point_text.transform.position.x;
 //				float dist_y = _point_text.transform.position.y;
@@ -566,16 +561,16 @@ public class Main : MonoBehaviour {
 			}
 
 		}
-
-//		AddRemovedObjectsPoint ();
-//		AddRemovedObjectsCount ();
+			
 
 	}
 		
 
 	public void PointGetComplete(){
-		AddRemovedObjectsPoint ();
-		AddRemovedObjectsCount ();
+		//ポイント
+		Util.UpdateTextStringUtil (_point_text,_game_model.TotalPoint.ToString());
+		//オブジェクトカウント
+		Util.UpdateTextStringUtil (_obj_count_text, _game_model.TotalObjectCount.ToString());
 	}
 
 

@@ -213,6 +213,16 @@ public class GameModel : MonoBehaviour {
 	}
 
 
+
+	//パーティクルのデータの管理
+	[SerializeField]
+	private List<List<GameObject>>_particle_data_list;
+	public List<List<GameObject>> ParticleDataList
+	{
+	    get { return this._particle_data_list; } 
+	    set { this._particle_data_list = value; }
+	}
+
 	//オブジェクトが消えるパーティクルのデータ
 	[SerializeField]
 	private List<GameObject> vanish_particle_list;

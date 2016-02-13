@@ -53,8 +53,7 @@ static public class Util  {
 
 		return base_url;
 	}
-
-
+		
 	/// <summary>
 	/// リソースのprefabから複製
 	/// </summary>
@@ -74,6 +73,15 @@ static public class Util  {
 	static public Text FindTextComponentUtil(string str){
 		Text return_str = GameObject.Find (str).GetComponent<Text> ();
 		return return_str;
+	}
+
+	/// <summary>
+	/// テキストのストリングを更新
+	/// </summary>
+	/// <returns>The text string util.</returns>
+	static public string UpdateTextStringUtil(Text _text, string _string){
+		_text.text = _string;
+		return _string;
 	}
 
 	/// <summary>
