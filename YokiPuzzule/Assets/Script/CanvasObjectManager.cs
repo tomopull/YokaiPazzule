@@ -10,5 +10,22 @@ public class CanvasObjectManager : MonoBehaviour {
 			return CanvasObjectManager.instance;	
 		}
 	}
+
+
+	void Awake()
+	{
+		if( instance == null)
+
+		{
+
+			instance = this;
+
+		}else{
+
+			Destroy( this );
+
+		}
+
+	}
 		
 }

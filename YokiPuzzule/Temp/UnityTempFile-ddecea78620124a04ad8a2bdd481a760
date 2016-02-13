@@ -81,6 +81,7 @@
 'Assets/Script/GameObjectManager.cs'
 'Assets/Script/Main.cs'
 'Assets/Script/ObjectData.cs'
+'Assets/Script/ParticleManager.cs'
 'Assets/Script/TopSceneModel.cs'
 'Assets/Script/UIManager.cs'
 'Assets/lib/JsonObject/JSONObject.cs'

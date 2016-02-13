@@ -41,6 +41,7 @@ public class Main : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
+		//init all managers
 		InitManager ();
 		Init ();
 	}
@@ -56,11 +57,16 @@ public class Main : MonoBehaviour {
 
 	//各マネージャー、モデル初期化
 	private void InitManager(){
-
 		_game_model = GameModel.Instance;
+
 		_game_object_manager = GameObjectManager.Instance;
+
 		_canvas_object_manager = CanvasObjectManager.Instance;
+
 		_particle_manager = ParticleManager.Instance;
+		_particle_manager._game_model = _game_model;
+
+		_game_model.ParticleDataList = new List<List<GameObject>> ();
 
 		_game_model.Init ();
 	}
@@ -150,28 +156,20 @@ public class Main : MonoBehaviour {
 
 	//ゲームオブジェクトのデータの初期化
 	private void InitObjects(JsonData data){
-
 		_game_model.ObjectDataDict = new Dictionary<String,ObjectData> ();
 		_game_model.RowCount = 7;
 		_game_model.ColumnCount = 7;
 		_game_model.IsInteractive = !_game_model.IsInteractive;
-		_game_model.VanishParticleList = new List<GameObject> ();
-		_game_model.GetPointParticleList = new List<GameObject> ();
 
-
-
-		_game_model.ParticleDataList = new List<List<GameObject>> ();
-		//_particle_manager.AddParticleList (_game_model.VanishParticleList, _game_model);
-		//_particle_manager.AddParticleList (_game_model.VanishParticleList, _game_model);
-
-
+		_particle_manager.InitParticleList (_game_model.VanishParticleList, _game_model);
+		_particle_manager.InitParticleList (_game_model.GetPointParticleList, _game_model);
 
 		AddObjectsData (data, _game_model.RowCount, _game_model.ColumnCount);
 	}
 		
 	//オブジェクトを追加
 	private void AddObjectsData(JsonData data,int row_count, int column_count,Vector3 offset = new Vector3()){
-	
+
 		Util.Shuffle (data);
 
 		//ゲームオブジェクト描画するゲームオブジェクト
@@ -543,11 +541,12 @@ public class Main : MonoBehaviour {
 				_vanish_particle_obj.GetComponent<ParticleSystem> ().Play ();
 
 				//現在存在しているパーティクルの参照の保存
-				_game_model.VanishParticleList.Add (_vanish_particle_obj);
-				_game_model.GetPointParticleList.Add (_get_point_particle_obj);
+				_particle_manager.AddParticleList (_vanish_particle_obj, _game_model.VanishParticleList);
+				_particle_manager.AddParticleList (_get_point_particle_obj, _game_model.GetPointParticleList);
 
 				//ゲームオブジェクトの削除
 				Destroy (tmp_data.Obj);
+
 
 				//獲得ポイント追加
 				_game_model.TotalPoint += tmp_data.Point;
