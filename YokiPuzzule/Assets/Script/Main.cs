@@ -39,6 +39,21 @@ public class Main : MonoBehaviour {
 	//ユーザーインプット管理
 	private GameModel.SimpleTouch ActiveTouch;
 
+	//base url text
+	private Text _base_url_text;
+
+	//url text
+	private Text _url_text;
+
+	//point text
+	private Text _point_text;
+
+	//obj count text;
+	private Text _obj_count_text;
+
+	private Timer _timer;
+	private bool time_up = false;
+
 	// Use this for initialization
 	void Start () {
 		//init all managers
@@ -60,14 +75,15 @@ public class Main : MonoBehaviour {
 		_game_model = GameModel.Instance;
 
 		_game_object_manager = GameObjectManager.Instance;
+		_game_object_manager._game_model = _game_model;
 
 		_canvas_object_manager = CanvasObjectManager.Instance;
+		_canvas_object_manager._game_model = _game_model;
 
 		_particle_manager = ParticleManager.Instance;
 		_particle_manager._game_model = _game_model;
 
 		_game_model.ParticleDataList = new List<List<GameObject>> ();
-
 		_game_model.Init ();
 	}
 		
@@ -107,18 +123,6 @@ public class Main : MonoBehaviour {
 
 	}
 
-	//base url text
-	private Text _base_url_text;
-
-	//url text
-	private Text _url_text;
-
-	//point text
-	private Text _point_text;
-
-	//obj count text;
-	private Text _obj_count_text;
-
 	private  void InitCanvasTextInfo(){
 		_base_url_text = Util.FindTextComponentUtil("/GameInfo/Canvas/BaseURL_Text");
 		_url_text = Util.FindTextComponentUtil ("/GameInfo/Canvas/URL_Text");
@@ -126,9 +130,6 @@ public class Main : MonoBehaviour {
 		_obj_count_text = Util.FindTextComponentUtil ("/GameInfo/Canvas/Count_Text");
 	}
 		
-	private Timer _timer;
-	private bool time_up = false;
-
 	private void InitTimer(){
 		_timer = new Timer ();
 		_timer.LimitTime = _game_model.GameTime;
@@ -511,6 +512,7 @@ public class Main : MonoBehaviour {
 		foreach (KeyValuePair<string,ObjectData> pair in _game_model.SelectedObjectDataDict) {
 
 			string tmp_key = pair.Key;
+
 			ObjectData tmp_data = pair.Value;
 
 			if(_game_model.SelectedObjectDataDict.ContainsKey(tmp_key)){
@@ -520,13 +522,6 @@ public class Main : MonoBehaviour {
 
 				//ゲットポイントのパーティクルのが発生する
 				GameObject _get_point_particle_obj = Util.InstantiateUtil (_game_model, "GetPointParticle", new Vector3 (tmp_data.transform.position.x, tmp_data.transform.position.y, tmp_data.transform.position.z), Quaternion.identity);
-
-//				float dist_x = _point_text.transform.position.x;
-//				float dist_y = _point_text.transform.position.y;
-//				float dist_x = _point_text.transform.position.x - tmp_data.transform.position.x;
-//				float dist_y = _point_text.transform.position.y - tmp_data.transform.position.y;
-				//Debug.Log (_point_text.transform.position.x + ":x");
-				//Debug.Log (_point_text.transform.position.y + ":y");
 
 				Vector3 world_pos_of_point_text = Camera.main.ScreenToWorldPoint (_point_text.transform.position);
 
@@ -547,12 +542,11 @@ public class Main : MonoBehaviour {
 				//ゲームオブジェクトの削除
 				Destroy (tmp_data.Obj);
 
-
 				//獲得ポイント追加
-				_game_model.TotalPoint += tmp_data.Point;
+				_canvas_object_manager.AddTotalPoint (tmp_data.Point);
 
 				//獲得オブジェクト数の追加
-				_game_model.TotalObjectCount += 1;
+				_canvas_object_manager.AddTotalCount (1);
 
 				//元となる配列から参照の削除
 				_game_model.ObjectDataDict.Remove (tmp_key);
@@ -561,64 +555,13 @@ public class Main : MonoBehaviour {
 
 		}
 			
-
 	}
 		
-
 	public void PointGetComplete(){
 		//ポイント
 		Util.UpdateTextStringUtil (_point_text,_game_model.TotalPoint.ToString());
 		//オブジェクトカウント
 		Util.UpdateTextStringUtil (_obj_count_text, _game_model.TotalObjectCount.ToString());
-	}
-
-
-	/// <summary>
-	/// 再生されたパーティクルデータを削除
-	/// </summary>
-
-	private void RemoveParticleData(){
-
-		//消えるエフェクト再生終わったら
-		if (_game_model.VanishParticleList != null) {
-		
-			for (int i = 0; i < _game_model.VanishParticleList.Count; i++) {
-			
-				GameObject obj = (GameObject)_game_model.VanishParticleList [i];
-
-				ParticleSystem particle = obj.GetComponent<ParticleSystem> ();
-
-				if(!particle.IsAlive()){
-					particle.Clear ();
-					_game_model.VanishParticleList.Remove (particle.gameObject);
-					Destroy (particle.gameObject);
-					//Debug.Log ("パーティクル削除");
-				}
-					
-			}
-
-		}
-
-
-		//目的座標に到着したら
-		if(_game_model.GetPointParticleList != null){
-
-			for (int j = 0; j < _game_model.GetPointParticleList.Count; j++) {
-
-				GameObject obj = _game_model.GetPointParticleList [j];
-
-				ParticleSystem particle = obj.GetComponent<ParticleSystem> ();
-
-				if(!particle.IsAlive()){
-					particle.Clear ();
-					_game_model.GetPointParticleList.Remove (particle.gameObject);
-					Destroy (particle.gameObject);
-				}
-					
-			}
-
-		}
-			
 	}
 						
 	//既に選択済みかそうでないか
