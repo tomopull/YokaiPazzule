@@ -45,16 +45,15 @@
 	</Reference>
   </ItemGroup>
   <ItemGroup>
-     <Compile Include="Assets\Script\CanvasObjectManager.cs" />
-     <Compile Include="Assets\Script\CanvasTopScene.cs" />
-     <Compile Include="Assets\Script\GameInfo.cs" />
-     <Compile Include="Assets\Script\GameModel.cs" />
-     <Compile Include="Assets\Script\GameObjectManager.cs" />
-     <Compile Include="Assets\Script\Main.cs" />
-     <Compile Include="Assets\Script\ObjectData.cs" />
-     <Compile Include="Assets\Script\ParticleManager.cs" />
-     <Compile Include="Assets\Script\TopSceneModel.cs" />
-     <Compile Include="Assets\Script\UIManager.cs" />
+     <Compile Include="Assets\Script\data\ObjectData.cs" />
+     <Compile Include="Assets\Script\manager\CanvasObjectManager.cs" />
+     <Compile Include="Assets\Script\manager\GameObjectManager.cs" />
+     <Compile Include="Assets\Script\manager\ParticleManager.cs" />
+     <Compile Include="Assets\Script\model\GameModel.cs" />
+     <Compile Include="Assets\Script\model\TopSceneModel.cs" />
+     <Compile Include="Assets\Script\model\UIManager.cs" />
+     <Compile Include="Assets\Script\scene\CanvasTopScene.cs" />
+     <Compile Include="Assets\Script\scene\MainScene.cs" />
      <Compile Include="Assets\lib\JsonObject\JSONObject.cs" />
      <Compile Include="Assets\lib\JsonObject\JSONTemplates.cs" />
      <Compile Include="Assets\lib\JsonObject\VectorTemplates.cs" />

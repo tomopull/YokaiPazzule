@@ -76,6 +76,17 @@ static public class Util  {
 	}
 
 	/// <summary>
+	/// get text component and set the component's string to selected new text
+	/// </summary>
+	/// <returns>The text to text component util.</returns>
+	/// <param name="_str">_str.</param>
+	/// <param name="_new_text">_new_text.</param>
+	static public Text SetTextToTextComponentUtil(string _str,Text _new_text){
+		_new_text = GameObject.Find (_str).GetComponent<Text> ();
+		return _new_text;
+	}
+
+	/// <summary>
 	/// テキストのストリングを更新
 	/// </summary>
 	/// <returns>The text string util.</returns>
