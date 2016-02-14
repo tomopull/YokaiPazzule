@@ -197,9 +197,40 @@ public class MainScene : MonoBehaviour {
 		_retry_button.onClick.AddListener (GotoReTryPage);
 		_back_to_top_button.onClick.AddListener (GotoBackToTopPage);
 
-		Util.UpdateTextStringUtil (_total_point_text, _game_model.TotalPoint.ToString());
-		Util.UpdateTextStringUtil (_highest_total_point_text, _game_model.highestTotalPoint.ToString());
 
+		//show now total and past highest point and save data
+		int _high_score;
+
+		int _score;
+
+		//今回のスコア
+		_score = _game_model.TotalPoint;
+
+		if (PlayerPrefs.HasKey ("high_score")) {
+			_high_score = PlayerPrefs.GetInt ("high_score");
+
+			//最高得点が存在しかつ更新していたら更新セーブ
+			if (_high_score < _game_model.TotalPoint) {
+				PlayerPrefs.SetInt ("high_score", _score);
+				PlayerPrefs.SetInt ("score", _score);
+				_total_point_text.color = Color.yellow;
+			} else {
+			
+			}
+
+		} else {
+			//最初は全てがハイスコア
+			_high_score = _game_model.TotalPoint;
+			PlayerPrefs.SetInt ("score",_score);
+			PlayerPrefs.SetInt ("high_score", _high_score);
+		}
+			
+
+		PlayerPrefs.Save ();
+
+		Util.UpdateTextStringUtil (_total_point_text,_score.ToString());
+
+		Util.UpdateTextStringUtil (_highest_total_point_text, _high_score.ToString());
 
 	
 	}
