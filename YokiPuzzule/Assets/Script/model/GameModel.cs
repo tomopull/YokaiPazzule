@@ -6,6 +6,12 @@ using LitJson;
 
 public class GameModel : MonoBehaviour {
 
+	//score key
+	public const string SCORE_KEY =  "score_key";
+
+	//high_score_key
+	public const string  HIGH_SCORE_KEY = "high_score_key";
+
 
 	//prefab resource path
 	[SerializeField]
@@ -20,6 +26,7 @@ public class GameModel : MonoBehaviour {
 	public struct GameState{
 		public string GAME_START_STATE;
 		public string GAME_END_STATE;
+		public string GAME_IDLE_STATE;
 	}
 
 	[SerializeField]
@@ -76,6 +83,7 @@ public class GameModel : MonoBehaviour {
 	    get { return this.highest_total_point; } 
 	    set { this.highest_total_point = value; }
 	}
+
 
 	//オリジナルjson data
 	[SerializeField]
@@ -303,7 +311,6 @@ public class GameModel : MonoBehaviour {
 		total_point = rowCount = columnCount = 0;
 		_uniqe_index = 0;
 	}
-
 
 	void Awake()
 	{

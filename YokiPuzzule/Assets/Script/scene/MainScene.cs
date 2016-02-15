@@ -75,6 +75,7 @@ public class MainScene : MonoBehaviour {
 		//init all managers
 		InitManager ();
 		Init ();
+		//PlayerPrefs.DeleteAll ();
 	}
 
 	//スワイプかタッチか判別
@@ -145,7 +146,8 @@ public class MainScene : MonoBehaviour {
 
 		_game_state.GAME_END_STATE = "game_end_state";
 		_game_state.GAME_START_STATE = "game_start_state";
-		_game_model.NowState = _game_state.GAME_START_STATE;
+		_game_state.GAME_IDLE_STATE = "game_idle_state";
+		SetGameState (_game_state.GAME_START_STATE);
 
 		_base_url_text = Util.FindTextComponentUtil("/GameInfo/Canvas/BaseURL_Text");
 		_url_text = Util.FindTextComponentUtil ("/GameInfo/Canvas/URL_Text");
@@ -157,6 +159,11 @@ public class MainScene : MonoBehaviour {
 		_highest_total_point_text = Util.FindTextComponentUtil ("/GameInfo/Canvas/ResultMenu/Highest_Total_Point_Text");
 		_retry_button = Util.FindButtonComponentUtil ("/GameInfo/Canvas/ResultMenu/UIRetryButton");
 		_back_to_top_button = Util.FindButtonComponentUtil ("/GameInfo/Canvas/ResultMenu/UIBackToToTopButton");
+	}
+
+	private void SetGameState(string str){
+		_game_model.NowState = str;
+		Debug.Log (_game_model.NowState);
 	}
 
 	/// <summary>
@@ -180,60 +187,66 @@ public class MainScene : MonoBehaviour {
 	/// canvas display the end of playing the game
 	/// </summary>
 	private void GotoResultPage(){
+	
+		if (_game_model.NowState == _game_state.GAME_END_STATE) {
+		
+			_base_url_text.gameObject.SetActive (false);
+			_url_text.gameObject.SetActive (false);
+			_point_text.gameObject.SetActive (false);
+			_obj_count_text.gameObject.SetActive (false);
 
-		_base_url_text.gameObject.SetActive (false);
-		_url_text.gameObject.SetActive (false);
-		_point_text.gameObject.SetActive (false);
-		_obj_count_text.gameObject.SetActive (false);
-
-		_total_point_text.gameObject.SetActive (true);
-		_highest_total_point_text.gameObject.SetActive (true);
-		_retry_button.gameObject.SetActive (true);
-		_back_to_top_button.gameObject.SetActive (true);
-
-
-		_retry_button.onClick.RemoveListener (GotoReTryPage);
-		_back_to_top_button.onClick.RemoveListener (GotoBackToTopPage);
-		_retry_button.onClick.AddListener (GotoReTryPage);
-		_back_to_top_button.onClick.AddListener (GotoBackToTopPage);
+			_total_point_text.gameObject.SetActive (true);
+			_highest_total_point_text.gameObject.SetActive (true);
+			_retry_button.gameObject.SetActive (true);
+			_back_to_top_button.gameObject.SetActive (true);
 
 
-		//show now total and past highest point and save data
-		int _high_score;
+			_retry_button.onClick.RemoveListener (GotoReTryPage);
+			_back_to_top_button.onClick.RemoveListener (GotoBackToTopPage);
+			_retry_button.onClick.AddListener (GotoReTryPage);
+			_back_to_top_button.onClick.AddListener (GotoBackToTopPage);
 
-		int _score;
+			//show now total and past highest point and save data
+			int _high_score = 0;
 
-		//今回のスコア
-		_score = _game_model.TotalPoint;
+			//今回のスコア
+			int _score = _game_model.TotalPoint;
 
-		if (PlayerPrefs.HasKey ("high_score")) {
-			_high_score = PlayerPrefs.GetInt ("high_score");
+			if (PlayerPrefs.HasKey (GameModel.HIGH_SCORE_KEY)) {
+		
+				_high_score = PlayerPrefs.GetInt (GameModel.HIGH_SCORE_KEY);
 
-			//最高得点が存在しかつ更新していたら更新セーブ
-			if (_high_score < _game_model.TotalPoint) {
-				PlayerPrefs.SetInt ("high_score", _score);
-				PlayerPrefs.SetInt ("score", _score);
-				_total_point_text.color = Color.yellow;
+				//最高得点が存在しかつ更新していたら更新セーブ
+				if (_high_score < _score) {
+					PlayerPrefs.SetInt (GameModel.SCORE_KEY, _score);
+					PlayerPrefs.SetInt (GameModel.HIGH_SCORE_KEY, _score);
+					_total_point_text.color = Color.yellow;
+				} else {
+					//最高得点更新していない
+					PlayerPrefs.SetInt (GameModel.HIGH_SCORE_KEY, _high_score);
+					PlayerPrefs.SetInt (GameModel.SCORE_KEY, _high_score);
+					_total_point_text.color = Color.grey;
+				}
+
 			} else {
-			
+				//最高得点初期化
+				_high_score = _game_model.TotalPoint;
+				PlayerPrefs.SetInt (GameModel.SCORE_KEY, _score);
+				PlayerPrefs.SetInt (GameModel.HIGH_SCORE_KEY, _high_score);
+				_total_point_text.color = Color.yellow;
 			}
 
-		} else {
-			//最初は全てがハイスコア
-			_high_score = _game_model.TotalPoint;
-			PlayerPrefs.SetInt ("score",_score);
-			PlayerPrefs.SetInt ("high_score", _high_score);
-		}
+			PlayerPrefs.Save ();
 			
+			Util.UpdateTextStringUtil (_total_point_text, _score.ToString ());
+			Util.UpdateTextStringUtil (_highest_total_point_text, _high_score.ToString ());
 
-		PlayerPrefs.Save ();
 
-		Util.UpdateTextStringUtil (_total_point_text,_score.ToString());
+		}
 
-		Util.UpdateTextStringUtil (_highest_total_point_text, _high_score.ToString());
-
-	
 	}
+
+
 
 	/// <summary>
 	/// goto retry page
@@ -379,11 +392,14 @@ public class MainScene : MonoBehaviour {
 			if (!time_up) {
 				TimerTcick ();
 			} else {
-				//time up
+				//time up execute
 				//Time.timeScale = 0;
-				//show result display
-				_game_model.NowState = _game_state.GAME_END_STATE;
-				GotoResultPage ();
+				if(_game_model.NowState ==  _game_state.GAME_START_STATE ){
+					//show result display
+					SetGameState (_game_state.GAME_END_STATE);
+					GotoResultPage ();
+					SetGameState (_game_state.GAME_IDLE_STATE);
+				}
 			}
 		}
 
