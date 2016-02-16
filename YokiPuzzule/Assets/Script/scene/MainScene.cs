@@ -66,6 +66,9 @@ public class MainScene : MonoBehaviour {
 	//back to top button
 	private Button _back_to_top_button;
 
+	//reset button 
+	private Button _reset_button;
+
 
 	private Timer _timer;
 	private bool time_up = false;
@@ -159,7 +162,18 @@ public class MainScene : MonoBehaviour {
 		_highest_total_point_text = Util.FindTextComponentUtil ("/GameInfo/Canvas/ResultMenu/Highest_Total_Point_Text");
 		_retry_button = Util.FindButtonComponentUtil ("/GameInfo/Canvas/ResultMenu/UIRetryButton");
 		_back_to_top_button = Util.FindButtonComponentUtil ("/GameInfo/Canvas/ResultMenu/UIBackToToTopButton");
+		_reset_button = Util.FindButtonComponentUtil ("/GameInfo/Canvas/ResultMenu/UIRestButton");
+
+		_reset_button.onClick.AddListener (ResetPlayerPref);
 	}
+
+	/// <summary>
+	/// init data
+	/// </summary>
+	private void ResetPlayerPref(){
+		PlayerPrefs.DeleteAll ();
+	}
+		
 
 	private void SetGameState(string str){
 		_game_model.NowState = str;
@@ -181,6 +195,8 @@ public class MainScene : MonoBehaviour {
 		_retry_button.gameObject.SetActive (false);
 		_back_to_top_button.gameObject.SetActive (false);
 
+		_reset_button.gameObject.SetActive (false);
+
 	}
 
 	/// <summary>
@@ -199,6 +215,8 @@ public class MainScene : MonoBehaviour {
 			_highest_total_point_text.gameObject.SetActive (true);
 			_retry_button.gameObject.SetActive (true);
 			_back_to_top_button.gameObject.SetActive (true);
+
+			_reset_button.gameObject.SetActive (true);
 
 
 			_retry_button.onClick.RemoveListener (GotoReTryPage);
