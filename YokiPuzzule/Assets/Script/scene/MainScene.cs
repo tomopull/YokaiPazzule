@@ -66,7 +66,7 @@ public class MainScene : MonoBehaviour {
 	//back to top button
 	private Button _back_to_top_button;
 
-	//reset button 
+	//reset button
 	private Button _reset_button;
 
 
@@ -106,7 +106,7 @@ public class MainScene : MonoBehaviour {
 		_game_model.ParticleDataList = new List<List<GameObject>> ();
 		_game_model.Init ();
 	}
-		
+
 	//初期化
 	private void Init(){
 		LoadFile ();
@@ -117,7 +117,7 @@ public class MainScene : MonoBehaviour {
 		StartCoroutine("LoadFileCorutine",_game_model.Json_Path);
 	}
 
-	IEnumerator LoadFileCorutine(string _file_path){
+	private IEnumerator LoadFileCorutine(string _file_path){
 
 		WWW file = new WWW (_file_path);
 
@@ -175,7 +175,7 @@ public class MainScene : MonoBehaviour {
 	private void ResetPlayerPref(){
 		PlayerPrefs.DeleteAll ();
 	}
-		
+
 
 	private void SetGameState(string str){
 		_game_model.NowState = str;
@@ -205,9 +205,9 @@ public class MainScene : MonoBehaviour {
 	/// canvas display the end of playing the game
 	/// </summary>
 	private void GotoResultPage(){
-	
+
 		if (_game_model.NowState == _game_state.GAME_END_STATE) {
-		
+
 			_base_url_text.gameObject.SetActive (false);
 			_url_text.gameObject.SetActive (false);
 			_point_text.gameObject.SetActive (false);
@@ -233,7 +233,7 @@ public class MainScene : MonoBehaviour {
 			int _score = _game_model.TotalPoint;
 
 			if (PlayerPrefs.HasKey (GameModel.HIGH_SCORE_KEY)) {
-		
+
 				_high_score = PlayerPrefs.GetInt (GameModel.HIGH_SCORE_KEY);
 
 				//最高得点が存在しかつ更新していたら更新セーブ
@@ -257,7 +257,7 @@ public class MainScene : MonoBehaviour {
 			}
 
 			PlayerPrefs.Save ();
-			
+
 			Util.UpdateTextStringUtil (_total_point_text, _score.ToString ());
 			Util.UpdateTextStringUtil (_highest_total_point_text, _high_score.ToString ());
 
@@ -281,7 +281,7 @@ public class MainScene : MonoBehaviour {
 	private void GotoBackToTopPage(){
 		Application.LoadLevel ("Top");
 	}
-		
+
 	private void InitTimer(){
 		_timer = new Timer ();
 		_timer.LimitTime = _game_model.GameTime;
@@ -319,7 +319,7 @@ public class MainScene : MonoBehaviour {
 
 		AddObjectsData (data, _game_model.RowCount, _game_model.ColumnCount);
 	}
-		
+
 	//オブジェクトを追加
 	private void AddObjectsData(JsonData data,int row_count, int column_count,Vector3 offset = new Vector3()){
 
@@ -338,7 +338,7 @@ public class MainScene : MonoBehaviour {
 
 				//親のゲームオブジェクトの指定
 				obj.transform.parent = game_object_container.transform;
-		
+
 				//オブジェクトにデータを追加
 				ObjectData obj_data = obj.GetComponent<ObjectData> ();
 				obj_data.Point = (int)data ["object_data"][i]["point"];
@@ -356,9 +356,9 @@ public class MainScene : MonoBehaviour {
 			}
 
 		}
-			
+
 	}
-		
+
 	//現在のオブジェクトの数がいくつかカウント一定数以下になっていたらオブジェクトの追加
 	private bool CheckObjectsDataCount(){
 
@@ -398,7 +398,7 @@ public class MainScene : MonoBehaviour {
 		}
 
 	}
-		
+
 	// Update is called once per frame
 	void Update () {
 
@@ -451,7 +451,7 @@ public class MainScene : MonoBehaviour {
 							AddRandomObjectData ();
 						}
 					}
-				} 
+				}
 			}
 
 		}else{
@@ -504,31 +504,31 @@ public class MainScene : MonoBehaviour {
 		} else {
 
 			if(_game_model.SelectedObjectDataDict != null){
-			
+
 				_game_object_manager.ResetHighLightSelectedData(_game_model.SelectedObjectDataDict);
 
 			}
-				
+
 			_game_object_manager.ResetLineObjectData ();
 			_game_object_manager.DrawLine (_game_model.SelectedObjectDataDict);
 		}
 
 		//再生終了したパーティクルデータを削除
-		if(_particle_manager != null)_particle_manager.RemoveParticleData ();	
+		if(_particle_manager != null)_particle_manager.RemoveParticleData ();
 
 	}
 
 	//ボタンをダウンしている間つねにどのオブジェクト間にラインを引きどのオブジェクト間にラインを
 	//引かないか判定している。
 	private void SetLineObjetsData(){
-			//近くのオブジェクト同士を線でつなぐ
-			//マウスの位置を常に取得しマウスとオブジェクトが十分近ければライン描画用お配列に追加
-			//同じオブジェクトを配列に追加しない。
-			//マウスダウンされた位置のスクリーン座標をゲームのワールド座標で取得
-			Vector2 world_mouse_pos = Camera.main.ScreenToWorldPoint (Input.mousePosition);
-			//マウスとオブジェクトとの距離を判定
-			//マウスから一番近いオブジェクトの取得
-			//一番近いオブジェクトでなおかつ種類の同じものをなぞっていくと線がつながる
+		//近くのオブジェクト同士を線でつなぐ
+		//マウスの位置を常に取得しマウスとオブジェクトが十分近ければライン描画用お配列に追加
+		//同じオブジェクトを配列に追加しない。
+		//マウスダウンされた位置のスクリーン座標をゲームのワールド座標で取得
+		Vector2 world_mouse_pos = Camera.main.ScreenToWorldPoint (Input.mousePosition);
+		//マウスとオブジェクトとの距離を判定
+		//マウスから一番近いオブジェクトの取得
+		//一番近いオブジェクトでなおかつ種類の同じものをなぞっていくと線がつながる
 
 		foreach (KeyValuePair<string,ObjectData> pair in _game_model.ObjectDataDict) {
 
@@ -540,7 +540,7 @@ public class MainScene : MonoBehaviour {
 
 			//最後に選択されたオブジェクトがある場合はそれとの距離とともに判定
 			if (_game_model.LastObjectSelected != null) {
-			
+
 				float now_distance_from_last_selected = Vector3.Distance (world_mouse_pos, _game_model.LastObjectSelected.Obj.transform.position);
 
 				//マウスと十分近いかどうか
@@ -560,9 +560,9 @@ public class MainScene : MonoBehaviour {
 						_game_model.LastObjectSelected = now_data;
 
 					}
-						
+
 				}
-					
+
 			}else {
 				//最初に選択したオブジェクトの場合
 				//マウスと十分近いかどうか
@@ -576,7 +576,7 @@ public class MainScene : MonoBehaviour {
 					//一番最初に選択したオブジェクトと同じ種類かどうか
 					//おなじなら選択済み配列に追加
 					if (_game_model.FirstObjectSelectedCategory == _game_model.ObjectDataDict[now_key].Category && !checkAlreadySetObjectsData (_game_model.ObjectDataDict [now_key])) {
-					
+
 						_game_model.SelectedObjectDataDict.Add (now_key,now_data);
 						//最後に選択されたオブジェクトに代入
 						_game_model.LastObjectSelected = now_data;
@@ -584,13 +584,13 @@ public class MainScene : MonoBehaviour {
 					}
 
 				}
-					
+
 			}
-				
+
 		}
 
 	}
-		
+
 	private void SetLineObjectDataReverse(){
 
 		//マウスダウンされた位置のスクリーン座標をゲームのワールド座標で取得
@@ -600,13 +600,13 @@ public class MainScene : MonoBehaviour {
 		//前回なぞったオブジェクトをさかのぼると線をけしていける
 		//前回なぞったオブジェクトと十分マウスが近づいたらライン配列への登録解除
 		if(_game_model.LastObjectSelected != null && _game_model.LastButOneObjectSelected != null  ){
-		
+
 			float now_distance_from_last_object_selected = Vector3.Distance (world_mouse_pos,_game_model.LastObjectSelected.transform.position);
 
 			float now_distance_from_last_but_one_object_selected = Vector3.Distance (world_mouse_pos, _game_model.LastButOneObjectSelected.transform.position);
 
 			if(now_distance_from_last_but_one_object_selected <= _game_model.TouchDistance && now_distance_from_last_object_selected >= _game_model.TouchDistance){
-			
+
 				//一番最後のオブジェクトをとりあえず元の色に戻す
 				_game_object_manager.SetColor (_game_model.LastObjectSelected.Category, _game_model.LastObjectSelected.Obj);
 
@@ -619,7 +619,7 @@ public class MainScene : MonoBehaviour {
 				//ライン上に選択しているオブジェクトが二つ以上ある場合は
 				//最後に選択したオブジェクトと最後から二番目に選択したオブジェクトの参照を設定し直す。
 				if (_game_model.SelectedObjectDataDict.Count >= 1) {
-				
+
 					foreach (KeyValuePair<string,ObjectData> pair in _game_model.SelectedObjectDataDict) {
 
 						ObjectData now_data = (ObjectData)pair.Value;
@@ -634,21 +634,21 @@ public class MainScene : MonoBehaviour {
 							_game_model.LastButOneObjectSelected = now_data;
 							//print ("最後から二番目のオブジェクトの参照のセット");
 						}
-							
+
 					}
-						
+
 				}
-					
+
 			}
-		
+
 		}
-			
+
 	}
 
 	//選択したリストのチェック
 	//二つ以上選択しているかどうか 二つ以上選択していたらtrue
 	private bool CheckLineObjectData(){
-	
+
 		if (_game_model.SelectedObjectDataDict != null) {
 
 			if (_game_model.SelectedObjectDataDict.Count >= _game_model.LineNum) {
@@ -660,10 +660,16 @@ public class MainScene : MonoBehaviour {
 		return false;
 	}
 
+	private float _wait_time ;
+	private float _wait_time_add;
+	private float _wait_time_default;
+	private float _delay_time_tween ;
+	private bool _first_flag = false;
 	/// <summary>
-	/// start removing objects selected 
+	/// start removing objects selected
 	/// </summary>
 	private void StartRemoveingSelectedLineObjectsData(){
+	
 
 		foreach (KeyValuePair<string,ObjectData> pair in _game_model.SelectedObjectDataDict) {
 
@@ -672,58 +678,96 @@ public class MainScene : MonoBehaviour {
 			ObjectData tmp_data = pair.Value;
 
 			if(_game_model.SelectedObjectDataDict.ContainsKey(tmp_key)){
-			
-				//オブジェクトが消える時のパーティクルが発生する
-				GameObject _vanish_particle_obj = Util.InstantiateUtil (_game_model, "ParticleExplode", new Vector3 (tmp_data.transform.position.x, tmp_data.transform.position.y, tmp_data.transform.position.z), Quaternion.identity);
-
-				//ゲットポイントのパーティクルのが発生する
-				GameObject _get_point_particle_obj = Util.InstantiateUtil (_game_model, "GetPointParticle", new Vector3 (tmp_data.transform.position.x, tmp_data.transform.position.y, tmp_data.transform.position.z), Quaternion.identity);
-
-				Vector3 world_pos_of_point_text = Camera.main.ScreenToWorldPoint (_point_text.transform.position);
-
-				iTween.MoveTo (_get_point_particle_obj, 
-					iTween.Hash (
-						"position", world_pos_of_point_text, 
-						"easeType", iTween.EaseType.easeInOutCubic,"time",0.8f,
-						"oncomplete", "PointGetComplete",
-						"oncompletetarget", this.gameObject
-					));
-
-				_vanish_particle_obj.GetComponent<ParticleSystem> ().Play ();
-
-				//現在存在しているパーティクルの参照の保存
-				_particle_manager.AddParticleList (_vanish_particle_obj, _game_model.VanishParticleList);
-				_particle_manager.AddParticleList (_get_point_particle_obj, _game_model.GetPointParticleList);
-
-				//ゲームオブジェクトの削除
-				Destroy (tmp_data.Obj);
-
-				//獲得ポイント追加
-				_canvas_object_manager.AddTotalPoint (tmp_data.Point);
-
-				//獲得オブジェクト数の追加
-				_canvas_object_manager.AddTotalCount (1);
-
-				//元となる配列から参照の削除
-				_game_model.ObjectDataDict.Remove (tmp_key);
+		
+				if (!_first_flag) {
+					//一巡めはフラグ立てるだけ
+					_first_flag = true;
+					_wait_time = 0.0f;
+					_wait_time_default = 0.5f;
+					_delay_time_tween = 0.5f;
+					_wait_time_add = 0.1f;
+				} else {
+					_wait_time += _wait_time_add;
+				}
 
 			}
 
+			StartCoroutine (RemoveingSelectedLineObjectsData(tmp_key,tmp_data,_wait_time));
 		}
-			
+
+
+
+		//reset
+		_wait_time = _wait_time_default;
+		_first_flag = !_first_flag;
+
 	}
-		
+
+
+	/// <summary>
+	/// remove ojects time after time
+	/// </summary>
+	/// <returns>The selected line objects data.</returns>
+
+	private IEnumerator RemoveingSelectedLineObjectsData(string _key, ObjectData _data, float _wait_time){
+
+		yield return new WaitForSeconds (_wait_time);
+
+		//オブジェクトが消える時のパーティクルが発生する
+		GameObject _vanish_particle_obj = Util.InstantiateUtil (_game_model, "ParticleExplode", new Vector3 (_data.transform.position.x, _data.transform.position.y, _data.transform.position.z), Quaternion.identity);
+
+		//ゲットポイントのパーティクルのが発生する
+		GameObject _get_point_particle_obj = Util.InstantiateUtil (_game_model, "GetPointParticle", new Vector3 (_data.transform.position.x, _data.transform.position.y, _data.transform.position.z), Quaternion.identity);
+
+		//particle target
+		GameObject _target = Util.FindGameObjectUtil ("ParticleTarget");
+		Vector3 world_pos_of_point_text = Camera.main.ScreenToWorldPoint (_target.transform.position);
+
+		//Vector3[] _paths = new Vector3[3];
+		//_paths[0] = new Vector3(50,500,0);
+		//_paths[1] = new Vector3(60,-100,0);
+		//_paths[2] = new Vector3(200,50,0);
+
+		iTween.MoveTo (_get_point_particle_obj,
+			iTween.Hash (
+				"position", world_pos_of_point_text,
+				"easeType", iTween.EaseType.easeInCubic,"time", _delay_time_tween,
+				"oncomplete", "PointGetComplete",
+				"oncompletetarget", this.gameObject
+				//"path",_paths
+			));
+
+		_vanish_particle_obj.GetComponent<ParticleSystem> ().Play ();
+
+		//現在存在しているパーティクルの参照の保存
+		_particle_manager.AddParticleList (_vanish_particle_obj, _game_model.VanishParticleList);
+		_particle_manager.AddParticleList (_get_point_particle_obj, _game_model.GetPointParticleList);
+
+		//ゲームオブジェクトの削除
+		Destroy (_data.Obj);
+
+		//獲得ポイント追加
+		_canvas_object_manager.AddTotalPoint (_data.Point);
+
+		//獲得オブジェクト数の追加
+		_canvas_object_manager.AddTotalCount (1);
+
+		//元となる配列から参照の削除
+		_game_model.ObjectDataDict.Remove (_key);
+	}
+
+
 	public void PointGetComplete(){
 		//ポイント
 		Util.UpdateTextStringUtil (_point_text,_game_model.TotalPoint.ToString());
 		//オブジェクトカウント
 		Util.UpdateTextStringUtil (_obj_count_text, _game_model.TotalObjectCount.ToString());
 	}
-						
+
 	//既に選択済みかそうでないか
 	//選択済み true, 未選択 false
 	private bool checkAlreadySetObjectsData(ObjectData check_obj){
-	
+
 		foreach (KeyValuePair<string,ObjectData> pair in _game_model.SelectedObjectDataDict) {
 
 			GameObject other_obj = (GameObject)pair.Value.Obj;
@@ -732,13 +776,13 @@ public class MainScene : MonoBehaviour {
 				//print ("既に選択済み");
 				return true;
 			}
-				
+
 		}
 
 		//print ("既に選択済みでない");
 		return false;
 	}
-		
-		
+
+
 }
-	
+
