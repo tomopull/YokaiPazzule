@@ -25,6 +25,7 @@ public class GameModel : MonoBehaviour {
 	//シンプルタッチストラクト
 	public struct GameState{
 		public string GAME_START_STATE;
+		public string GAME_PLAY_STATE;
 		public string GAME_END_STATE;
 		public string GAME_IDLE_STATE;
 	}

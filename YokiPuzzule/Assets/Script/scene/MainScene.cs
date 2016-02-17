@@ -39,7 +39,7 @@ public class MainScene : MonoBehaviour {
 	//ユーザーインプット管理
 	private GameModel.SimpleTouch ActiveTouch;
 
-	//state
+	//state  set default state
 	private GameModel.GameState _game_state;
 
 	//base url text
@@ -148,9 +148,11 @@ public class MainScene : MonoBehaviour {
 	private  void InitCanvasInfo(){
 
 		_game_state.GAME_END_STATE = "game_end_state";
+		_game_state.GAME_PLAY_STATE = "game_play_state";
 		_game_state.GAME_START_STATE = "game_start_state";
 		_game_state.GAME_IDLE_STATE = "game_idle_state";
-		SetGameState (_game_state.GAME_START_STATE);
+
+		SetGameState (_game_state.GAME_PLAY_STATE);
 
 		_base_url_text = Util.FindTextComponentUtil("/GameInfo/Canvas/BaseURL_Text");
 		_url_text = Util.FindTextComponentUtil ("/GameInfo/Canvas/URL_Text");
@@ -412,7 +414,7 @@ public class MainScene : MonoBehaviour {
 			} else {
 				//time up execute
 				//Time.timeScale = 0;
-				if(_game_model.NowState ==  _game_state.GAME_START_STATE ){
+				if(_game_model.NowState ==  _game_state.GAME_PLAY_STATE ){
 					//show result display
 					SetGameState (_game_state.GAME_END_STATE);
 					GotoResultPage ();
@@ -442,7 +444,8 @@ public class MainScene : MonoBehaviour {
 					//二つ以上選択していたら消す
 					//ポイントとか追加
 					if(CheckLineObjectData ()){
-						RemoveSelectedLineObjectData ();
+						//start  removeing objects
+						StartRemoveingSelectedLineObjectsData ();
 						//オブジェクトの数が一定数以下になっていたらランダムで新規のオブジェクト追加
 						if (CheckObjectsDataCount()) {
 							AddRandomObjectData ();
@@ -476,7 +479,7 @@ public class MainScene : MonoBehaviour {
 					//二つ以上選択していたら消す
 					//ポイントとか追加
 					if(CheckLineObjectData ()){
-						RemoveSelectedLineObjectData ();
+						StartRemoveingSelectedLineObjectsData();
 						//オブジェクトの数が一定数以下になっていたらランダムで新規のオブジェクト追加
 						if (CheckObjectsDataCount()) {
 							AddRandomObjectData ();
@@ -488,7 +491,7 @@ public class MainScene : MonoBehaviour {
 		}
 
 		//ゲームプレイ時間中にボタンをダウンしていたら、していなかったら
-		if (_game_model.IsButtonDown && _game_model.NowState == _game_state.GAME_START_STATE) {
+		if (_game_model.IsButtonDown && _game_model.NowState == _game_state.GAME_PLAY_STATE) {
 
 			//オブジェクト上にラインの描画
 			SetLineObjetsData ();
@@ -657,8 +660,10 @@ public class MainScene : MonoBehaviour {
 		return false;
 	}
 
-	//選択されたオブジェクトの削除の実行
-	private void RemoveSelectedLineObjectData(){
+	/// <summary>
+	/// start removing objects selected 
+	/// </summary>
+	private void StartRemoveingSelectedLineObjectsData(){
 
 		foreach (KeyValuePair<string,ObjectData> pair in _game_model.SelectedObjectDataDict) {
 
