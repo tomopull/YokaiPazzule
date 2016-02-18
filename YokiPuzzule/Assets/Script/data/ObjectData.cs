@@ -10,6 +10,12 @@ public class ObjectData : MonoBehaviour{
 	//カテゴリーヌル
 	public static int NullCategory = 99;
 
+	//date state
+
+	public static string Idle = "idle";
+	public static string SELECTED = "selected";
+
+
 	//取得ポイント
 	public int Point
 	{
@@ -26,12 +32,22 @@ public class ObjectData : MonoBehaviour{
 		set { this._category = value; }
 	}
 
+	//自身のGameObject
 	[SerializeField]
 	private GameObject obj;
 	public GameObject Obj
 	{
 	    get { return this.obj; } 
 	    set { this.obj = value; }
+	}
+
+	//データの状態
+	[SerializeField]
+	private string _data_state = ObjectData.Idle;
+	public string DataState
+	{
+	    get { return this._data_state; } 
+	    set { this._data_state = value; }
 	}
 
 	//データが格納される連想配列のkey

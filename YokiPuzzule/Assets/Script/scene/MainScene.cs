@@ -467,11 +467,15 @@ public class MainScene : MonoBehaviour {
 					ActiveTouch.StartTouchLocation = _game_model.DeviceTouch.position;
 					ActiveTouch.CurrentTouchLocation = _game_model.DeviceTouch.position;
 					_game_model.IsButtonDown = true;
+
 				} else {
+
 					ActiveTouch.CurrentTouchLocation = _game_model.DeviceTouch.position;
+
 				}
 
 			} else {
+
 				if(ActiveTouch.Phase != TouchPhase.Canceled){
 					CaluculateTouchInput (ActiveTouch);
 					ActiveTouch.Phase = TouchPhase.Canceled;
@@ -485,7 +489,6 @@ public class MainScene : MonoBehaviour {
 							AddRandomObjectData ();
 						}
 					}
-
 				}
 			}
 		}
@@ -558,7 +561,7 @@ public class MainScene : MonoBehaviour {
 
 						//最後に選択されたオブジェクトに代入
 						_game_model.LastObjectSelected = now_data;
-
+					
 					}
 
 				}
@@ -581,6 +584,7 @@ public class MainScene : MonoBehaviour {
 						//最後に選択されたオブジェクトに代入
 						_game_model.LastObjectSelected = now_data;
 						//print ("最初");
+
 					}
 
 				}
@@ -677,29 +681,38 @@ public class MainScene : MonoBehaviour {
 
 			ObjectData tmp_data = pair.Value;
 
-			if(_game_model.SelectedObjectDataDict.ContainsKey(tmp_key)){
-		
-				if (!_first_flag) {
-					//一巡めはフラグ立てるだけ
-					_first_flag = true;
-					_wait_time = 0.0f;
-					_wait_time_default = 0.5f;
-					_delay_time_tween = 0.5f;
-					_wait_time_add = 0.1f;
-				} else {
-					_wait_time += _wait_time_add;
+			//まだ削除予約されていないなら
+			if(tmp_data.DataState != ObjectData.SELECTED){
+			
+				if(_game_model.SelectedObjectDataDict.ContainsKey(tmp_key)){
+
+					tmp_data.DataState = ObjectData.SELECTED;
+
+					if (!_first_flag) {
+
+						//一巡めはフラグ立てるだけ
+						_first_flag = true;
+						_wait_time = 0.0f;
+						_wait_time_default = 0.5f;
+						_delay_time_tween = 0.5f;
+						_wait_time_add = 0.1f;
+
+					} else {
+
+						_wait_time += _wait_time_add;
+
+					}
+
+					StartCoroutine (RemoveingSelectedLineObjectsData(tmp_key,tmp_data,_wait_time));
+					//reset
+					_wait_time = _wait_time_default;
+					_first_flag = !_first_flag;
+
 				}
-
+					
 			}
-
-			StartCoroutine (RemoveingSelectedLineObjectsData(tmp_key,tmp_data,_wait_time));
+				
 		}
-
-
-
-		//reset
-		_wait_time = _wait_time_default;
-		_first_flag = !_first_flag;
 
 	}
 
