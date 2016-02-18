@@ -682,7 +682,7 @@ public class MainScene : MonoBehaviour {
 			ObjectData tmp_data = pair.Value;
 
 			//まだ削除予約されていないなら
-			if(tmp_data.DataState != ObjectData.SELECTED){
+			if(tmp_data != null && tmp_data.gameObject != null  &&  tmp_data.DataState != ObjectData.SELECTED){
 			
 				if(_game_model.SelectedObjectDataDict.ContainsKey(tmp_key)){
 
@@ -704,15 +704,16 @@ public class MainScene : MonoBehaviour {
 					}
 
 					StartCoroutine (RemoveingSelectedLineObjectsData(tmp_key,tmp_data,_wait_time));
-					//reset
-					_wait_time = _wait_time_default;
-					_first_flag = !_first_flag;
 
 				}
 					
 			}
 				
 		}
+
+		//reset
+		_wait_time = _wait_time_default;
+		_first_flag = !_first_flag;
 
 	}
 
@@ -724,6 +725,7 @@ public class MainScene : MonoBehaviour {
 
 	private IEnumerator RemoveingSelectedLineObjectsData(string _key, ObjectData _data, float _wait_time){
 
+		Debug.Log (_wait_time);
 		yield return new WaitForSeconds (_wait_time);
 
 		//オブジェクトが消える時のパーティクルが発生する

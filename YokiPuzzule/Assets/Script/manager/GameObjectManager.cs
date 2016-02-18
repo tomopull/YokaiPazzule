@@ -16,25 +16,31 @@ public class GameObjectManager : MonoBehaviour {
 	//カラーチェンジ
 	public void SetColor(int _category_id,GameObject obj){
 
-		//カラーチェンジ
-		switch (_category_id) {
+		if (obj != null) {
 
-		case 1:
-			obj.GetComponent<Renderer> ().material.color = Color.blue;
-			break;
-		case 2:
-			obj.GetComponent<Renderer> ().material.color = Color.red;
-			break;
-		case 3:
-			obj.GetComponent<Renderer> ().material.color = Color.yellow;
-			break;
-		case 4:
-			obj.GetComponent<Renderer> ().material.color = Color.green;
-			break;
-		case 5:
-			obj.GetComponent<Renderer> ().material.color = Color.cyan;
-			break;
+
+			//カラーチェンジ
+			switch (_category_id) {
+
+			case 1:
+				obj.GetComponent<Renderer> ().material.color = Color.blue;
+				break;
+			case 2:
+				obj.GetComponent<Renderer> ().material.color = Color.red;
+				break;
+			case 3:
+				obj.GetComponent<Renderer> ().material.color = Color.yellow;
+				break;
+			case 4:
+				obj.GetComponent<Renderer> ().material.color = Color.green;
+				break;
+			case 5:
+				obj.GetComponent<Renderer> ().material.color = Color.cyan;
+				break;
+			}
+
 		}
+
 
 	}
 		
@@ -52,8 +58,12 @@ public class GameObjectManager : MonoBehaviour {
 
 		foreach (ObjectData value in _selected_dict.Values) {
 			GameObject obj = (GameObject)value.Obj;
-			obj.GetComponent<Renderer> ().material.color = Color.white;
-			i += 1;
+
+			if (obj != null) {
+				obj.GetComponent<Renderer> ().material.color = Color.white;
+				i += 1;
+			}
+
 		}
 
 	}
@@ -85,8 +95,12 @@ public class GameObjectManager : MonoBehaviour {
 		int i = 0;
 		//順番に配列が代入されると仮定。
 		foreach (ObjectData value  in _selected_dict.Values) {
-			line.SetPosition (i,value.Obj.transform.position);
-			i += 1;
+
+			if (value.Obj != null) {
+				line.SetPosition (i,value.Obj.transform.position);
+				i += 1;
+			}
+				
 		}
 
 	}
