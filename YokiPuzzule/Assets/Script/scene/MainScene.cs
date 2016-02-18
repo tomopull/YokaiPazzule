@@ -733,7 +733,8 @@ public class MainScene : MonoBehaviour {
 		GameObject _get_point_particle_obj = Util.InstantiateUtil (_game_model, "GetPointParticle", new Vector3 (_data.transform.position.x, _data.transform.position.y, _data.transform.position.z), Quaternion.identity);
 
 		//particle target
-		GameObject _target = Util.FindGameObjectUtil ("ParticleTarget");
+		Text _target = Util.FindTextComponentUtil ("GameInfo/Canvas/Particle_Target_Text");
+
 		Vector3 world_pos_of_point_text = Camera.main.ScreenToWorldPoint (_target.transform.position);
 
 		//Vector3[] _paths = new Vector3[3];
@@ -750,6 +751,7 @@ public class MainScene : MonoBehaviour {
 				//"path",_paths
 			));
 
+		//Debug.Log (world_pos_of_point_text.x);
 		_vanish_particle_obj.GetComponent<ParticleSystem> ().Play ();
 
 		//現在存在しているパーティクルの参照の保存
