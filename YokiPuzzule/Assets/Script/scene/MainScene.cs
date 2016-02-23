@@ -728,11 +728,11 @@ public class MainScene : MonoBehaviour {
 		Debug.Log (_wait_time);
 		yield return new WaitForSeconds (_wait_time);
 
-		//オブジェクトが消える時のパーティクルが発生する
-		GameObject _vanish_particle_obj = Util.InstantiateUtil (_game_model, "ParticleExplode", new Vector3 (_data.transform.position.x, _data.transform.position.y, _data.transform.position.z), Quaternion.identity);
-
 		//ゲットポイントのパーティクルのが発生する
-		GameObject _get_point_particle_obj = Util.InstantiateUtil (_game_model, "GetPointParticle", new Vector3 (_data.transform.position.x, _data.transform.position.y, _data.transform.position.z), Quaternion.identity);
+		GameObject _get_point_particle_obj = Util.InstantiateUtil (_game_model, "GetPointParticleAlpha", new Vector3 (_data.transform.position.x, _data.transform.position.y, _data.transform.position.z), Quaternion.identity);
+
+		//オブジェクトが消える時のパーティクルが発生する
+		GameObject _vanish_particle_obj = Util.InstantiateUtil (_game_model, "ParticleExplode", new Vector3 (_data.transform.position.x, _data.transform.position.y, _data.transform.position.z),Quaternion.identity);
 
 		//particle target
 		Text _target = Util.FindTextComponentUtil ("GameInfo/Canvas/Particle_Target_Text");
@@ -753,7 +753,7 @@ public class MainScene : MonoBehaviour {
 				//"path",_paths
 			));
 
-		//Debug.Log (world_pos_of_point_text.x);
+		//Debug.Log (_vanish_particle_obj.transform.position.x);
 		_vanish_particle_obj.GetComponent<ParticleSystem> ().Play ();
 
 		//現在存在しているパーティクルの参照の保存

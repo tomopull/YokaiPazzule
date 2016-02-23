@@ -53,7 +53,7 @@ public class ParticleManager : MonoBehaviour {
 						particle.Clear ();
 						_game_model.ParticleDataList[i].Remove(particle.gameObject);
 						Destroy (particle.gameObject);
-						//Debug.Log ("パーティクル削除");
+
 					}
 
 				}
