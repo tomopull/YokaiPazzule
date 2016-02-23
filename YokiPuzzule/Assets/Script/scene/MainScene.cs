@@ -729,7 +729,7 @@ public class MainScene : MonoBehaviour {
 		yield return new WaitForSeconds (_wait_time);
 
 		//ゲットポイントのパーティクルのが発生する
-		GameObject _get_point_particle_obj = Util.InstantiateUtil (_game_model, "GetPointParticleAlpha", new Vector3 (_data.transform.position.x, _data.transform.position.y, _data.transform.position.z), Quaternion.identity);
+		GameObject _get_point_particle_obj = Util.InstantiateUtil (_game_model, "GetPointParticle", new Vector3 (_data.transform.position.x, _data.transform.position.y, _data.transform.position.z), Quaternion.identity);
 
 		//オブジェクトが消える時のパーティクルが発生する
 		GameObject _vanish_particle_obj = Util.InstantiateUtil (_game_model, "ParticleExplode", new Vector3 (_data.transform.position.x, _data.transform.position.y, _data.transform.position.z),Quaternion.identity);
