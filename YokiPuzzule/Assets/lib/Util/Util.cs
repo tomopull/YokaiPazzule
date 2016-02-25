@@ -1,7 +1,17 @@
-﻿using UnityEngine;
+﻿
 using System.Collections;
-using LitJson;
+using System.Collections.Generic;
+using System;
+
+using UnityEngine;
+using UnityEngine.Events;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
+
+using LitJson;
+
+
+
 static public class Util  {
 
 //	public struct ComponentType{
@@ -12,7 +22,7 @@ static public class Util  {
 	static public void Shuffle (int[] deck) {
 		for (int i = 0; i < deck.Length; i++) {
 			int temp = deck[i];
-			int randomIndex = Random.Range(0, deck.Length);
+			int randomIndex = UnityEngine.Random.Range(0, deck.Length);
 			deck[i] = deck[randomIndex];
 			deck[randomIndex] = temp;
 		}
@@ -21,7 +31,7 @@ static public class Util  {
 	static public void Shuffle (JsonData data ) {
 		for (int i = 0; i < data["object_data"].Count; i++) {
 			JsonData temp = data["object_data"][i];
-			int randomIndex = Random.Range(0, data["object_data"].Count);
+			int randomIndex = UnityEngine.Random.Range(0, data["object_data"].Count);
 			data["object_data"][i] = data["object_data"][randomIndex];
 			data["object_data"][randomIndex] = temp;
 		}
@@ -112,7 +122,47 @@ static public class Util  {
 	static public Button FindButtonComponentUtil(string str){
 		Button btn = GameObject.Find (str).GetComponent<Button> ();
 		return btn;
+
 	}
+		
+	/// <summary>
+	/// Game Objectの有効化、無効化
+	/// </summary>
+	/// <param name="">.</param>
+	static public void SetActivationOfGameObject(GameObject _game_object, bool _bool){
+		_game_object.SetActive (_bool);
+	}
+
+
+
+
+	/// <summary>
+	/// ボタンイベントの設定
+	/// _obj:GameObject
+	/// _base_event_data:ui_event_handler.OnPointerClick
+	/// _event_trigger_typ:EventTriggerType.PointerClick;
+	/// </summary>
+	/// <param name="_button">_button.</param>
+	/// <param name="_event">_event.</param>
+	static public void SetButtonEvent(GameObject _obj, UnityAction<BaseEventData> _action, EventTriggerType _event_trigger_type){
+	
+		EventTrigger _event_triger = _obj.AddComponent<EventTrigger> ();
+
+		EventTrigger.Entry _entry = new EventTrigger.Entry ();
+
+		//_entry.callback.AddListener (_action);
+		//Debug.Log (_action);
+		_entry.callback.AddListener (UIEventHandler.Instance.OnPointerClick);
+
+		_entry.eventID = _event_trigger_type;
+
+		_event_triger.triggers = new List<EventTrigger.Entry> ();
+
+		_event_triger.triggers.Add (_entry);
+
+	}
+
+
 
 
 		

@@ -68,6 +68,7 @@
      <Compile Include="Assets\lib\Timer\Delegate.cs" />
      <Compile Include="Assets\lib\Timer\Timer.cs" />
      <Compile Include="Assets\lib\Util\SortingLayer.cs" />
+     <Compile Include="Assets\lib\Util\UIEventHandler.cs" />
      <Compile Include="Assets\lib\Util\Util.cs" />
      <Compile Include="Assets\lib\iTween.cs" />
      <Compile Include="Assets\lib\iTween\Sample\MoveSample.cs" />

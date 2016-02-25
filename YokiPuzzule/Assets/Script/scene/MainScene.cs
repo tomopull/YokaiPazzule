@@ -1,8 +1,12 @@
-﻿using UnityEngine;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+
+using UnityEngine;
+using UnityEngine.Events;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
-using System;
+
 using LitJson;
 
 //一回引いた線を元に戻すロジック
@@ -68,6 +72,9 @@ public class MainScene : MonoBehaviour {
 
 	//reset button
 	private Button _reset_button;
+
+	//shake button
+	private Button _shake_button;
 
 
 	private Timer _timer;
@@ -165,8 +172,15 @@ public class MainScene : MonoBehaviour {
 		_retry_button = Util.FindButtonComponentUtil ("/GameInfo/Canvas/ResultMenu/UIRetryButton");
 		_back_to_top_button = Util.FindButtonComponentUtil ("/GameInfo/Canvas/ResultMenu/UIBackToToTopButton");
 		_reset_button = Util.FindButtonComponentUtil ("/GameInfo/Canvas/ResultMenu/UIRestButton");
-
+		_shake_button = Util.FindButtonComponentUtil ("/GameInfo/Canvas/UIShakeButton");
+		        
 		_reset_button.onClick.AddListener (ResetPlayerPref);
+
+		//UnityAction<BaseEventData> _action = UIEventHandler.Instance.OnPointerClick;
+
+		Util.SetButtonEvent (_shake_button.gameObject,UIEventHandler.Instance.OnPointerClick, EventTriggerType.PointerClick);
+
+
 	}
 
 	/// <summary>
@@ -187,18 +201,18 @@ public class MainScene : MonoBehaviour {
 	/// </summary>
 	private void GotoMainPage(){
 
-		_base_url_text.gameObject.SetActive (true);
-		_url_text.gameObject.SetActive (true);
-		_point_text.gameObject.SetActive (true);
-		_obj_count_text.gameObject.SetActive (true);
+		Util.SetActivationOfGameObject (_base_url_text.gameObject, true);
+		Util.SetActivationOfGameObject (_url_text.gameObject, true);
+		Util.SetActivationOfGameObject (_point_text.gameObject, true);
+		Util.SetActivationOfGameObject (_obj_count_text.gameObject, true);
 
-		_total_point_text.gameObject.SetActive (false);
-		_highest_total_point_text.gameObject.SetActive (false);
-		_retry_button.gameObject.SetActive (false);
-		_back_to_top_button.gameObject.SetActive (false);
+		Util.SetActivationOfGameObject (_total_point_text.gameObject, false);
+		Util.SetActivationOfGameObject (_highest_total_point_text.gameObject, false);
+		Util.SetActivationOfGameObject (_retry_button.gameObject, false);
+		Util.SetActivationOfGameObject (_back_to_top_button.gameObject, false);
 
-		_reset_button.gameObject.SetActive (false);
-
+		Util.SetActivationOfGameObject (_reset_button.gameObject, false);
+	
 	}
 
 	/// <summary>
@@ -208,18 +222,16 @@ public class MainScene : MonoBehaviour {
 
 		if (_game_model.NowState == _game_state.GAME_END_STATE) {
 
-			_base_url_text.gameObject.SetActive (false);
-			_url_text.gameObject.SetActive (false);
-			_point_text.gameObject.SetActive (false);
-			_obj_count_text.gameObject.SetActive (false);
-
-			_total_point_text.gameObject.SetActive (true);
-			_highest_total_point_text.gameObject.SetActive (true);
-			_retry_button.gameObject.SetActive (true);
-			_back_to_top_button.gameObject.SetActive (true);
-
-			_reset_button.gameObject.SetActive (true);
-
+			Util.SetActivationOfGameObject (_base_url_text.gameObject, false);
+			Util.SetActivationOfGameObject (_url_text.gameObject, false);
+			Util.SetActivationOfGameObject (_point_text.gameObject, false);
+			Util.SetActivationOfGameObject (_obj_count_text.gameObject, false);
+			Util.SetActivationOfGameObject (_total_point_text.gameObject, true);
+			Util.SetActivationOfGameObject (_highest_total_point_text.gameObject, true);
+			Util.SetActivationOfGameObject (_retry_button.gameObject, true);
+			Util.SetActivationOfGameObject (_back_to_top_button.gameObject, true);
+			Util.SetActivationOfGameObject (_reset_button.gameObject, true);
+			Util.SetActivationOfGameObject (_shake_button.gameObject, false);
 
 			_retry_button.onClick.RemoveListener (GotoReTryPage);
 			_back_to_top_button.onClick.RemoveListener (GotoBackToTopPage);
@@ -261,11 +273,9 @@ public class MainScene : MonoBehaviour {
 			Util.UpdateTextStringUtil (_total_point_text, _score.ToString ());
 			Util.UpdateTextStringUtil (_highest_total_point_text, _high_score.ToString ());
 
-
 		}
 
 	}
-
 
 
 	/// <summary>
