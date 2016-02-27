@@ -1,4 +1,6 @@
 ﻿using UnityEngine;
+using UnityEngine.Events;
+using UnityEngine.EventSystems;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -45,17 +47,16 @@ public class CanvasTopScene : MonoBehaviour {
 		switch(page_id){
 
 		case 0:
-			GotoStartPage ();
+			GotoStartPage (null);
 			break;
 
 		case 1:
-			GotoRulePage ();
+			GotoRulePage (null);
 			break;
 
 		case 2:
-			GotoMorePage ();
+			GotoMorePage (null);
 			break;
-
 		}
 
 	}
@@ -96,56 +97,41 @@ public class CanvasTopScene : MonoBehaviour {
 		_rule_button = Util.FindButtonComponentUtil ("/CanvasTopScene/ImageButtonMenu/UIRuleButton");
 		_more_button = Util.FindButtonComponentUtil ("/CanvasTopScene/ImageButtonMenu/UIMoreButton");
 
+		Util.SetButtonEvent (_rule_button.gameObject, GotoRulePage, EventTriggerType.PointerClick);
+		Util.SetButtonEvent (_more_button.gameObject, GotoMorePage, EventTriggerType.PointerClick);
+		Util.SetButtonEvent (_start_button.gameObject, StartGame, EventTriggerType.PointerClick);
 	}
 
 	/// <summary>
 	/// ゲーム開始
 	/// </summary>
-	private void StartGame(){
+	private void StartGame(BaseEventData _base_event_dat){
 		Application.LoadLevel ("Main");
 	}
 
-	private void GotoStartPage(){
-		_title_text.enabled = true;
-		_rule_text.enabled = false;
-		_more_text.enabled = false;
-
-		_rule_button.onClick.RemoveListener (GotoRulePage);
-		_more_button.onClick.RemoveListener (GotoMorePage);
-		_start_button.onClick.RemoveListener (StartGame);
-
-		_rule_button.onClick.AddListener (GotoRulePage);
-		_more_button.onClick.AddListener (GotoMorePage);
-		_start_button.onClick.AddListener (StartGame);
+	private void GotoStartPage(BaseEventData _base_event_data){
+		Util.SetActivationOfGameObject (_title_text.gameObject,true);
+		Util.SetActivationOfGameObject (_rule_text.gameObject,false);
+		Util.SetActivationOfGameObject (_more_text.gameObject,false);
+		Debug.Log ("goto_start_page");
 	}
 		
-	private void GotoRulePage (){
-		_rule_text.enabled = true;
-		_title_text.enabled = false;
-		_more_text.enabled = false;
+	private void GotoRulePage (BaseEventData _base_event_data){
 
-		_rule_button.onClick.RemoveListener (GotoRulePage);
-		_more_button.onClick.RemoveListener (GotoMorePage);
-		_start_button.onClick.RemoveListener (StartGame);
+		Util.SetActivationOfGameObject (_rule_text.gameObject,true);
+		Util.SetActivationOfGameObject (_title_text.gameObject,false);
+		Util.SetActivationOfGameObject (_more_text.gameObject,false);
+		Debug.Log ("goto_rule_page");
 
-		_rule_button.onClick.RemoveListener (GotoRulePage);
-		_more_button.onClick.AddListener (GotoMorePage);
-		_start_button.onClick.AddListener (StartGame);
 	}
 		
 
-	private void GotoMorePage (){
-		_rule_text.enabled = false;
-		_title_text.enabled = false;
-		_more_text.enabled = true;
+	private void GotoMorePage (BaseEventData _base_event_data){
 
-		_rule_button.onClick.RemoveListener (GotoRulePage);
-		_more_button.onClick.RemoveListener (GotoMorePage);
-		_start_button.onClick.RemoveListener (StartGame);
-
-		_rule_button.onClick.AddListener (GotoRulePage);
-		_more_button.onClick.RemoveListener (GotoMorePage);
-		_start_button.onClick.AddListener (StartGame);
+		Util.SetActivationOfGameObject (_rule_text.gameObject,false);
+		Util.SetActivationOfGameObject (_title_text.gameObject,false);
+		Util.SetActivationOfGameObject (_more_text.gameObject,true);
+		Debug.Log ("goto_more_page");
 
 	}
 		

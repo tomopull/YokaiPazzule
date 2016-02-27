@@ -122,7 +122,6 @@ static public class Util  {
 	static public Button FindButtonComponentUtil(string str){
 		Button btn = GameObject.Find (str).GetComponent<Button> ();
 		return btn;
-
 	}
 		
 	/// <summary>
@@ -133,37 +132,57 @@ static public class Util  {
 		_game_object.SetActive (_bool);
 	}
 
-
-
-
 	/// <summary>
 	/// ボタンイベントの設定
 	/// _obj:GameObject
-	/// _base_event_data:ui_event_handler.OnPointerClick
+	/// _unity_action:UIEventHandler.Instance.OnPointerClick
 	/// _event_trigger_typ:EventTriggerType.PointerClick;
 	/// </summary>
 	/// <param name="_button">_button.</param>
 	/// <param name="_event">_event.</param>
 	static public void SetButtonEvent(GameObject _obj, UnityAction<BaseEventData> _action, EventTriggerType _event_trigger_type){
-	
-		EventTrigger _event_triger = _obj.AddComponent<EventTrigger> ();
 
-		EventTrigger.Entry _entry = new EventTrigger.Entry ();
+		//既にEventTriggerComponentが追加されボタン化されていなかったらボタン化
+		if (!_obj.GetComponent<EventTrigger> ()) {
+		
+			Debug.Log (_obj);
+			EventTrigger _event_triger = _obj.AddComponent<EventTrigger> ();
 
-		//_entry.callback.AddListener (_action);
-		//Debug.Log (_action);
-		_entry.callback.AddListener (UIEventHandler.Instance.OnPointerClick);
+			EventTrigger.Entry _entry = new EventTrigger.Entry ();
 
-		_entry.eventID = _event_trigger_type;
+			_entry.callback.AddListener (_action);
 
-		_event_triger.triggers = new List<EventTrigger.Entry> ();
+			_entry.eventID = _event_trigger_type;
 
-		_event_triger.triggers.Add (_entry);
+			_event_triger.triggers = new List<EventTrigger.Entry> ();
+			_event_triger.triggers.Add (_entry);
+
+			//_event_triger.triggers = UIEventHandler.Instance.EntryList;
+			//UIEventHandler.Instance.EntryDict.Add(_obj.name,_entry);
+			//_event_triger.triggers = new List<EventTrigger.Entry> ();
+			//_event_triger.triggers.Add (_entry);
+			//Debug.Log (_event_triger.triggers.Count);
+			//Debug.Log (_event_triger.triggers.Count);
+		}
 
 	}
 
+	/// <summary>
+	/// remove button event
+	/// </summary>
+	/// <param name="_obj">_obj.</param>
+	/// <param name="_action">_action.</param>
+	/// <param name="_event_trigger_type">_event_trigger_type.</param>
+	static public void RemoveButtonEvent(GameObject _obj, EventTrigger.Entry _entry, UnityAction<BaseEventData> _action){
 
+		//既にEventTriggerComponentが追加されボタン化されていたらボタン無効化
+		if (_obj.GetComponent<EventTrigger> ()) {
 
+			EventTrigger _event_triger = _obj.GetComponent<EventTrigger> ();
+			_entry.callback.RemoveListener (_action);
+				
+		}
 
-		
+	}
+
 }

@@ -76,6 +76,9 @@ public class MainScene : MonoBehaviour {
 	//shake button
 	private Button _shake_button;
 
+	//UI Event Handler
+	private UIEventHandler _ui_event_handler;
+
 
 	private Timer _timer;
 	private bool time_up = false;
@@ -109,6 +112,10 @@ public class MainScene : MonoBehaviour {
 
 		_particle_manager = ParticleManager.Instance;
 		_particle_manager._game_model = _game_model;
+
+		_ui_event_handler = UIEventHandler.Instance;
+		_ui_event_handler.EntryDict = new Dictionary<string, EventTrigger.Entry> ();
+		_ui_event_handler.EntryList = new List<EventTrigger.Entry> ();
 
 		_game_model.ParticleDataList = new List<List<GameObject>> ();
 		_game_model.Init ();
@@ -154,6 +161,9 @@ public class MainScene : MonoBehaviour {
 
 	private  void InitCanvasInfo(){
 
+
+		Util.InstantiateUtil (_game_model, "CanvasGameInfo", new Vector3 (168.5f, 299.5f, 0), Quaternion.identity);
+
 		_game_state.GAME_END_STATE = "game_end_state";
 		_game_state.GAME_PLAY_STATE = "game_play_state";
 		_game_state.GAME_START_STATE = "game_start_state";
@@ -161,35 +171,35 @@ public class MainScene : MonoBehaviour {
 
 		SetGameState (_game_state.GAME_PLAY_STATE);
 
-		_base_url_text = Util.FindTextComponentUtil("/GameInfo/Canvas/BaseURL_Text");
-		_url_text = Util.FindTextComponentUtil ("/GameInfo/Canvas/URL_Text");
-		_point_text = Util.FindTextComponentUtil ("/GameInfo/Canvas/Point_Text");
-		_obj_count_text = Util.FindTextComponentUtil ("/GameInfo/Canvas/Count_Text");
+		_base_url_text = Util.FindTextComponentUtil ("/CanvasGameInfo/BaseURL_Text");
+		_url_text = Util.FindTextComponentUtil ("/CanvasGameInfo/URL_Text");
+		_point_text = Util.FindTextComponentUtil ("/CanvasGameInfo/Point_Text");
+		_obj_count_text = Util.FindTextComponentUtil ("/CanvasGameInfo/Count_Text");
 
 		//result of the game
-		_total_point_text = Util.FindTextComponentUtil ("/GameInfo/Canvas/ResultMenu/Total_Point_Text");
-		_highest_total_point_text = Util.FindTextComponentUtil ("/GameInfo/Canvas/ResultMenu/Highest_Total_Point_Text");
-		_retry_button = Util.FindButtonComponentUtil ("/GameInfo/Canvas/ResultMenu/UIRetryButton");
-		_back_to_top_button = Util.FindButtonComponentUtil ("/GameInfo/Canvas/ResultMenu/UIBackToToTopButton");
-		_reset_button = Util.FindButtonComponentUtil ("/GameInfo/Canvas/ResultMenu/UIRestButton");
-		_shake_button = Util.FindButtonComponentUtil ("/GameInfo/Canvas/UIShakeButton");
+		_total_point_text = Util.FindTextComponentUtil ("/CanvasGameInfo/ResultMenu/Total_Point_Text");
+		_highest_total_point_text = Util.FindTextComponentUtil ("/CanvasGameInfo/ResultMenu/Highest_Total_Point_Text");
+		_retry_button = Util.FindButtonComponentUtil ("/CanvasGameInfo/ResultMenu/UIRetryButton");
+		_back_to_top_button = Util.FindButtonComponentUtil ("/CanvasGameInfo/ResultMenu/UIBackToToTopButton");
+		_reset_button = Util.FindButtonComponentUtil ("/CanvasGameInfo/ResultMenu/UIRestButton");
+		_shake_button = Util.FindButtonComponentUtil ("/CanvasGameInfo/UIShakeButton");
 		        
-		_reset_button.onClick.AddListener (ResetPlayerPref);
-
-		//UnityAction<BaseEventData> _action = UIEventHandler.Instance.OnPointerClick;
-
-		Util.SetButtonEvent (_shake_button.gameObject,UIEventHandler.Instance.OnPointerClick, EventTriggerType.PointerClick);
-
+		Util.SetButtonEvent (_reset_button.gameObject,ResetPlayerPref, EventTriggerType.PointerClick);
+		Util.SetButtonEvent (_shake_button.gameObject, ShakeDiplay, EventTriggerType.PointerClick);
 
 	}
 
 	/// <summary>
 	/// init data
 	/// </summary>
-	private void ResetPlayerPref(){
+	private void ResetPlayerPref(BaseEventData _base_event_data){
 		PlayerPrefs.DeleteAll ();
 	}
 
+
+	private void ShakeDiplay(BaseEventData _base_event_data){
+		Debug.Log ("shake_display");
+	}
 
 	private void SetGameState(string str){
 		_game_model.NowState = str;
@@ -212,7 +222,6 @@ public class MainScene : MonoBehaviour {
 		Util.SetActivationOfGameObject (_back_to_top_button.gameObject, false);
 
 		Util.SetActivationOfGameObject (_reset_button.gameObject, false);
-	
 	}
 
 	/// <summary>
@@ -233,10 +242,13 @@ public class MainScene : MonoBehaviour {
 			Util.SetActivationOfGameObject (_reset_button.gameObject, true);
 			Util.SetActivationOfGameObject (_shake_button.gameObject, false);
 
-			_retry_button.onClick.RemoveListener (GotoReTryPage);
-			_back_to_top_button.onClick.RemoveListener (GotoBackToTopPage);
-			_retry_button.onClick.AddListener (GotoReTryPage);
-			_back_to_top_button.onClick.AddListener (GotoBackToTopPage);
+//			_retry_button.onClick.RemoveListener (GotoReTryPage);
+//			_back_to_top_button.onClick.RemoveListener (GotoBackToTopPage);
+//			_retry_button.onClick.AddListener (GotoReTryPage);
+//			_back_to_top_button.onClick.AddListener (GotoBackToTopPage);
+
+			Util.SetButtonEvent (_retry_button.gameObject, GotoReTryPage, EventTriggerType.PointerClick);
+			Util.SetButtonEvent(_back_to_top_button.gameObject,GotoBackToTopPage,EventTriggerType.PointerClick);
 
 			//show now total and past highest point and save data
 			int _high_score = 0;
@@ -281,14 +293,14 @@ public class MainScene : MonoBehaviour {
 	/// <summary>
 	/// goto retry page
 	/// </summary>
-	private void GotoReTryPage(){
+	private void GotoReTryPage(BaseEventData _base_event_data){
 		Application.LoadLevel ("Main");
 	}
 
 	/// <summary>
 	/// goto back to top page
 	/// </summary>
-	private void GotoBackToTopPage(){
+	private void GotoBackToTopPage(BaseEventData _base_event_data){
 		Application.LoadLevel ("Top");
 	}
 
@@ -300,7 +312,7 @@ public class MainScene : MonoBehaviour {
 
 	//タイマーの表示の更新
 	private void TimerTcick(){
-		Text timer_text = Util.FindTextComponentUtil ("/GameInfo/Canvas/Timer_Text");
+		Text timer_text = Util.FindTextComponentUtil ("/CanvasGameInfo/Timer_Text");
 		string base_time = Mathf.Round (_timer.LimitTime).ToString ();
 		//時間終了判定
 		if (Mathf.Round (_timer.CurrentTime) == Mathf.Round (_timer.LimitTime)) {
@@ -684,7 +696,6 @@ public class MainScene : MonoBehaviour {
 	/// </summary>
 	private void StartRemoveingSelectedLineObjectsData(){
 	
-
 		foreach (KeyValuePair<string,ObjectData> pair in _game_model.SelectedObjectDataDict) {
 
 			string tmp_key = pair.Key;
@@ -745,7 +756,7 @@ public class MainScene : MonoBehaviour {
 		GameObject _vanish_particle_obj = Util.InstantiateUtil (_game_model, "ParticleExplode", new Vector3 (_data.transform.position.x, _data.transform.position.y, _data.transform.position.z),Quaternion.identity);
 
 		//particle target
-		Text _target = Util.FindTextComponentUtil ("GameInfo/Canvas/Particle_Target_Text");
+		Text _target = Util.FindTextComponentUtil ("CanvasGameInfo/Particle_Target_Text");
 
 		Vector3 world_pos_of_point_text = Camera.main.ScreenToWorldPoint (_target.transform.position);
 
@@ -781,6 +792,7 @@ public class MainScene : MonoBehaviour {
 
 		//元となる配列から参照の削除
 		_game_model.ObjectDataDict.Remove (_key);
+
 	}
 
 

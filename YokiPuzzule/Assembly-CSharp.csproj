@@ -49,9 +49,9 @@
      <Compile Include="Assets\Script\manager\CanvasObjectManager.cs" />
      <Compile Include="Assets\Script\manager\GameObjectManager.cs" />
      <Compile Include="Assets\Script\manager\ParticleManager.cs" />
+     <Compile Include="Assets\Script\manager\UIManager.cs" />
      <Compile Include="Assets\Script\model\GameModel.cs" />
      <Compile Include="Assets\Script\model\TopSceneModel.cs" />
-     <Compile Include="Assets\Script\model\UIManager.cs" />
      <Compile Include="Assets\Script\scene\CanvasTopScene.cs" />
      <Compile Include="Assets\Script\scene\MainScene.cs" />
      <Compile Include="Assets\lib\JsonObject\JSONObject.cs" />
