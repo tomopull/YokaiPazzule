@@ -79,6 +79,9 @@ public class MainScene : MonoBehaviour {
 	//UI Event Handler
 	private UIEventHandler _ui_event_handler;
 
+	//Asset Bundle manager
+	private AssetBundleManager _asset_bundle_manager;
+
 
 	private Timer _timer;
 	private bool time_up = false;
@@ -117,6 +120,8 @@ public class MainScene : MonoBehaviour {
 		_ui_event_handler.EntryDict = new Dictionary<string, EventTrigger.Entry> ();
 		_ui_event_handler.EntryList = new List<EventTrigger.Entry> ();
 
+		_asset_bundle_manager = AssetBundleManager.Instance;
+
 		_game_model.ParticleDataList = new List<List<GameObject>> ();
 		_game_model.Init ();
 	}
@@ -125,6 +130,9 @@ public class MainScene : MonoBehaviour {
 	private void Init(){
 		LoadFile ();
 	}
+		
+
+	private Image _image;
 
 	//外部ファイルのロード
 	private void LoadFile(){
@@ -136,6 +144,10 @@ public class MainScene : MonoBehaviour {
 		WWW file = new WWW (_file_path);
 
 		yield return file;
+
+		//test
+		//yield return StartCoroutine (_asset_bundle_manager.LoadAssetBundleCoroutine ());
+		//_image.sprite = _asset_bundle_manager.GetSpriteFromAssetBundle ("maru");
 
 		JsonData data = LitJson.JsonMapper.ToObject(file.text);
 
@@ -156,6 +168,8 @@ public class MainScene : MonoBehaviour {
 		//プラットフォーム表示
 		Util.UpdateTextStringUtil (_base_url_text, Util.GetBaseURL ().ToString ()); //base url
 		Util.UpdateTextStringUtil (_url_text,_game_model.Json_Path.ToString()); //url text
+
+
 
 	}
 
@@ -357,6 +371,10 @@ public class MainScene : MonoBehaviour {
 				GameObject obj = Util.InstantiateUtil (_game_model, "Object", new Vector3 (0.6f * i, 0.6f * j, 0), Quaternion.identity);
 				obj.transform.Translate (new Vector3 (0.3f, 0.3f, 0));//位置微調整後で消したい。
 				obj.transform.Translate (offset);
+
+
+				//test
+				//obj.transform.gameObject.GetComponent<SpriteRenderer>().sprite  = _image.sprite;
 
 				//親のゲームオブジェクトの指定
 				obj.transform.parent = game_object_container.transform;

@@ -46,6 +46,7 @@
   </ItemGroup>
   <ItemGroup>
      <Compile Include="Assets\Script\data\ObjectData.cs" />
+     <Compile Include="Assets\Script\manager\AssetBundleManager.cs" />
      <Compile Include="Assets\Script\manager\CanvasObjectManager.cs" />
      <Compile Include="Assets\Script\manager\GameObjectManager.cs" />
      <Compile Include="Assets\Script\manager\ParticleManager.cs" />
@@ -67,6 +68,7 @@
      <Compile Include="Assets\lib\LitJson\ParserToken.cs" />
      <Compile Include="Assets\lib\Timer\Delegate.cs" />
      <Compile Include="Assets\lib\Timer\Timer.cs" />
+     <Compile Include="Assets\lib\Util\CreateAssetBundles.cs" />
      <Compile Include="Assets\lib\Util\SortingLayer.cs" />
      <Compile Include="Assets\lib\Util\UIEventHandler.cs" />
      <Compile Include="Assets\lib\Util\Util.cs" />

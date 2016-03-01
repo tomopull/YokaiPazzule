@@ -38,7 +38,7 @@ static public class Util  {
 	}
 
 
-	//ベースのurlの決定
+	//読み込み外部ファイルのベースのurlの決定
 	static public string GetBaseURL(){
 
 		string base_url = "";

@@ -1,15 +1,17 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/Script/scene/CanvasTopScene.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/Script/scene/MainScene.cs">
     <Files>
-      <File FileName="Assets/Script/scene/MainScene.cs" Line="305" Column="5" />
-      <File FileName="Assets/Script/scene/CanvasTopScene.cs" Line="109" Column="34" />
-      <File FileName="Assets/lib/Util/Util.cs" Line="142" Column="42" />
-      <File FileName="Assets/Script/model/GameModel.cs" Line="1" Column="1" />
+      <File FileName="Assets/Script/scene/MainScene.cs" Line="149" Column="5" />
+      <File FileName="Assets/lib/Util/CreateAssetBundles.cs" Line="1" Column="1" />
+      <File FileName="Assets/lib/Util/Util.cs" Line="1" Column="1" />
+      <File FileName="Assets/Script/manager/AssetBundleManager.cs" Line="1" Column="1" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
-    <BreakpointStore />
+    <BreakpointStore>
+      <Breakpoint file="/Users/ohsawatomohiro/git/YokiPuzzule/YokiPuzzule/Assets/Script/model/GameModel.cs" line="23" column="1" />
+    </BreakpointStore>
   </MonoDevelop.Ide.DebuggingService.Breakpoints>
   <MonoDevelop.Ide.DebuggingService.PinnedWatches />
 </Properties>
