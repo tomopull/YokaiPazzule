@@ -82,6 +82,8 @@ public class MainScene : MonoBehaviour {
 	//Asset Bundle manager
 	private AssetBundleManager _asset_bundle_manager;
 
+	private Canvas _canvas_game_info;
+
 
 	private Timer _timer;
 	private bool time_up = false;
@@ -177,6 +179,8 @@ public class MainScene : MonoBehaviour {
 
 
 		Util.InstantiateUtil (_game_model, "CanvasGameInfo", new Vector3 (168.5f, 299.5f, 0), Quaternion.identity);
+
+		_canvas_game_info = GameObject.Find ("CanvasGameInfo").GetComponent<Canvas> ();
 
 		_game_state.GAME_END_STATE = "game_end_state";
 		_game_state.GAME_PLAY_STATE = "game_play_state";
@@ -774,25 +778,25 @@ public class MainScene : MonoBehaviour {
 		GameObject _vanish_particle_obj = Util.InstantiateUtil (_game_model, "ParticleExplode", new Vector3 (_data.transform.position.x, _data.transform.position.y, _data.transform.position.z),Quaternion.identity);
 
 		//particle target
-		Text _target = Util.FindTextComponentUtil ("CanvasGameInfo/Particle_Target_Text");
+		GameObject _target = Util.FindGameObjectUtil ("Stage/TargetObj");
 
-		Vector3 world_pos_of_point_text = Camera.main.ScreenToWorldPoint (_target.transform.position);
+		RectTransform _canvas_rect = _canvas_game_info.GetComponent<RectTransform> ();
+	
+//		Vector2 _viewportposition = Camera.main.WorldToViewportPoint (_point_text.transform.position);
+//		Vector2 _world_object_screen_position = new Vector2(
+//			((_viewportposition.x * _canvas_rect.sizeDelta.x) - (_canvas_rect.sizeDelta.x * 0.5f)),
+//			((_viewportposition.y * _canvas_rect.sizeDelta.y) - (_canvas_rect.sizeDelta.y * 0.5f)));
 
-		//Vector3[] _paths = new Vector3[3];
-		//_paths[0] = new Vector3(50,500,0);
-		//_paths[1] = new Vector3(60,-100,0);
-		//_paths[2] = new Vector3(200,50,0);
+		Vector3 _target_pos = Camera.main.ViewportToWorldPoint (_point_text.transform.position);
 
 		iTween.MoveTo (_get_point_particle_obj,
 			iTween.Hash (
-				"position", world_pos_of_point_text,
+				"position", _target.transform.position,
 				"easeType", iTween.EaseType.easeInCubic,"time", _delay_time_tween,
 				"oncomplete", "PointGetComplete",
 				"oncompletetarget", this.gameObject
-				//"path",_paths
 			));
 
-		//Debug.Log (_vanish_particle_obj.transform.position.x);
 		_vanish_particle_obj.GetComponent<ParticleSystem> ().Play ();
 
 		//現在存在しているパーティクルの参照の保存
