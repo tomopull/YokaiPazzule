@@ -47,13 +47,12 @@ public class ParticleManager : MonoBehaviour {
 
 					GameObject _child_obj = _child_list [j];
 
-					ParticleSystem particle = _child_obj.GetComponent<ParticleSystem> ();
+					ParticleSystem _root_particle = _child_obj.GetComponent<ParticleSystem> ();
 
-					if (!particle.IsAlive ()) {
-						particle.Clear ();
-						_game_model.ParticleDataList[i].Remove(particle.gameObject);
-						Destroy (particle.gameObject);
-
+				if (!_root_particle.IsAlive ()) {
+						_root_particle.Clear ();
+						_game_model.ParticleDataList [i].Remove (_root_particle.gameObject);
+						Destroy (_root_particle.gameObject);
 					}
 
 				}

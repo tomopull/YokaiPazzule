@@ -252,7 +252,7 @@ public class GameModel : MonoBehaviour {
 	    get { return this._particle_data_list; } 
 	    set { this._particle_data_list = value; }
 	}
-
+		
 	//オブジェクトが消えるパーティクルのデータ
 	[SerializeField]
 	private List<GameObject> vanish_particle_list;

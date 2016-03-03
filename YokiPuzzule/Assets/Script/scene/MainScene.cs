@@ -215,8 +215,25 @@ public class MainScene : MonoBehaviour {
 	}
 
 
+	/// <summary>
+	/// shake all objects
+	/// </summary>
+	/// <param name="_base_event_data">_base_event_data.</param>
 	private void ShakeDiplay(BaseEventData _base_event_data){
-		Debug.Log ("shake_display");
+		//Debug.Log ("shake_display");
+
+		foreach (KeyValuePair<string,ObjectData> pair in _game_model.ObjectDataDict) {
+			ObjectData _data = pair.Value;
+
+			if (_data != null) {
+
+				Rigidbody2D _body = _data.gameObject.GetComponent<Rigidbody2D> ();
+				_body.AddForce(new Vector2(UnityEngine.Random.Range(-100.0f,100.0f) ,UnityEngine.Random.Range(-100.0f,100.0f) ) );
+
+			}
+
+		}
+
 	}
 
 	private void SetGameState(string str){
@@ -259,11 +276,6 @@ public class MainScene : MonoBehaviour {
 			Util.SetActivationOfGameObject (_back_to_top_button.gameObject, true);
 			Util.SetActivationOfGameObject (_reset_button.gameObject, true);
 			Util.SetActivationOfGameObject (_shake_button.gameObject, false);
-
-//			_retry_button.onClick.RemoveListener (GotoReTryPage);
-//			_back_to_top_button.onClick.RemoveListener (GotoBackToTopPage);
-//			_retry_button.onClick.AddListener (GotoReTryPage);
-//			_back_to_top_button.onClick.AddListener (GotoBackToTopPage);
 
 			Util.SetButtonEvent (_retry_button.gameObject, GotoReTryPage, EventTriggerType.PointerClick);
 			Util.SetButtonEvent(_back_to_top_button.gameObject,GotoBackToTopPage,EventTriggerType.PointerClick);
@@ -782,11 +794,6 @@ public class MainScene : MonoBehaviour {
 
 		RectTransform _canvas_rect = _canvas_game_info.GetComponent<RectTransform> ();
 	
-//		Vector2 _viewportposition = Camera.main.WorldToViewportPoint (_point_text.transform.position);
-//		Vector2 _world_object_screen_position = new Vector2(
-//			((_viewportposition.x * _canvas_rect.sizeDelta.x) - (_canvas_rect.sizeDelta.x * 0.5f)),
-//			((_viewportposition.y * _canvas_rect.sizeDelta.y) - (_canvas_rect.sizeDelta.y * 0.5f)));
-
 		Vector3 _target_pos = Camera.main.ViewportToWorldPoint (_point_text.transform.position);
 
 		iTween.MoveTo (_get_point_particle_obj,
