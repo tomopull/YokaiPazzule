@@ -114,6 +114,7 @@ static public class Util  {
 		GameObject obj = (GameObject)GameObject.Find (str);
 		return obj;
 	}
+
 		
 	/// <summary>
 	/// ボタンコンポーネントの

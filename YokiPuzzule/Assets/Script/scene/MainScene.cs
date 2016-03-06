@@ -85,6 +85,9 @@ public class MainScene : MonoBehaviour {
 	private Canvas _canvas_game_info;
 
 
+	private GameObject _result_bg;
+
+
 	private Timer _timer;
 	private bool time_up = false;
 
@@ -178,7 +181,7 @@ public class MainScene : MonoBehaviour {
 	private  void InitCanvasInfo(){
 
 
-		Util.InstantiateUtil (_game_model, "CanvasGameInfo", new Vector3 (168.5f, 299.5f, 0), Quaternion.identity);
+		//Util.InstantiateUtil (_game_model, "CanvasGameInfo", new Vector3 (168.5f, 299.5f, 0), Quaternion.identity);
 
 		_canvas_game_info = GameObject.Find ("CanvasGameInfo").GetComponent<Canvas> ();
 
@@ -201,7 +204,9 @@ public class MainScene : MonoBehaviour {
 		_back_to_top_button = Util.FindButtonComponentUtil ("/CanvasGameInfo/ResultMenu/UIBackToToTopButton");
 		_reset_button = Util.FindButtonComponentUtil ("/CanvasGameInfo/ResultMenu/UIRestButton");
 		_shake_button = Util.FindButtonComponentUtil ("/CanvasGameInfo/UIShakeButton");
-		        
+
+		_result_bg = Util.FindGameObjectUtil ("CanvasGameInfo/ResultMenu/ResultBG");
+	        
 		Util.SetButtonEvent (_reset_button.gameObject,ResetPlayerPref, EventTriggerType.PointerClick);
 		Util.SetButtonEvent (_shake_button.gameObject, ShakeDiplay, EventTriggerType.PointerClick);
 
@@ -257,6 +262,7 @@ public class MainScene : MonoBehaviour {
 		Util.SetActivationOfGameObject (_back_to_top_button.gameObject, false);
 
 		Util.SetActivationOfGameObject (_reset_button.gameObject, false);
+		Util.SetActivationOfGameObject (_result_bg.gameObject, false);
 	}
 
 	/// <summary>
@@ -276,6 +282,7 @@ public class MainScene : MonoBehaviour {
 			Util.SetActivationOfGameObject (_back_to_top_button.gameObject, true);
 			Util.SetActivationOfGameObject (_reset_button.gameObject, true);
 			Util.SetActivationOfGameObject (_shake_button.gameObject, false);
+			Util.SetActivationOfGameObject (_result_bg.gameObject, true);
 
 			Util.SetButtonEvent (_retry_button.gameObject, GotoReTryPage, EventTriggerType.PointerClick);
 			Util.SetButtonEvent(_back_to_top_button.gameObject,GotoBackToTopPage,EventTriggerType.PointerClick);
