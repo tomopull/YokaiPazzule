@@ -52,7 +52,7 @@ static public class Util  {
 			base_url = "file://" + Application.dataPath + "/StreamingAssets";
 
 		}else if(Application.platform == RuntimePlatform.IPhonePlayer){
-			//Ipone
+			//Iphone
 			base_url = "file://" + Application.dataPath + "/Raw";
 
 		} else if(Application.platform == RuntimePlatform.OSXWebPlayer){
