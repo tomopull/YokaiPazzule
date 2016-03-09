@@ -173,9 +173,6 @@ public class MainScene : MonoBehaviour {
 		//プラットフォーム表示
 		Util.UpdateTextStringUtil (_base_url_text, Util.GetBaseURL ().ToString ()); //base url
 		Util.UpdateTextStringUtil (_url_text,_game_model.Json_Path.ToString()); //url text
-
-
-
 	}
 
 	private  void InitCanvasInfo(){
@@ -243,7 +240,7 @@ public class MainScene : MonoBehaviour {
 
 	private void SetGameState(string str){
 		_game_model.NowState = str;
-		Debug.Log (_game_model.NowState);
+		//Debug.Log (_game_model.NowState);
 	}
 
 	/// <summary>
@@ -395,7 +392,6 @@ public class MainScene : MonoBehaviour {
 				obj.transform.Translate (new Vector3 (0.3f, 0.3f, 0));//位置微調整後で消したい。
 				obj.transform.Translate (offset);
 
-
 				//test
 				//obj.transform.gameObject.GetComponent<SpriteRenderer>().sprite  = _image.sprite;
 
@@ -404,8 +400,8 @@ public class MainScene : MonoBehaviour {
 
 				//オブジェクトにデータを追加
 				ObjectData obj_data = obj.GetComponent<ObjectData> ();
-				obj_data.Point = (int)data ["object_data"][i]["point"];
-				obj_data.Category = (int)data ["object_data"][j]["category"];
+				obj_data.Point = (int)data ["object_data"] [i] ["point"];
+				obj_data.Category = (int)data ["object_data"] [j] ["category"];
 
 				string _key = i + "_" + j + "_" + GameModel.GetUniqueIndex ();
 				_game_model.ObjectDataDict.Add (_key, obj_data);
@@ -676,6 +672,8 @@ public class MainScene : MonoBehaviour {
 
 				//一番最後のオブジェクトをとりあえず元の色に戻す
 				_game_object_manager.SetColor (_game_model.LastObjectSelected.Category, _game_model.LastObjectSelected.Obj);
+				//一番最後のオブジェクトをハイライト前の大きさに戻す
+				Util.AnimateObjectScale(_game_model.LastObjectSelected.Obj,1f,1f,iTween.EaseType.linear,0f);
 
 				//一番最後のオブジェクトの参照の削除
 				_game_model.SelectedObjectDataDict.Remove (_game_model.LastObjectSelected.Key);
@@ -787,7 +785,7 @@ public class MainScene : MonoBehaviour {
 
 	private IEnumerator RemoveingSelectedLineObjectsData(string _key, ObjectData _data, float _wait_time){
 
-		Debug.Log (_wait_time);
+		//Debug.Log (_wait_time);
 		yield return new WaitForSeconds (_wait_time);
 
 		//ゲットポイントのパーティクルのが発生する

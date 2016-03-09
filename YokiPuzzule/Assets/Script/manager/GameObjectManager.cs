@@ -40,9 +40,10 @@ public class GameObjectManager : MonoBehaviour {
 			}
 
 		}
-
-
+			
 	}
+		
+
 		
 	//ライン描画のリセット
 	public void ResetLineObjectData(){
@@ -57,15 +58,32 @@ public class GameObjectManager : MonoBehaviour {
 		int i = 0;
 
 		foreach (ObjectData value in _selected_dict.Values) {
+
 			GameObject obj = (GameObject)value.Obj;
 
 			if (obj != null) {
+
 				obj.GetComponent<Renderer> ().material.color = Color.white;
+
 				i += 1;
+
+
+				if (i >= _selected_dict.Count) {
+
+					//ハイライト
+					Util.AnimateObjectScale (obj,1.25f,1.25f,iTween.EaseType.easeInExpo,0.1f);
+
+				} else {
+
+					//ハイライト解除
+					Util.AnimateObjectScale(obj,1f,1f,iTween.EaseType.linear,0f);
+
+				}
+
 			}
 
 		}
-
+					
 	}
 
 	//選択中のオブジェクトをハイライトリセット元の色に戻す
@@ -76,8 +94,13 @@ public class GameObjectManager : MonoBehaviour {
 		foreach (ObjectData value in _selected_dict.Values) {
 
 			GameObject obj = (GameObject)value.Obj;
+
 			SetColor (value.Category, obj);
 			i += 1;
+
+			//オブジェクトをハイライト解除
+			Util.AnimateObjectScale(obj,1f,1f,iTween.EaseType.linear,0f);
+
 
 		}
 

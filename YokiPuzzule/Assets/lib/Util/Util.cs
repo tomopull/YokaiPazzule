@@ -146,7 +146,7 @@ static public class Util  {
 		//既にEventTriggerComponentが追加されボタン化されていなかったらボタン化
 		if (!_obj.GetComponent<EventTrigger> ()) {
 		
-			Debug.Log (_obj);
+			//Debug.Log (_obj);
 			EventTrigger _event_triger = _obj.AddComponent<EventTrigger> ();
 
 			EventTrigger.Entry _entry = new EventTrigger.Entry ();
@@ -185,5 +185,23 @@ static public class Util  {
 		}
 
 	}
+
+
+	static public void AnimateObjectScale(GameObject _obj, float _target_scale_x, float _target_scale_y, iTween.EaseType _ease_type, float _time){
+	
+		if (_obj != null) {
+		
+			//一番最後に洗濯しているオブジェクトをハイライト
+			iTween.ScaleTo (_obj,iTween.Hash(
+				"x", _target_scale_x,
+				"y", _target_scale_y,
+				"easeType", _ease_type,
+				"time", _time
+			));
+
+		}
+			
+	}
+
 
 }
