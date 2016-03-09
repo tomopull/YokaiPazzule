@@ -64,6 +64,16 @@ public class MainScene : MonoBehaviour {
 	//Highest_Total_Point_Text
 	private Text _highest_total_point_text;
 
+	//highscore update text
+	private Text _highscore_update_text;
+
+	//not highscore update text;
+	private Text _not_highscore_update_text;
+
+	private Text _highest_score_text;
+
+	private Text _total_score_text;
+
 	//retry button
 	private Button _retry_button;
 
@@ -197,6 +207,11 @@ public class MainScene : MonoBehaviour {
 		//result of the game
 		_total_point_text = Util.FindTextComponentUtil ("/CanvasGameInfo/ResultMenu/Total_Point_Text");
 		_highest_total_point_text = Util.FindTextComponentUtil ("/CanvasGameInfo/ResultMenu/Highest_Total_Point_Text");
+		_highscore_update_text = Util.FindTextComponentUtil ("/CanvasGameInfo/ResultMenu/Highest_Score_Update_Text");
+		_not_highscore_update_text = Util.FindTextComponentUtil ("/CanvasGameInfo/ResultMenu/None_Highest_Score_Update_Text");
+		_highest_score_text = Util.FindTextComponentUtil ("/CanvasGameInfo/ResultMenu/Highest_Score_Text");
+		_total_score_text = Util.FindTextComponentUtil ("/CanvasGameInfo/ResultMenu/Total_Score_Text");
+
 		_retry_button = Util.FindButtonComponentUtil ("/CanvasGameInfo/ResultMenu/UIRetryButton");
 		_back_to_top_button = Util.FindButtonComponentUtil ("/CanvasGameInfo/ResultMenu/UIBackToToTopButton");
 		_reset_button = Util.FindButtonComponentUtil ("/CanvasGameInfo/ResultMenu/UIRestButton");
@@ -213,7 +228,9 @@ public class MainScene : MonoBehaviour {
 	/// init data
 	/// </summary>
 	private void ResetPlayerPref(BaseEventData _base_event_data){
+
 		PlayerPrefs.DeleteAll ();
+
 	}
 
 
@@ -255,6 +272,10 @@ public class MainScene : MonoBehaviour {
 
 		Util.SetActivationOfGameObject (_total_point_text.gameObject, false);
 		Util.SetActivationOfGameObject (_highest_total_point_text.gameObject, false);
+		Util.SetActivationOfGameObject (_highscore_update_text.gameObject, false);
+		Util.SetActivationOfGameObject (_not_highscore_update_text.gameObject, false);
+		Util.SetActivationOfGameObject (_highest_score_text.gameObject, false);
+		Util.SetActivationOfGameObject (_total_score_text.gameObject, false);
 		Util.SetActivationOfGameObject (_retry_button.gameObject, false);
 		Util.SetActivationOfGameObject (_back_to_top_button.gameObject, false);
 
@@ -274,7 +295,8 @@ public class MainScene : MonoBehaviour {
 			Util.SetActivationOfGameObject (_point_text.gameObject, false);
 			Util.SetActivationOfGameObject (_obj_count_text.gameObject, false);
 			Util.SetActivationOfGameObject (_total_point_text.gameObject, true);
-			Util.SetActivationOfGameObject (_highest_total_point_text.gameObject, true);
+			Util.SetActivationOfGameObject (_total_score_text.gameObject, true);
+
 			Util.SetActivationOfGameObject (_retry_button.gameObject, true);
 			Util.SetActivationOfGameObject (_back_to_top_button.gameObject, true);
 			Util.SetActivationOfGameObject (_reset_button.gameObject, true);
@@ -292,6 +314,10 @@ public class MainScene : MonoBehaviour {
 
 			if (PlayerPrefs.HasKey (GameModel.HIGH_SCORE_KEY)) {
 
+				//過去最高点表示
+				Util.SetActivationOfGameObject (_highest_score_text.gameObject, true);
+				Util.SetActivationOfGameObject (_highest_total_point_text.gameObject, true);
+
 				_high_score = PlayerPrefs.GetInt (GameModel.HIGH_SCORE_KEY);
 
 				//最高得点が存在しかつ更新していたら更新セーブ
@@ -299,11 +325,19 @@ public class MainScene : MonoBehaviour {
 					PlayerPrefs.SetInt (GameModel.SCORE_KEY, _score);
 					PlayerPrefs.SetInt (GameModel.HIGH_SCORE_KEY, _score);
 					_total_point_text.color = Color.yellow;
+
+					//最高得点更新したので更新テキスト
+					Util.SetActivationOfGameObject (_highscore_update_text.gameObject, true);
+
 				} else {
 					//最高得点更新していない
 					PlayerPrefs.SetInt (GameModel.HIGH_SCORE_KEY, _high_score);
 					PlayerPrefs.SetInt (GameModel.SCORE_KEY, _high_score);
 					_total_point_text.color = Color.grey;
+
+					//最高得点更新してないので更新してないテキスト
+					Util.SetActivationOfGameObject (_not_highscore_update_text.gameObject, true);
+
 				}
 
 			} else {
@@ -312,6 +346,10 @@ public class MainScene : MonoBehaviour {
 				PlayerPrefs.SetInt (GameModel.SCORE_KEY, _score);
 				PlayerPrefs.SetInt (GameModel.HIGH_SCORE_KEY, _high_score);
 				_total_point_text.color = Color.yellow;
+
+				//最高得点更新したので更新テキスト
+				Util.SetActivationOfGameObject (_highscore_update_text.gameObject, true);
+
 			}
 
 			PlayerPrefs.Save ();
