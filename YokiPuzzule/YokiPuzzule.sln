@@ -1,9 +1,10 @@
-Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual Studio 2008
-
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
 Project("{AA88EA58-4228-213B-F78E-582BA7810273}") = "YokiPuzzule", "Assembly-CSharp-firstpass.csproj", "{63501533-6050-19E6-6C69-BCAACFC6AC47}"
 EndProject
 Project("{AA88EA58-4228-213B-F78E-582BA7810273}") = "YokiPuzzule", "Assembly-CSharp.csproj", "{B62EB5FC-CBC0-18E2-AD79-F0EC0B7CDA7C}"
+EndProject
+Project("{AA88EA58-4228-213B-F78E-582BA7810273}") = "YokiPuzzule", "Assembly-CSharp-Editor-firstpass.csproj", "{27F846E6-7C20-EF48-6DEC-38BA885F63E5}"
 EndProject
 Project("{AA88EA58-4228-213B-F78E-582BA7810273}") = "YokiPuzzule", "Assembly-CSharp-Editor.csproj", "{3D221E95-D7C7-C3C7-59BE-F20D142340FE}"
 EndProject
@@ -21,13 +22,14 @@ Global
 		{B62EB5FC-CBC0-18E2-AD79-F0EC0B7CDA7C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B62EB5FC-CBC0-18E2-AD79-F0EC0B7CDA7C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B62EB5FC-CBC0-18E2-AD79-F0EC0B7CDA7C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{27F846E6-7C20-EF48-6DEC-38BA885F63E5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{27F846E6-7C20-EF48-6DEC-38BA885F63E5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{27F846E6-7C20-EF48-6DEC-38BA885F63E5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{27F846E6-7C20-EF48-6DEC-38BA885F63E5}.Release|Any CPU.Build.0 = Release|Any CPU
 		{3D221E95-D7C7-C3C7-59BE-F20D142340FE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{3D221E95-D7C7-C3C7-59BE-F20D142340FE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3D221E95-D7C7-C3C7-59BE-F20D142340FE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3D221E95-D7C7-C3C7-59BE-F20D142340FE}.Release|Any CPU.Build.0 = Release|Any CPU
-	EndGlobalSection
-	GlobalSection(SolutionProperties) = preSolution
-		HideSolutionNode = FALSE
 	EndGlobalSection
 																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																															GlobalSection(MonoDevelopProperties) = preSolution
 		StartupItem = Assembly-CSharp.csproj
@@ -48,5 +50,4 @@ Global
 		$3.inheritsScope = text/plain
 		$3.scope = text/plain
 	EndGlobalSection
-
 EndGlobal
