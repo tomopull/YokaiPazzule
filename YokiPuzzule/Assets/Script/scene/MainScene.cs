@@ -426,7 +426,7 @@ public class MainScene : MonoBehaviour {
 
 			for (int j = 0; j < column_count; j++) {
 
-				GameObject obj = Util.InstantiateUtil (_game_model, "Object", new Vector3 (0.6f * i, 0.6f * j, 0), Quaternion.identity);
+				GameObject obj = Util.InstantiateUtil (_game_model, "Object3D", new Vector3 (0.6f * i, 0.6f * j, 0), Quaternion.identity);
 				obj.transform.Translate (new Vector3 (0.3f, 0.3f, 0));//位置微調整後で消したい。
 				obj.transform.Translate (offset);
 
